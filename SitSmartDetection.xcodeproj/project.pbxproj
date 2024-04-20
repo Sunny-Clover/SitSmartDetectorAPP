@@ -15,6 +15,7 @@
 		159493932BCE93A7004F0749 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 159493922BCE93A7004F0749 /* Assets.xcassets */; };
 		159493962BCE93A7004F0749 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 159493952BCE93A7004F0749 /* Base */; };
 		15E5543F2BD0DB0F0084FEAA /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E5543E2BD0DB0F0084FEAA /* HistoryViewController.swift */; };
+		15F62B262BD38C54004DD5D3 /* HistoryPiechart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F62B252BD38C54004DD5D3 /* HistoryPiechart.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		159493952BCE93A7004F0749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		159493972BCE93A7004F0749 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		15E5543E2BD0DB0F0084FEAA /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
+		15F62B252BD38C54004DD5D3 /* HistoryPiechart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPiechart.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			children = (
 				1594938D2BCE93A6004F0749 /* ViewController.swift */,
 				1594938F2BCE93A6004F0749 /* Main.storyboard */,
+				15F62B252BD38C54004DD5D3 /* HistoryPiechart.swift */,
 				1574FBFA2BD17AB300F5041E /* DetectionReport_ViewController.swift */,
 				15E5543E2BD0DB0F0084FEAA /* HistoryViewController.swift */,
 				159493892BCE93A6004F0749 /* AppDelegate.swift */,
@@ -147,6 +150,7 @@
 				1574FBFB2BD17AB300F5041E /* DetectionReport_ViewController.swift in Sources */,
 				1594938E2BCE93A6004F0749 /* ViewController.swift in Sources */,
 				1594938A2BCE93A6004F0749 /* AppDelegate.swift in Sources */,
+				15F62B262BD38C54004DD5D3 /* HistoryPiechart.swift in Sources */,
 				1594938C2BCE93A6004F0749 /* SceneDelegate.swift in Sources */,
 				15E5543F2BD0DB0F0084FEAA /* HistoryViewController.swift in Sources */,
 			);

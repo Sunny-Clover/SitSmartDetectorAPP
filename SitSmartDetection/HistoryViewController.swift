@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class HistoryViewController: UIViewController {
     
@@ -13,6 +14,7 @@ class HistoryViewController: UIViewController {
     @IBOutlet var time: UILabel!
     @IBOutlet var bodyPartsButton: [UIButton]!
     @IBOutlet var partName: UILabel!
+    @IBOutlet var trendScore_pieChart: UIView!
     
     var selectTime = 0
     
@@ -38,6 +40,8 @@ class HistoryViewController: UIViewController {
         timeSegment.setTitleTextAttributes(selectedTextAttributes, for: .selected)
         
         time.text = "\(currentYear)"
+        
+        embedSwiftUIPieChart()
     }
 
     @IBAction func touchTimeSegment(_ sender: UISegmentedControl) {
@@ -121,5 +125,26 @@ class HistoryViewController: UIViewController {
             print("not in the collection")
         }
     }
+    
+    private func embedSwiftUIPieChart() {
+           // Create the SwiftUI view that provides the chart.
+           let sectorChartView = HistoryPiechart()
 
+           // Create a UIHostingController with the SwiftUI view.
+           let hostingController = UIHostingController(rootView: sectorChartView)
+           addChild(hostingController)
+
+           // Add the hosting controller's view to the trendScore_pieChart UIView.
+           trendScore_pieChart.addSubview(hostingController.view)
+           hostingController.didMove(toParent: self)
+
+           // Set the constraints to fill the trendScore_pieChart UIView.
+           hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+           NSLayoutConstraint.activate([
+               hostingController.view.topAnchor.constraint(equalTo: trendScore_pieChart.topAnchor),
+               hostingController.view.bottomAnchor.constraint(equalTo: trendScore_pieChart.bottomAnchor),
+               hostingController.view.leadingAnchor.constraint(equalTo: trendScore_pieChart.leadingAnchor),
+               hostingController.view.trailingAnchor.constraint(equalTo: trendScore_pieChart.trailingAnchor)
+           ])
+       }
 }

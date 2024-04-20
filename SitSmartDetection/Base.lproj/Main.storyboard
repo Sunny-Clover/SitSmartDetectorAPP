@@ -88,54 +88,54 @@
                                         </connections>
                                     </button>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="face.smiling.inverse" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Nzn-eH-3oV">
-                                        <rect key="frame" x="171" y="309" width="50" height="51"/>
+                                        <rect key="frame" x="171" y="298" width="50" height="51"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="tintColor" red="0.72156864399999998" green="0.80392158030000005" blue="0.86666667460000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="All Body Parts" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zAC-Wk-IrZ">
-                                        <rect key="frame" x="129" y="374" width="132" height="24"/>
+                                        <rect key="frame" x="130" y="358" width="132" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                         <color key="textColor" red="0.50980395079999996" green="0.50980395079999996" blue="0.50980395079999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Head" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fn2-oi-zJw">
-                                        <rect key="frame" x="55" y="499" width="28" height="12"/>
+                                        <rect key="frame" x="52" y="468" width="28" height="12"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="10"/>
                                         <color key="textColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Neck" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O5Y-he-qdM">
-                                        <rect key="frame" x="114" y="499" width="28" height="12"/>
+                                        <rect key="frame" x="111" y="468" width="28" height="12"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="10"/>
                                         <color key="textColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Back" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zrv-21-sNF">
-                                        <rect key="frame" x="246" y="499" width="28" height="12"/>
+                                        <rect key="frame" x="243" y="468" width="28" height="12"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="10"/>
                                         <color key="textColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Leg" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uFS-pf-MJu">
-                                        <rect key="frame" x="313" y="499" width="22" height="12"/>
+                                        <rect key="frame" x="310" y="468" width="22" height="12"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="10"/>
                                         <color key="textColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Shoulder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kcp-K5-0Gd">
-                                        <rect key="frame" x="169" y="498" width="52" height="12"/>
+                                        <rect key="frame" x="166" y="467" width="52" height="12"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="10"/>
                                         <color key="textColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qT6-wp-na6">
-                                        <rect key="frame" x="231" y="437" width="56" height="53"/>
+                                        <rect key="frame" x="228" y="406" width="56" height="53"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -153,7 +153,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JNU-FZ-jBo">
-                                        <rect key="frame" x="102" y="437" width="56" height="53"/>
+                                        <rect key="frame" x="99" y="406" width="56" height="53"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -171,7 +171,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hp8-eN-9z6">
-                                        <rect key="frame" x="295" y="437" width="56" height="53"/>
+                                        <rect key="frame" x="292" y="406" width="56" height="53"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -189,7 +189,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wsn-Qg-QpM">
-                                        <rect key="frame" x="41" y="437" width="56" height="53"/>
+                                        <rect key="frame" x="38" y="406" width="56" height="53"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -207,7 +207,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="baW-PN-Ka3">
-                                        <rect key="frame" x="166" y="437" width="56" height="53"/>
+                                        <rect key="frame" x="163" y="406" width="56" height="53"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.62352943419999995" green="0.86666667460000002" blue="0.8392156959" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -260,16 +260,20 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Trend Score" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HL0-UP-uZ8">
-                                        <rect key="frame" x="41" y="545" width="95" height="14"/>
+                                        <rect key="frame" x="42" y="505" width="95" height="14"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="12"/>
                                         <color key="textColor" red="0.50980395079999996" green="0.50980395079999996" blue="0.50980395079999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h5J-Ac-HWK">
-                                        <rect key="frame" x="41" y="563" width="307" height="2"/>
+                                        <rect key="frame" x="42" y="523" width="307" height="2"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6rq-1K-8fE">
+                                        <rect key="frame" x="42" y="555" width="305" height="203"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </view>
                                 </subviews>
                                 <constraints>
@@ -297,6 +301,7 @@
                         <outlet property="partName" destination="zAC-Wk-IrZ" id="km2-xl-mD6"/>
                         <outlet property="time" destination="Jb7-rc-VRu" id="mcj-Zd-2iB"/>
                         <outlet property="timeSegment" destination="502-wh-3Zh" id="4c5-YP-5no"/>
+                        <outlet property="trendScore_pieChart" destination="6rq-1K-8fE" id="dt0-YZ-k7a"/>
                         <outletCollection property="bodyPartsButton" destination="wsn-Qg-QpM" collectionClass="NSMutableArray" id="yfH-7Z-mec"/>
                         <outletCollection property="bodyPartsButton" destination="JNU-FZ-jBo" collectionClass="NSMutableArray" id="zhi-pX-iWh"/>
                         <outletCollection property="bodyPartsButton" destination="baW-PN-Ka3" collectionClass="NSMutableArray" id="gq9-OX-S9D"/>
@@ -306,7 +311,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WZf-Zt-og9" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="830" y="-1010"/>
+            <point key="canvasLocation" x="829.7709923664122" y="-1010.5633802816902"/>
         </scene>
         <!--Home-->
         <scene sceneID="p83-sp-E3f">
