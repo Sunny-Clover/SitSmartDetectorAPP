@@ -17,6 +17,9 @@
 		15EBFC012BF0B342009E76AF /* HistoryLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */; };
 		15EBFC032BF0B35C009E76AF /* HistoryLineChartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFC022BF0B35C009E76AF /* HistoryLineChartData.swift */; };
 		15EBFC052BF0B377009E76AF /* HistoryPieChartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFC042BF0B377009E76AF /* HistoryPieChartData.swift */; };
+		6321825A2BF0D5FD000BCED0 /* DetectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632182592BF0D5FD000BCED0 /* DetectionView.swift */; };
+		6321825C2BF0E593000BCED0 /* DetectionResultData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6321825B2BF0E593000BCED0 /* DetectionResultData.swift */; };
+		6321825E2BF0ED2E000BCED0 /* CameraManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6321825D2BF0ED2E000BCED0 /* CameraManger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,9 @@
 		15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryLineChart.swift; sourceTree = "<group>"; };
 		15EBFC022BF0B35C009E76AF /* HistoryLineChartData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryLineChartData.swift; sourceTree = "<group>"; };
 		15EBFC042BF0B377009E76AF /* HistoryPieChartData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPieChartData.swift; sourceTree = "<group>"; };
+		632182592BF0D5FD000BCED0 /* DetectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionView.swift; sourceTree = "<group>"; };
+		6321825B2BF0E593000BCED0 /* DetectionResultData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionResultData.swift; sourceTree = "<group>"; };
+		6321825D2BF0ED2E000BCED0 /* CameraManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +77,9 @@
 				15EBFBFC2BF0B2A9009E76AF /* HistoryClass.swift */,
 				15EBFBFE2BF0B325009E76AF /* HistoryPieChart.swift */,
 				15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */,
+				632182592BF0D5FD000BCED0 /* DetectionView.swift */,
+				6321825B2BF0E593000BCED0 /* DetectionResultData.swift */,
+				6321825D2BF0ED2E000BCED0 /* CameraManger.swift */,
 				1583831E2BE68ED3001FEE73 /* Assets.xcassets */,
 				158383202BE68ED3001FEE73 /* Preview Content */,
 			);
@@ -157,8 +166,11 @@
 			files = (
 				15EBFC052BF0B377009E76AF /* HistoryPieChartData.swift in Sources */,
 				1583831D2BE68ED2001FEE73 /* ContentView.swift in Sources */,
+				6321825C2BF0E593000BCED0 /* DetectionResultData.swift in Sources */,
+				6321825A2BF0D5FD000BCED0 /* DetectionView.swift in Sources */,
 				15EBFBFD2BF0B2A9009E76AF /* HistoryClass.swift in Sources */,
 				15EBFC032BF0B35C009E76AF /* HistoryLineChartData.swift in Sources */,
+				6321825E2BF0ED2E000BCED0 /* CameraManger.swift in Sources */,
 				158383292BE69CCA001FEE73 /* HistoryView.swift in Sources */,
 				15EBFC012BF0B342009E76AF /* HistoryLineChart.swift in Sources */,
 				1583831B2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift in Sources */,
@@ -296,9 +308,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SitSmartDetection_SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = U8AADC9849;
+				DEVELOPMENT_TEAM = A5Z78GSVQ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for detection";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -325,9 +338,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SitSmartDetection_SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = U8AADC9849;
+				DEVELOPMENT_TEAM = A5Z78GSVQ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for detection";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

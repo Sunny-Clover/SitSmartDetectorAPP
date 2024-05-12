@@ -33,7 +33,7 @@ struct ContentView: View {
                     }
                     .tag(1)
                 
-                PlayView()
+                DetectionView()
                     .background(Color.clear)
                     .tabItem {
                         Label("Play", systemImage: "play.circle.fill")
@@ -71,11 +71,11 @@ struct HomeView: View {
 //    }
 //}
 
-struct PlayView: View {
-    var body: some View {
-        Text("Play Screen")
-    }
-}
+//struct PlayView: View {
+//    var body: some View {
+//        Text("Play Screen")
+//    }
+//}
 
 struct FriendsView: View {
     var body: some View {
@@ -102,11 +102,11 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-struct PlayView_Previews: PreviewProvider {
-    static var previews: some View {
-        PlayView()
-    }
-}
+//struct PlayView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PlayView()
+//    }
+//}
 
 //struct HistoryView_Previews: PreviewProvider {
 //    static var previews: some View {
