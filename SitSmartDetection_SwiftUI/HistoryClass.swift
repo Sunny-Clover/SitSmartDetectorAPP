@@ -10,25 +10,18 @@ import Foundation
 class HistoryModel: ObservableObject{
     @Published var selectedTime: Int = 0
     @Published var selectedPartIndex: Int? = nil
-    @Published var currentTime: Int
+    @Published var currentTime: Date = Date()
+    @Published var displayDate: String = ""
+    @Published var addTime: Bool = false
     @Published var averageScore: Double
     
-    // Make the calendar a lazy property so it is not initialized until it's actually accessed
     lazy var calendar: Calendar = {
-        return Calendar.current
+        var cal = Calendar.current
+        cal.timeZone = TimeZone.current  // Ensure the calendar uses the current time zone
+        return cal
     }()
     
     @Published var timeUnit: Calendar.Component
-    // Define the time properties as lazy to ensure they are not accessed until needed
-    lazy var currentYear: Int = calendar.component(.year, from: Date())
-    lazy var currentMonth: Int = calendar.component(.month, from: Date())
-    lazy var currentWeekOfMonth: Int = calendar.component(.weekOfMonth, from: Date())
-    lazy var currentDay: Int = calendar.component(.day, from: Date())
-    
-    lazy var selectYear: Int = currentYear
-    lazy var selectMonth: Int = currentMonth
-    lazy var selectWeekOfMonth: Int = currentWeekOfMonth
-    lazy var selectDay: Int = currentDay
     
     @Published var initLineChartData: [DataSeries] = []
     @Published var lineChartData: [DataSeries] = []
@@ -36,88 +29,153 @@ class HistoryModel: ObservableObject{
     @Published var pieChartData: [PieDataSeries] = []
     
 
-    init(currentTime: Int, averageScore: Double, initLineChartData: [DataSeries], initPieChartData: [PieDataSeries], timeUnit: Calendar.Component) {
-        self.currentTime = currentTime
+    init(averageScore: Double, initLineChartData: [DataSeries], initPieChartData: [PieDataSeries], timeUnit: Calendar.Component) {
         self.averageScore = averageScore
         self.initLineChartData = initLineChartData
         self.lineChartData = initLineChartData
         self.initPieChartData = initPieChartData
         self.pieChartData = initPieChartData
         self.timeUnit = timeUnit
+        updateDisplayDate()
     }
     
-    func updateTime(with newTime: Int) {
-        currentTime = newTime
+    func changeTimeUnit() {
+        switch selectedTime {
+        case 0:
+            timeUnit = .year
+        case 1:
+            timeUnit = .month
+        case 2:
+            timeUnit = .weekOfMonth
+        case 3:
+            timeUnit = .day
+        default:
+            break
+        }
+    }
+    
+    func updateDisplayDate() {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX") // Ensure locale consistency
+        formatter.timeZone = TimeZone.current
+        
+        switch selectedTime {
+        case 1: // Month
+            formatter.dateFormat = "MMMM yyyy"
+        case 2: // Week
+            formatter.dateFormat = "MMM d"
+            if let endOfWeek = calendar.date(byAdding: .day, value: 6, to: currentTime) {
+                let endOfWeekFormatted = formatter.string(from: endOfWeek)
+                formatter.dateFormat = "MMM d, yyyy"
+                let startOfWeekFormatted = formatter.string(from: currentTime)
+                displayDate = "\(startOfWeekFormatted) - \(endOfWeekFormatted)"
+                return
+            }
+        case 3: // Day
+            formatter.dateFormat = "MMMM d, yyyy"
+        default:
+            formatter.dateFormat = "yyyy"
+        }
+        displayDate = formatter.string(from: currentTime)
     }
 
-    func updatePartIndex(with newIndex: Int?) {
-        selectedPartIndex = newIndex
-    }
-    
-    func touchTimeSegment() {
-        switch self.selectedTime {
-        case 0:
-            self.currentTime = currentYear
-            self.timeUnit = .year
-        case 1:
-            self.currentTime = currentMonth
-            self.timeUnit = .month
-        case 2:
-            self.currentTime = currentWeekOfMonth
-            self.timeUnit = .weekOfMonth
-        case 3:
-            self.currentTime = currentDay
-            self.timeUnit = .day
-        default:
-            break
-        }
-    }
-    
     func touchReduce() {
-        let currentTime = self.currentTime
-        let newTime = max(currentTime - 1, 1) // 减去1但不小於0
-        self.currentTime = newTime
+        switch selectedTime {
+        case 1: // Month
+            currentTime = calendar.date(byAdding: .month, value: -1, to: currentTime) ?? currentTime
+        case 2: // Week
+            currentTime = calendar.date(byAdding: .weekOfMonth, value: -1, to: currentTime) ?? currentTime
+        case 3: // Day
+            currentTime = calendar.date(byAdding: .day, value: -1, to: currentTime) ?? currentTime
+        default:
+            currentTime = calendar.date(byAdding: .year, value: -1, to: currentTime) ?? currentTime
+        }
+        updateDisplayDate()
+        checkTimeLimit()
     }
     
-    func touchAdd(){
-        var currentWhich = 0
-        switch self.selectedTime{
-        case 0:
-            currentWhich = currentYear
-        case 1:
-            currentWhich = currentMonth
-        case 2:
-            currentWhich = currentWeekOfMonth
-        case 3:
-            currentWhich = currentDay
-        default:
-            break
-        }
+    func touchAdd() {
+        let today = Date()
         
-        let currentTime = Int(self.currentTime)
-        let newTime = currentTime + 1  // Attempt to add 1 to the current time
-        if newTime <= currentWhich {
-            self.currentTime = newTime
-        } else {
-            print("The year cannot exceed the current year.")
-            self.currentTime = currentWhich
+        // 檢查年份、月份、週和日是否超過今天
+        let currentDateComponents = calendar.dateComponents([.year, .month, .day, .weekOfMonth], from: currentTime)
+        let todayComponents = calendar.dateComponents([.year, .month, .day, .weekOfMonth], from: today)
+        
+        if currentDateComponents.year! < todayComponents.year! ||
+            (currentDateComponents.year! == todayComponents.year! && currentDateComponents.month! < todayComponents.month!) ||
+            (currentDateComponents.year! == todayComponents.year! && currentDateComponents.month! == todayComponents.month! && currentDateComponents.day! < todayComponents.day!) {
+            
+            var newDate: Date?
+            switch selectedTime {
+            case 1: // Month
+                newDate = calendar.date(byAdding: .month, value: 1, to: currentTime)
+            case 2: // Week
+                newDate = calendar.date(byAdding: .weekOfMonth, value: 1, to: currentTime)
+            case 3: // Day
+                newDate = calendar.date(byAdding: .day, value: 1, to: currentTime)
+            default: // Year
+                newDate = calendar.date(byAdding: .year, value: 1, to: currentTime)
+            }
+            currentTime = newDate!
+            updateDisplayDate()
+            checkTimeLimit()
         }
+    }
+    
+    func checkTimeLimit(){
+        let today = Date()
+        let currentDateComponents = calendar.dateComponents([.year, .month, .day, .weekOfMonth], from: currentTime)
+        let todayComponents = calendar.dateComponents([.year, .month, .day, .weekOfMonth], from: today)
+        
+//        print("-----")
+//        print("current:", currentTime)
+//        print("today:", todayComponents.year!)
+        
+        switch selectedTime {
+        case 1: // Month
+            if currentDateComponents.year! < todayComponents.year! || (currentDateComponents.year! == todayComponents.year! && currentDateComponents.month! < todayComponents.month!){
+                addTime = true
+            } else{
+                addTime = false
+            }
+        case 2: // Week
+            if currentDateComponents.year! <= todayComponents.year! && currentDateComponents.month! <= todayComponents.month! && currentDateComponents.weekOfMonth! < todayComponents.weekOfMonth!{
+                addTime = true
+            } else{
+                addTime = false
+            }
+        case 3: // Day
+            if currentDateComponents.year! < todayComponents.year! || (currentDateComponents.year! == todayComponents.year! && currentDateComponents.month! < todayComponents.month!) || (currentDateComponents.year! == todayComponents.year! && currentDateComponents.month! == todayComponents.month! && currentDateComponents.day! < todayComponents.day!){
+                addTime = true
+            } else{
+                addTime = false
+            }
+        default: // Year
+            if currentDateComponents.year! < todayComponents.year!{
+                addTime = true
+            } else{
+                addTime = false
+            }
+        }
+//        print("addTime: ", addTime)
     }
     
     func updateAvgScore(){
+        let components = calendar.dateComponents([.year, .month, .weekOfMonth, .day], from: currentTime)
+        let year = components.year ?? 0
+        let month = components.month ?? 0
+        let week = components.weekOfMonth ?? 0
+        let day = components.day ?? 0
+        
         switch self.selectedTime{
         case 0:
-            selectYear = self.currentTime
-            self.averageScore = averageScoreForPeriod(data: lineChartData, year: self.selectYear) ?? 0
+            self.averageScore = averageScoreForPeriod(data: lineChartData, year: year) ?? 0
         case 1:
-            selectMonth = self.currentTime
-            self.averageScore = averageScoreForPeriod(data: lineChartData, year: self.selectYear, month: self.selectMonth) ?? 0
+            self.averageScore = averageScoreForPeriod(data: lineChartData, year: year, month: month) ?? 0
         case 2:
-            selectWeekOfMonth = self.currentTime
-            self.averageScore = averageScoreForPeriod(data: lineChartData, year: self.selectYear, month: self.selectMonth, weekOfMonth: self.selectWeekOfMonth) ?? 0
+            self.averageScore = averageScoreForPeriod(data: lineChartData, year: year, month: month, weekOfMonth: week) ?? 0
         case 3:
-            selectDay = self.currentTime
-            self.averageScore = averageScoreForPeriod(data: lineChartData, year: self.selectYear, month: self.selectMonth, day: self.selectDay) ?? 0
+            self.averageScore = averageScoreForPeriod(data: lineChartData, year: year, month: month, day: day) ?? 0
         default:
             break
         }
@@ -145,26 +203,26 @@ class HistoryModel: ObservableObject{
         let totalScore = filteredScores.reduce(0, +)
         let averageScore = totalScore / Double(filteredScores.count)
         
-        print(averageScore)
+//        print(averageScore)
         return averageScore
     }
     
-    func updateChart(){
+    func updateChartData(){
         switch self.selectedPartIndex {
         case 0:
-            self.pieChartData = self.initPieChartData.filter { $0.title == "Head" }
+            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Head" }
             self.lineChartData = self.initLineChartData.filter { $0.title == "Head" }
         case 1:
-            self.pieChartData = self.initPieChartData.filter { $0.title == "Neck" }
+            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Neck" }
             self.lineChartData = self.initLineChartData.filter { $0.title == "Neck" }
         case 2:
-            self.pieChartData = self.initPieChartData.filter { $0.title == "Shoulder" }
+            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Shoulder" }
             self.lineChartData = self.initLineChartData.filter { $0.title == "Shoulder" }
         case 3:
-            self.pieChartData = self.initPieChartData.filter { $0.title == "Back" }
+            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Back" }
             self.lineChartData = self.initLineChartData.filter { $0.title == "Back" }
         case 4:
-            self.pieChartData = self.initPieChartData.filter { $0.title == "Leg" }
+            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Leg" }
             self.lineChartData = self.initLineChartData.filter { $0.title == "Leg" }
         // Add cases for other body parts
         default:

@@ -11,12 +11,12 @@ import SwiftUI
 struct HistoryView: View {
     
     @StateObject var history: HistoryModel = {
-            let currentYear = Calendar.current.component(.year, from: Date())
-            return HistoryModel(currentTime: currentYear, averageScore: 0, initLineChartData: lineChartData, initPieChartData: pieChartData, timeUnit: .year)
-        }()
-    @State private var selectedPart: String? = nil
+        return HistoryModel(averageScore: 0, initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
+    }()
     @State private var timePeriods = ["Year", "Month", "Week", "Day"]
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
+    @State private var selectedTime = 0
+    @State private var maxTextWidth: CGFloat = 0
     
     init() {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
@@ -27,19 +27,29 @@ struct HistoryView: View {
     var body: some View {
         ScrollView {
             ZStack {
-                BlueBackgroundView() // 覆盖整个顶部的蓝色背景
-                GraySemicircleBackgroundView() // 灰色的半圆形背景
-                VStack(spacing: 20) {
-                        timeSelectionView
-                        currentTime
-                        scoreDisplay
-                        emojiWithScore
-                    
-//                    partsSelection
-//                    trendScoreChart
-//                    accuracyDistributionChart
+                BlueBackgroundView()
+                VStack(spacing: 8) {
+                    timeSelectionView
+                    currentTime
+                    scoreDisplay
+                        .padding(5)
+                    emojiWithScore
+                        .padding()
                 }
+                .background(GraySemicircleBackgroundView())
             }
+            ZStack {
+                VStack(spacing: 30) {
+                    partsSelection
+    //                HistoryLineChart(data: history.lineChartData, timeUnit: history.timeUnit)
+                    HistoryLineChart(lineChart: LineChart(data: history.lineChartData, timeUnit: history.timeUnit))
+                    HistoryPieChart(data: history.pieChartData, timeUnit: history.timeUnit)
+                }
+                .padding()
+            }
+        }
+        .onAppear {
+            history.updateAvgScore()
         }
     }
     
@@ -57,14 +67,14 @@ struct HistoryView: View {
                 let width = geometry.size.width
                 let height = geometry.size.height
                 Path { path in
-                    path.move(to: CGPoint(x: 0, y: height * 0.9))  // 定义半圆的底部起点
-                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: 210), control2: CGPoint(x: 2 * width / 3, y: 210))
+                    path.move(to: CGPoint(x: 0, y: height * 0.85))  // 定义半圆的底部起点
+                    path.addCurve(to: CGPoint(x: width, y: height * 0.85), control1: CGPoint(x: width / 3, y: 225), control2: CGPoint(x: 2 * width / 3, y: 225))
                     path.addLine(to: CGPoint(x: width, y: height))
                     path.addLine(to: CGPoint(x: 0, y: height))
                 }
-                .fill(Color.white)
+                .fill(Color(red: 249/255, green: 249/255, blue: 249/255))
             }
-            .frame(height: 305)  // 根据需要调整高度
+            .frame(height: 333)  // 根据需要调整高度
         }
     }
     
@@ -78,69 +88,96 @@ struct HistoryView: View {
         .background(Color(red: 151/255, green: 181/255, blue: 198/255)) // 设置整个Picker的背景色
         .cornerRadius(7)
         .onChange(of: history.selectedTime) { _, _ in
-            history.touchTimeSegment()
+            history.updateDisplayDate()
             history.updateAvgScore()
+            history.changeTimeUnit()
+            history.checkTimeLimit()
         }
+        .padding()
     }
     
-    var currentTime: some View{
+    var currentTime: some View {
         HStack {
+            Spacer()
+            
             Button {
                 history.touchReduce()
+                history.updateAvgScore()
             } label: {
                 Image(systemName: "chevron.left")
                     .foregroundColor(.white)
                     .imageScale(.large)
             }
-//            .padding(.horizontal)
+//            .frame(width: maxTextWidth)
             
-            Text("\(history.currentTime)")
-                .font(.title)
+            Text("\(history.displayDate)")
+                .font(.title3)
                 .foregroundStyle(Color.white)
             
             Button {
                 history.touchAdd()
+                history.updateAvgScore()
             } label: {
                 Image(systemName: "chevron.right")
                     .foregroundColor(.white)
                     .imageScale(.large)
+                    .opacity(history.addTime == true ? 1.0 : 0.5)
             }
-//            .padding(.horizontal)
+//            .frame(width: maxTextWidth)
+            
+            Spacer()
         }
     }
     
-    var scoreDisplay: some View{
+    var scoreDisplay: some View {
         Text("\(Int(history.averageScore))")
             .font(.system(size: 100))
             .bold()
             .foregroundStyle(Color.white)
     }
     
-    var emojiWithScore: some View{
-        Image("good")
+    var emojiWithScore: some View {
+        if history.averageScore < 60{
+            Image("bad")
+        }
+        else if history.averageScore < 80{
+            Image("not good")
+        }
+        else{
+            Image("good")
+        }
     }
     
-}
-
-struct HalfCircleBackgroundView: View {
-    var body: some View {
-        GeometryReader { geometry in
-            Path { path in
-                let width = geometry.size.width
-                let height = geometry.size.height
-                path.move(to: CGPoint(x: 0, y: height))
-                path.addQuadCurve(to: CGPoint(x: width, y: height), control: CGPoint(x: width / 2, y: 0))
+    var partsSelection: some View {
+        VStack(spacing: 10) {
+            Text(history.selectedPartIndex == nil ? "All Body Parts" : parts[history.selectedPartIndex!])
+                .font(.title3)
+                .foregroundStyle(Color.gray)
+                .bold()
+            HStack(spacing: 6) {
+                ForEach(parts.indices, id: \.self) { index in
+                    Button(action: {
+                        if(history.selectedPartIndex == index){
+                            history.selectedPartIndex = nil
+                        }else{
+                            history.selectedPartIndex = index  // Update selected index on tap
+                        }
+                        history.updateChartData()
+                        history.updateAvgScore()
+                    }) {
+                        Image(parts[index])  // Assume image names match the parts array
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 45, height: 45)
+                            .padding(7)
+                            .background(Circle().fill(Color(red: 178/255, green: 206/255, blue: 222/255)))
+                            .opacity(history.selectedPartIndex == nil ? 1.0 : (history.selectedPartIndex == index ? 1.0 : 0.5))
+                    }
+                }
             }
-            .fill(
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.clear]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
         }
-        .frame(height: 300) // 根据需要调整高度
     }
+    
 }
 
 struct HistoryView_Previews: PreviewProvider {

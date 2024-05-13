@@ -20,14 +20,14 @@ struct ContentView: View {
 //            Color.gray.edgesIgnoringSafeArea(.all) // 设置整个视图的背景颜色为白色
             TabView(selection: $selection) {
                 HomeView()
-                    .background(Color.clear)
+                    .background(Color(red: 249/255, green: 249/255, blue: 249/255))
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }
                     .tag(0)
                     
                 HistoryView()
-                    .background(Color.gray)
+                    .background(Color(red: 249/255, green: 249/255, blue: 249/255))
                     .tabItem {
                         Label("History", systemImage: "clock.arrow.circlepath")
                     }

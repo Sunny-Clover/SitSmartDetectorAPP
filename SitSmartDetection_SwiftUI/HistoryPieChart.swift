@@ -152,48 +152,58 @@ struct HistoryPieChart: View {
     @State private var selectedRatioData: RatioData? = nil
     
     var body: some View {
-        Chart {
-            ForEach(aggregateData()) { series in
-                ForEach(series.ratios, id: \.id) { ratioData in
-                    SectorMark(
-                        angle: .value(ratioData.title, ratioData.ratio),
-                        innerRadius: .ratio(0.6),
-                        angularInset: 8
-                    )
-                    .foregroundStyle(ratioData.color)
-                    .opacity(selectedRatioData == nil || selectedRatioData?.id == ratioData.id ? 1.0 : 0.3)
-                }
+        VStack(spacing: 25){
+            HStack {
+                Text("Accuracy Distribution")
+                    .foregroundStyle(Color.gray)
+                    .bold()
+                Spacer()
             }
-        }
-        .chartAngleSelection(value: $angleValue)
-        .chartBackground { _ in
-            Group {
-                if let selectedRatioData = selectedRatioData {
-                    VStack {
-//                        Text(selectedRatioData.title)
-                        Text("\(selectedRatioData.ratio, specifier: "%.2f")%")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-//                        Text("Ratio: \(selectedRatioData.ratio, specifier: "%.2f")%")
-                        Text(selectedRatioData.title)
-                            .foregroundColor(.secondary)
-                            .font(.caption)
+            Chart {
+                ForEach(aggregateData()) { series in
+                    ForEach(series.ratios, id: \.id) { ratioData in
+                        SectorMark(
+                            angle: .value(ratioData.title, ratioData.ratio),
+                            innerRadius: .ratio(0.6),
+                            angularInset: 8
+                        )
+                        .foregroundStyle(ratioData.color)
+                        .opacity(selectedRatioData == nil || selectedRatioData?.id == ratioData.id ? 1.0 : 0.3)
                     }
-                } else {
-                    Text("Select a category")
-                        .foregroundColor(.secondary)
-                        .font(.system(size: 12))
                 }
             }
-        }
-        .onChange(of: angleValue) { _, _ in
-            withAnimation {
-                selectedRatioData = findSelectedRatioData(from: angleValue)
+            .frame(height: 200)
+            .shadow(radius: 5)
+            .chartAngleSelection(value: $angleValue)
+            .chartBackground { _ in
+                Group {
+                    if let selectedRatioData = selectedRatioData {
+                        VStack {
+                            //                        Text(selectedRatioData.title)
+                            Text("\(selectedRatioData.ratio, specifier: "%.2f")%")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            //                        Text("Ratio: \(selectedRatioData.ratio, specifier: "%.2f")%")
+                            Text(selectedRatioData.title)
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    } else {
+                        Text("Select a category")
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 12))
+                    }
+                }
             }
+            .onChange(of: angleValue) { _, _ in
+                withAnimation {
+                    selectedRatioData = findSelectedRatioData(from: angleValue)
+                }
+            }
+            
+            // Legend for the pie chart
+            legend
         }
-        
-        // Legend for the pie chart
-        legend
     }
     
     private var legend: some View {
