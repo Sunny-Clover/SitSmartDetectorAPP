@@ -25,9 +25,10 @@ struct HistoryView: View {
     }
 
     var body: some View {
-        ScrollView {
-            ZStack {
-                BlueBackgroundView()
+        ZStack {
+            Color(red: 178/255, green: 206/255, blue: 222/255)
+                .ignoresSafeArea()
+            ScrollView {
                 VStack(spacing: 8) {
                     timeSelectionView
                     currentTime
@@ -37,8 +38,7 @@ struct HistoryView: View {
                         .padding()
                 }
                 .background(GraySemicircleBackgroundView())
-            }
-            ZStack {
+
                 VStack(spacing: 30) {
                     partsSelection
     //                HistoryLineChart(data: history.lineChartData, timeUnit: history.timeUnit)
@@ -46,18 +46,11 @@ struct HistoryView: View {
                     HistoryPieChart(data: history.pieChartData, timeUnit: history.timeUnit)
                 }
                 .padding()
+                .background(Color(red: 249/255, green: 249/255, blue: 249/255))
             }
         }
         .onAppear {
             history.updateAvgScore()
-        }
-    }
-    
-    struct BlueBackgroundView: View {
-        var body: some View {
-            Rectangle()
-                .foregroundColor(Color(red: 178/255, green: 206/255, blue: 222/255))
-                .edgesIgnoringSafeArea(.all)  // 使蓝色背景填满整个屏幕顶部
         }
     }
     
@@ -74,7 +67,7 @@ struct HistoryView: View {
                 }
                 .fill(Color(red: 249/255, green: 249/255, blue: 249/255))
             }
-            .frame(height: 333)  // 根据需要调整高度
+            .frame(height: 350)  // 根据需要调整高度
         }
     }
     
@@ -149,7 +142,7 @@ struct HistoryView: View {
     }
     
     var partsSelection: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 13) {
             Text(history.selectedPartIndex == nil ? "All Body Parts" : parts[history.selectedPartIndex!])
                 .font(.title3)
                 .foregroundStyle(Color.gray)

@@ -12,6 +12,7 @@
 		1583831F2BE68ED3001FEE73 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1583831E2BE68ED3001FEE73 /* Assets.xcassets */; };
 		158383222BE68ED3001FEE73 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 158383212BE68ED3001FEE73 /* Preview Assets.xcassets */; };
 		158383292BE69CCA001FEE73 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158383282BE69CCA001FEE73 /* HistoryView.swift */; };
+		15B537D82BF2822100D2A557 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B537D72BF2822100D2A557 /* HomeView.swift */; };
 		15EBFBFD2BF0B2A9009E76AF /* HistoryClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFBFC2BF0B2A9009E76AF /* HistoryClass.swift */; };
 		15EBFBFF2BF0B325009E76AF /* HistoryPieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFBFE2BF0B325009E76AF /* HistoryPieChart.swift */; };
 		15EBFC012BF0B342009E76AF /* HistoryLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */; };
@@ -33,6 +34,7 @@
 		1583831E2BE68ED3001FEE73 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		158383212BE68ED3001FEE73 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		158383282BE69CCA001FEE73 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		15B537D72BF2822100D2A557 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		15EBFBFC2BF0B2A9009E76AF /* HistoryClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryClass.swift; sourceTree = "<group>"; };
 		15EBFBFE2BF0B325009E76AF /* HistoryPieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPieChart.swift; sourceTree = "<group>"; };
 		15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryLineChart.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				632182682BF13343000BCED0 /* GoogleService-Info.plist */,
 				1583831A2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift */,
 				1583831C2BE68ED2001FEE73 /* ContentView.swift */,
+				15B537D72BF2822100D2A557 /* HomeView.swift */,
 				15EBFC022BF0B35C009E76AF /* HistoryLineChartData.swift */,
 				15EBFC042BF0B377009E76AF /* HistoryPieChartData.swift */,
 				158383282BE69CCA001FEE73 /* HistoryView.swift */,
@@ -190,6 +193,7 @@
 				15EBFC032BF0B35C009E76AF /* HistoryLineChartData.swift in Sources */,
 				6321825E2BF0ED2E000BCED0 /* CameraManger.swift in Sources */,
 				158383292BE69CCA001FEE73 /* HistoryView.swift in Sources */,
+				15B537D82BF2822100D2A557 /* HomeView.swift in Sources */,
 				15EBFC012BF0B342009E76AF /* HistoryLineChart.swift in Sources */,
 				1583831B2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift in Sources */,
 				15EBFBFF2BF0B325009E76AF /* HistoryPieChart.swift in Sources */,
@@ -326,7 +330,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SitSmartDetection_SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = A5Z78GSVQ8;
+				DEVELOPMENT_TEAM = U8AADC9849;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for detection";
@@ -356,7 +360,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SitSmartDetection_SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = A5Z78GSVQ8;
+				DEVELOPMENT_TEAM = U8AADC9849;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for detection";
