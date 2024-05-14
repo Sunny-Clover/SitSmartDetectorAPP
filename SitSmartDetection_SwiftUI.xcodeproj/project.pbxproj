@@ -25,7 +25,7 @@
 		632182672BF12AFB000BCED0 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 632182662BF12AFB000BCED0 /* FirebaseStorage */; };
 		632182692BF13343000BCED0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 632182682BF13343000BCED0 /* GoogleService-Info.plist */; };
 		6321826B2BF2780A000BCED0 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6321826A2BF2780A000BCED0 /* SignupView.swift */; };
-		6321826D2BF2781B000BCED0 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6321826C2BF2781B000BCED0 /* LoginView.swift */; };
+		6321826D2BF2781B000BCED0 /* SigninView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6321826C2BF2781B000BCED0 /* SigninView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +45,7 @@
 		6321825D2BF0ED2E000BCED0 /* CameraManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManger.swift; sourceTree = "<group>"; };
 		632182682BF13343000BCED0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6321826A2BF2780A000BCED0 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
-		6321826C2BF2781B000BCED0 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		6321826C2BF2781B000BCED0 /* SigninView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +94,7 @@
 				6321825B2BF0E593000BCED0 /* DetectionResultData.swift */,
 				6321825D2BF0ED2E000BCED0 /* CameraManger.swift */,
 				6321826A2BF2780A000BCED0 /* SignupView.swift */,
-				6321826C2BF2781B000BCED0 /* LoginView.swift */,
+				6321826C2BF2781B000BCED0 /* SigninView.swift */,
 				1583831E2BE68ED3001FEE73 /* Assets.xcassets */,
 				158383202BE68ED3001FEE73 /* Preview Content */,
 			);
@@ -198,7 +198,7 @@
 				6321825E2BF0ED2E000BCED0 /* CameraManger.swift in Sources */,
 				158383292BE69CCA001FEE73 /* HistoryView.swift in Sources */,
 				15EBFC012BF0B342009E76AF /* HistoryLineChart.swift in Sources */,
-				6321826D2BF2781B000BCED0 /* LoginView.swift in Sources */,
+				6321826D2BF2781B000BCED0 /* SigninView.swift in Sources */,
 				1583831B2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift in Sources */,
 				15EBFBFF2BF0B325009E76AF /* HistoryPieChart.swift in Sources */,
 			);

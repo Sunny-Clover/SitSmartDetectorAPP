@@ -1,5 +1,5 @@
 //
-//  SignupView.swift
+//  LoginView.swift
 //  SitSmartDetection_SwiftUI
 //
 //  Created by 林君曆 on 2024/5/14.
@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-struct SignupView: View {
+struct SigninView: View {
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var password_confirmation: String = ""
-    
+    @State private var showPassword: Bool = false
     
     var body: some View {
         VStack(spacing:20) {
@@ -23,11 +22,11 @@ struct SignupView: View {
                 Image("AppIconVector").padding(.top)
             }.edgesIgnoringSafeArea(.top) // 忽略頂部安全區域
             // label about sign up
-            Text("Sign Up for free")
+            Text("Sign In")
                 .fontWeight(.bold)
                 .font(.title)
                 .foregroundStyle(.deepAccent)
-            // signup form
+            // signin form
             VStack(alignment: .leading){
                 // Email textfield
                 Text("Email Address").fontWeight(.bold).foregroundColor(.deepAccent)
@@ -48,51 +47,40 @@ struct SignupView: View {
                 Text("Password").fontWeight(.bold).foregroundColor(.deepAccent)
                 HStack {
                     Image(systemName: "lock")
-                    TextField("Enter your password", text: $password)
+                    if showPassword {
+                        TextField("Enter your password", text: $password)
+                    } else {
+                        SecureField("Enter your password", text: $password)
+                    }
                     
                     Spacer()
+                    
+                    Button {
+                        showPassword.toggle()
+                    } label: {
+                        if showPassword{
+                            Image(systemName: "eye.fill")
+                                .foregroundColor(.gray)
+                        }else{
+                            Image(systemName: "eye.slash.fill")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
                 }
+                // .frame(width:300, height: 50) // test
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 40)
                         .stroke(lineWidth: 1)
                         .foregroundColor(.sysYellow)
                 )
-                // Password confirmation
-                Text("Password Confirmation").fontWeight(.bold).foregroundColor(.deepAccent)
-                HStack {
-                    Image(systemName: "lock")
-                    TextField("Confirm your password", text: $password_confirmation)
-                    
-                    Spacer()
-                }
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 40)
-                        .stroke(lineWidth: 1)
-                        .foregroundColor(.sysYellow)
-                )
-                
-                // SignUp bottom
+                // SignIn bottom
                 Button {
-                    // TODO: action to create account on firebase
-//                    Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-//                        if let error = error {
-//                            print(error)
-//                            return
-//                        }
-//    
-//                        if let authResult = authResult {
-//                            print(authResult.user.uid)
-//                            withAnimation {
-//                                userID = authResult.user.uid
-//                            }
-//                        }
-//    
-//    
-//                    }
+                    // TODO: action to sign in account on firebase
+
                 } label: {
-                    Text("Sign Up ")
+                    Text("Sign In ")
                         .foregroundColor(.white)
                         .font(.title3)
                         .bold()
@@ -107,20 +95,30 @@ struct SignupView: View {
                 }.padding(.vertical)
             }.frame(width:343)
             
+            // google and facebook link to account
             
-            // section to jump to the signin view
-            HStack {
-                Text("Already have an account?")
+            
+            // section to jump to the signup and forgot password view
+            VStack {
+                HStack {
+                    Text("Don’t have an account?")
+                    Button(action: {
+                        // TODO: link to sign up view
+                    }, label: {
+                        Text("Sign Up")
+                            .fontWeight(.bold)
+                            .foregroundColor(.sysYellow)
+                    })
+                }
                 Button(action: {
-                    // TODO: link to sign in view
+                    // TODO: link to forget password action
                 }, label: {
-                    Text("Sign In")
+                    Text("Forgot password")
                         .fontWeight(.bold)
                         .foregroundColor(.sysYellow)
                 })
             }
-            
-
+    
             Spacer()
         }
         
@@ -128,23 +126,5 @@ struct SignupView: View {
 }
 
 #Preview {
-    SignupView()
-}
-
-
-struct CurvedBottomRectangle: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-
-        // 繪製直線部分
-        path.move(to: CGPoint(x: rect.minX, y: rect.minY)) // 起始點
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY)) // 最上面的橫線
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - 38)) // 預留曲線部分的高度
-
-        // 繪製曲線部分
-        let controlPoint1 = CGPoint(x: rect.midX+40, y: rect.maxY+10)
-        let controlPoint2 = CGPoint(x: rect.midX-40, y: rect.maxY+10)
-        path.addCurve(to: CGPoint(x: rect.minX, y: rect.maxY - 38), control1: controlPoint1, control2: controlPoint2)
-        return path
-    }
+    SigninView()
 }
