@@ -6,12 +6,27 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct SignupView: View {
+    @Binding var currentShowingView: String
+    @AppStorage("uid") var userID: String = ""
+
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var password_confirmation: String = ""
+    @State private var showPassword: Bool = false
+    @State private var showConfirmPassword: Bool = false
     
+    private func isValidPassword(_ password: String) -> Bool {
+        // minimum 6 characters long
+        // 1 uppercase character
+        // 1 special char
+        
+        let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[$@$#!%*?&])(?=.*[A-Z]).{6,}$")
+        
+        return passwordRegex.evaluate(with: password)
+    }
     
     var body: some View {
         VStack(spacing:20) {
@@ -48,9 +63,14 @@ struct SignupView: View {
                 Text("Password").fontWeight(.bold).foregroundColor(.deepAccent)
                 HStack {
                     Image(systemName: "lock")
-                    TextField("Enter your password", text: $password)
+                    if showPassword{
+                        TextField("Enter your password", text: $password).frame(minHeight:25)
+                    }else{
+                        SecureField("Enter your password", text: $password).frame(minHeight:25)
+                    }
                     
                     Spacer()
+                    ShowHideToggleButton(condition: $showPassword)
                 }
                 .padding()
                 .overlay(
@@ -62,9 +82,14 @@ struct SignupView: View {
                 Text("Password Confirmation").fontWeight(.bold).foregroundColor(.deepAccent)
                 HStack {
                     Image(systemName: "lock")
-                    TextField("Confirm your password", text: $password_confirmation)
+                    if showConfirmPassword{
+                        TextField("Confirm your password", text: $password_confirmation).frame(minHeight:25)
+                    }else{
+                        SecureField("Confirm your password", text: $password_confirmation).frame(minHeight:25)
+                    }
                     
                     Spacer()
+                    ShowHideToggleButton(condition: $showConfirmPassword)
                 }
                 .padding()
                 .overlay(
@@ -76,21 +101,19 @@ struct SignupView: View {
                 // SignUp bottom
                 Button {
                     // TODO: action to create account on firebase
-//                    Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-//                        if let error = error {
-//                            print(error)
-//                            return
-//                        }
-//    
-//                        if let authResult = authResult {
-//                            print(authResult.user.uid)
-//                            withAnimation {
-//                                userID = authResult.user.uid
-//                            }
-//                        }
-//    
-//    
-//                    }
+                    Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+                        
+                        if let error = error {
+                            print(error)
+                            return
+                        }
+                        
+                        if let authResult = authResult {
+                            print(authResult.user.uid)
+                            userID = authResult.user.uid
+                            
+                        }
+                    }
                 } label: {
                     Text("Sign Up ")
                         .foregroundColor(.white)
@@ -113,11 +136,14 @@ struct SignupView: View {
                 Text("Already have an account?")
                 Button(action: {
                     // TODO: link to sign in view
-                }, label: {
+                    withAnimation{
+                        self.currentShowingView = "signin"
+                    }
+                }){
                     Text("Sign In")
                         .fontWeight(.bold)
                         .foregroundColor(.sysYellow)
-                })
+                }
             }
             
 
@@ -127,10 +153,27 @@ struct SignupView: View {
     }
 }
 
-#Preview {
-    SignupView()
-}
 
+//struct SignupView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        @State var currentViewShowing: String = "signup"
+//        SignupView(currentShowingView: currentViewShowing)
+//    }
+//}
+
+
+struct ShowHideToggleButton: View {
+    @Binding var condition: Bool
+
+    var body: some View {
+        Button {
+            condition.toggle()
+        } label: {
+            Image(systemName: condition ? "eye.fill" : "eye.slash.fill")
+                .foregroundColor(.gray)
+        }
+    }
+}
 
 struct CurvedBottomRectangle: Shape {
     func path(in rect: CGRect) -> Path {

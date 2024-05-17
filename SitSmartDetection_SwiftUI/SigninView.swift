@@ -6,11 +6,26 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct SigninView: View {
+    @Binding var currentShowingView: String
+    @AppStorage("uid") var userID: String = ""
+    
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var showPassword: Bool = false
+    
+    
+    private func isValidPassword(_ password: String) -> Bool {
+        // minimum 6 characters long
+        // 1 uppercase character
+        // 1 special char
+        
+        let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[$@$#!%*?&])(?=.*[A-Z]).{6,}$")
+        
+        return passwordRegex.evaluate(with: password)
+    }
     
     var body: some View {
         VStack(spacing:20) {
@@ -32,7 +47,7 @@ struct SigninView: View {
                 Text("Email Address").fontWeight(.bold).foregroundColor(.deepAccent)
                 HStack {
                     Image(systemName: "mail")
-                    TextField("Enter your email", text: $email)
+                    TextField("Enter your email", text: $email).frame(minHeight: 25)
                     
                     Spacer()
                 }
@@ -48,27 +63,17 @@ struct SigninView: View {
                 HStack {
                     Image(systemName: "lock")
                     if showPassword {
-                        TextField("Enter your password", text: $password)
+                        TextField("Enter your password", text: $password).frame(minHeight: 25)
+                            // fix the text field
                     } else {
-                        SecureField("Enter your password", text: $password)
+                        SecureField("Enter your password", text: $password).frame(minHeight: 25)
                     }
                     
                     Spacer()
                     
-                    Button {
-                        showPassword.toggle()
-                    } label: {
-                        if showPassword{
-                            Image(systemName: "eye.fill")
-                                .foregroundColor(.gray)
-                        }else{
-                            Image(systemName: "eye.slash.fill")
-                                .foregroundColor(.gray)
-                        }
-                    }
+                    ShowHideToggleButton(condition: $showPassword)
                     
                 }
-                // .frame(width:300, height: 50) // test
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 40)
@@ -78,9 +83,23 @@ struct SigninView: View {
                 // SignIn bottom
                 Button {
                     // TODO: action to sign in account on firebase
+                    Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+                         if let error = error {
+                             // print(error)
+                             print(error.localizedDescription)
+                             return
+                         }
+                         
+                         if let authResult = authResult {
+                             print(authResult.user.uid)
+                             withAnimation {
+                                 userID = authResult.user.uid
+                             }
+                         }
+                     }
 
                 } label: {
-                    Text("Sign In ")
+                    Text("Sign In")
                         .foregroundColor(.white)
                         .font(.title3)
                         .bold()
@@ -104,6 +123,9 @@ struct SigninView: View {
                     Text("Don’t have an account?")
                     Button(action: {
                         // TODO: link to sign up view
+                        withAnimation{
+                            self.currentShowingView = "signup"
+                        }
                     }, label: {
                         Text("Sign Up")
                             .fontWeight(.bold)
@@ -125,6 +147,3 @@ struct SigninView: View {
     }
 }
 
-#Preview {
-    SigninView()
-}

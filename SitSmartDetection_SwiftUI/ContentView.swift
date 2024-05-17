@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct ContentView: View {
-    
+    @AppStorage("uid") var userID: String = ""
     @State private var selection = 0
     
     init(){
@@ -16,45 +17,52 @@ struct ContentView: View {
     }
 
     var body: some View {
-        ZStack {
-//            Color.gray.edgesIgnoringSafeArea(.all) // 设置整个视图的背景颜色为白色
-            TabView(selection: $selection) {
-                HomeView()
-                    .background(Color(red: 249/255, green: 249/255, blue: 249/255))
-                    .tabItem {
-                        Label("Home", systemImage: "house")
-                    }
-                    .tag(0)
+        if userID == "" {
+            AuthView()
+        } else {
+            
+            ZStack {
+                //            Color.gray.edgesIgnoringSafeArea(.all) // 设置整个视图的背景颜色为白色
+                TabView(selection: $selection) {
+                    HomeView()
+                        .background(Color(red: 249/255, green: 249/255, blue: 249/255))
+                        .tabItem {
+                            Label("Home", systemImage: "house")
+                        }
+                        .tag(0)
                     
-                HistoryView()
-                    .background(Color(red: 249/255, green: 249/255, blue: 249/255))
-                    .tabItem {
-                        Label("History", systemImage: "clock.arrow.circlepath")
-                    }
-                    .tag(1)
-                
-                DetectionView()
-                    .background(Color.clear)
-                    .tabItem {
-                        Label("Play", systemImage: "play.circle.fill")
-                    }
-                    .tag(2)
+                    HistoryView()
+                        .background(Color(red: 249/255, green: 249/255, blue: 249/255))
+                        .tabItem {
+                            Label("History", systemImage: "clock.arrow.circlepath")
+                        }
+                        .tag(1)
                     
-                FriendsView()
-                    .background(Color.clear)
-                    .tabItem {
-                        Label("Friends", systemImage: "person.2")
-                    }
-                    .tag(3)
+                    DetectionView()
+                        .background(Color.clear)
+                        .tabItem {
+                            Label("Play", systemImage: "play.circle.fill")
+                        }
+                        .tag(2)
                     
-                ProfileView()
-                    .background(Color.clear)
-                    .tabItem {
-                        Label("Profile", systemImage: "person.crop.circle")
-                    }
-                    .tag(4)
+                    FriendsView()
+                        .background(Color.clear)
+                        .tabItem {
+                            Label("Friends", systemImage: "person.2")
+                        }
+                        .tag(3)
+                    
+                    ProfileView()
+                        .background(Color.clear)
+                        .tabItem {
+                            Label("Profile", systemImage: "person.crop.circle")
+                        }
+                        .tag(4)
+                }
+                .background(Color.white)
+            
             }
-            .background(Color.white)
+
         }
     }
 }
@@ -65,17 +73,6 @@ struct HomeView: View {
     }
 }
 
-//struct HistoryView: View {
-//    var body: some View {
-//        Text("History Screen")
-//    }
-//}
-
-//struct PlayView: View {
-//    var body: some View {
-//        Text("Play Screen")
-//    }
-//}
 
 struct FriendsView: View {
     var body: some View {
@@ -83,11 +80,11 @@ struct FriendsView: View {
     }
 }
 
-struct ProfileView: View {
-    var body: some View {
-        Text("Profile Screen")
-    }
-}
+//struct ProfileView: View {
+//    var body: some View {
+//        Text("Profile Screen")
+//    }
+//}
 
 // MARK: - Preview Providers
 struct ContentView_Previews: PreviewProvider {
