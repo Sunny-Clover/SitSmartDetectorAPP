@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+var StatCard_Width = UIScreen.main.bounds.width * 0.44
+var StatCard_Height = UIScreen.main.bounds.width * 0.4
+
 struct HomeView: View {
     var body: some View {
         ZStack {
@@ -41,6 +44,7 @@ struct HeaderView: View {
                 Spacer()
                 Text("Lv.2")
                     .foregroundStyle(.white)
+                    .bold()
             }
             .padding()
             Spacer()
@@ -71,92 +75,109 @@ struct StatCardsView: View {
 struct AverageScore: View {
     var body: some View {
         VStack(alignment: .center) {
-            Text("Average Score")
-                .font(.title3)
-                .foregroundColor(.white)
-                .bold()
+            HStack {
+                Image(systemName: "deskclock.fill")
+                    .frame(width: 11)
+                    .foregroundStyle(.white)
+
+                Text("Average Score")
+                    .font(.system(size: 17))
+//                    .dynamicTypeSize(..<DynamicTypeSize.accessibility1)
+                    .foregroundColor(.white)
+                    .bold()
+            }
+            Spacer()
             Text("89")
                 .font(.system(size: 60))
                 .foregroundColor(.white)
                 .fontWeight(.bold)
+            Spacer()
             Text("Better than 86% of users")
-                .font(.subheadline)
+                .font(.system(size: 11))
                 .foregroundColor(.white)
         }
         .padding()
+        .frame(width: StatCard_Width, height: StatCard_Height)
         .background(.accent)
         .cornerRadius(10)
         .shadow(radius: 3)
-        .frame(width: UIScreen.main.bounds.width * 0.45, height: UIScreen.main.bounds.width * 0.4)
+        
     }
 }
 
 struct TotalTime: View {
     var body: some View {
-        VStack(alignment: .center) {
-            Text("Total Time")
-                .font(.title3)
-                .foregroundColor(.white)
-                .bold()
-            Text("662.5")
-                .font(.system(size: 49))
-                .foregroundColor(.white)
-                .fontWeight(.bold)
-            Text("hr")
-                .font(.subheadline)
-                .foregroundColor(.white)
-            Text("All Correct")
-                .font(.subheadline)
-                .foregroundColor(.white)
-        }
-        .padding()
-        .background(.accent)
-        .cornerRadius(10)
-        .shadow(radius: 3)
-        .frame(width: UIScreen.main.bounds.width * 0.45, height: UIScreen.main.bounds.width * 0.4)
+        HomeView_PieChart(data: home_allPartPieChartData, StatCard_Width: StatCard_Width)
+            .padding()
+            .frame(width: StatCard_Width, height: StatCard_Height)
+            .background(.accent)
+            .cornerRadius(10)
+            .shadow(radius: 3)
     }
 }
 
 struct Level: View {
     var body: some View {
         VStack(alignment: .center) {
-            Text("Level")
-                .font(.title3)
-                .foregroundColor(.white)
-                .bold()
+            HStack {
+                Image(systemName: "star.fill")
+                    .foregroundStyle(.white)
+                Spacer()
+                Text("Level")
+                    .font(.title3)
+                    .foregroundColor(.white)
+                    .bold()
+                Spacer()
+                Image(systemName: "questionmark.circle.fill")
+                    .foregroundStyle(.white)
+                    .opacity(0.8)
+            }
+            Spacer()
             Text("2")
-                .font(.system(size: 49))
+                .font(.system(size: 70))
                 .foregroundColor(.white)
                 .fontWeight(.bold)
+            Spacer()
         }
         .padding()
+        .frame(width: StatCard_Width, height: StatCard_Height)
         .background(.accent)
         .cornerRadius(10)
         .shadow(radius: 3)
-        .frame(width: UIScreen.main.bounds.width * 0.45, height: UIScreen.main.bounds.width * 0.4)
     }
 }
 
 struct ReachedGoal: View {
     var body: some View {
         VStack(alignment: .center) {
-            Text("Reached Goal")
-                .font(.title3)
-                .foregroundColor(.white)
-                .bold()
-            Text("6/10")
-                .font(.system(size: 60))
-                .foregroundColor(.white)
-                .fontWeight(.bold)
+            HStack {
+                Image(systemName: "flag.fill")
+                    .foregroundStyle(.white)
+                Text("Reached Goal")
+                    .font(.system(size: 17))
+                    .foregroundColor(.white)
+                    .bold()
+            }
+            Spacer()
+            HStack {
+                Text("6")
+                    .font(.system(size: 60))
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+                Text("/10")
+                    .font(.system(size: 30))
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+            }
             Text("Times")
                 .font(.subheadline)
                 .foregroundColor(.white)
         }
         .padding()
+        .frame(width: StatCard_Width, height: StatCard_Height)
         .background(.accent)
         .cornerRadius(10)
         .shadow(radius: 3)
-        .frame(width: UIScreen.main.bounds.width * 0.45, height: UIScreen.main.bounds.width * 0.4)
     }
 }
 

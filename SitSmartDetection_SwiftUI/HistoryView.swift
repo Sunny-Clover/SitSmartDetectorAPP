@@ -83,7 +83,7 @@ struct HistoryView: View {
         .onChange(of: history.selectedTime) { _, _ in
             history.updateDisplayDate()
             history.updateAvgScore()
-            history.changeTimeUnit()
+            history.changeTimeUnit_N_currentTimeTextWidth()
             history.checkTimeLimit()
         }
         .padding()
@@ -106,6 +106,7 @@ struct HistoryView: View {
             Text("\(history.displayDate)")
                 .font(.title3)
                 .foregroundStyle(Color.white)
+                .frame(width: history.currentTimeTextWidth)
             
             Button {
                 history.touchAdd()
