@@ -222,64 +222,84 @@ struct HistoryPieChart: View {
         }
         .padding(.horizontal)
     }
-    
+
     private func aggregateData() -> [PieDataSeries] {
-          let calendar = Calendar.current
-          var aggregatedData = [Date: [RatioData]]()
-
-          for series in data {
-              for ratio in series.ratios {
-                  let startDate = calendar.dateInterval(of: timeUnit, for: ratio.day)?.start ?? ratio.day
-                  aggregatedData[startDate, default: []].append(ratio)
-              }
-          }
-
-          return aggregatedData.map { date, ratios in
-              PieDataSeries(
-                  title: "Aggregated for \(date.formatted())",
-                  ratios: ratios
-  //                color: Color(uiColor: UIColor.systemBlue)  // Use a default system color or derive as needed
-              )
-          }
-      }
-    
-    
-//    private func aggregateData() -> [PieDataSeries] {
-//        var aggregatedRatios: [String: (totalRatio: Double, uiColor: UIColor)] = [:]
-//
-//        for series in data {
-//            for ratio in series.ratios {
-//                if let existing = aggregatedRatios[ratio.title] {
-//                    aggregatedRatios[ratio.title] = (existing.totalRatio + ratio.ratio, existing.uiColor)
-//                } else {
-//                    aggregatedRatios[ratio.title] = (ratio.ratio, ratio.uiColor)
-//                }
-//            }
-//        }
-//
-//        let aggregatedData = aggregatedRatios.map { (title, details) in
-//            RatioData(title: title, day: Date(), ratio: details.totalRatio, uiColor: details.uiColor)
-//        }
-//
-//        return [PieDataSeries(title: "Aggregated Ratios", ratios: aggregatedData)]
-//    }
-
-    
-    private func findSelectedRatioData(from angle: Double?) -> RatioData? {
-        guard let angle = angle else { return nil }
-        let total = data.flatMap { $0.ratios }.reduce(0) { $0 + $1.ratio }
-        var cumulative = 0.0
+        let calendar = Calendar.current
+        var aggregatedData = [Date: [RatioData]]()
 
         for series in data {
             for ratio in series.ratios {
-                cumulative += ratio.ratio
-                if cumulative / total >= angle {
+                let startDate: Date
+                switch timeUnit {
+                case .day:
+                    startDate = calendar.startOfDay(for: ratio.day) // 按天聚合，即每天的数据独立处理
+                default:
+                    startDate = calendar.dateInterval(of: timeUnit, for: ratio.day)?.start ?? ratio.day
+                }
+                aggregatedData[startDate, default: []].append(ratio)
+            }
+        }
+
+        return aggregatedData.map { date, ratios in
+            PieDataSeries(
+                title: "Aggregated for \(date.formatted())",
+                ratios: ratios
+            )
+        }
+    }
+
+//    private func aggregateData() -> [PieDataSeries] {
+//          let calendar = Calendar.current
+//          var aggregatedData = [Date: [RatioData]]()
+//
+//          for series in data {
+//              for ratio in series.ratios {
+//                  let startDate = calendar.dateInterval(of: timeUnit, for: ratio.day)?.start ?? ratio.day
+//                  aggregatedData[startDate, default: []].append(ratio)
+//              }
+//          }
+//
+//          return aggregatedData.map { date, ratios in
+//              PieDataSeries(
+//                  title: "Aggregated for \(date.formatted())",
+//                  ratios: ratios
+//  //                color: Color(uiColor: UIColor.systemBlue)  // Use a default system color or derive as needed
+//              )
+//          }
+//      }
+
+    private func findSelectedRatioData(from angle: Double?) -> RatioData? {
+        guard let angle = angle else { return nil }
+        var cumulativeRatio: Double = 0.0
+        let totalRatio = data.flatMap { $0.ratios }.reduce(0) { $0 + $1.ratio }
+
+        for series in data {
+            for ratio in series.ratios {
+                let ratioPercentage = ratio.ratio / totalRatio
+                cumulativeRatio += ratioPercentage
+                if cumulativeRatio >= angle {
                     return ratio
                 }
             }
         }
         return nil
     }
+
+//    private func findSelectedRatioData(from angle: Double?) -> RatioData? {
+//        guard let angle = angle else { return nil }
+//        let total = data.flatMap { $0.ratios }.reduce(0) { $0 + $1.ratio }
+//        var cumulative = 0.0
+//
+//        for series in data {
+//            for ratio in series.ratios {
+//                cumulative += ratio.ratio
+//                if cumulative / total >= angle {
+//                    return ratio
+//                }
+//            }
+//        }
+//        return nil
+//    }
 }
 
 extension Array where Element: Identifiable {

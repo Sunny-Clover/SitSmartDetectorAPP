@@ -14,6 +14,7 @@ class HistoryModel: ObservableObject{
     @Published var displayDate: String = ""
     @Published var addTime: Bool = false
     @Published var averageScore: Double
+    @Published var currentTimeTextWidth: CGFloat = 60
     
     lazy var calendar: Calendar = {
         var cal = Calendar.current
@@ -39,21 +40,25 @@ class HistoryModel: ObservableObject{
         updateDisplayDate()
     }
     
-    func changeTimeUnit() {
+    func changeTimeUnit_N_currentTimeTextWidth() {
         switch selectedTime {
         case 0:
             timeUnit = .year
+            currentTimeTextWidth = 50
         case 1:
             timeUnit = .month
+            currentTimeTextWidth = 150
         case 2:
             timeUnit = .weekOfMonth
+            currentTimeTextWidth = 210
         case 3:
             timeUnit = .day
+            currentTimeTextWidth = 180
         default:
             break
         }
     }
-    
+        
     func updateDisplayDate() {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX") // Ensure locale consistency

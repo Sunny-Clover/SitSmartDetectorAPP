@@ -9,18 +9,22 @@ import SwiftUI
 
 struct DetectionView: View {
     var body: some View {
-        VStack(alignment: .center) {
-            Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
-            HStack(spacing:15){
-                BodyPartResultView(detectionResult: .fakeCorrectData)
-                BodyPartResultView(detectionResult: .fakeWrongData)
-                BodyPartResultView(detectionResult: .fakeCorrectData)
-                BodyPartResultView(detectionResult: .fakeWrongData)
-                BodyPartResultView(detectionResult: .fakeCorrectData)
+        ZStack {
+            Color(red: 249/255, green: 249/255, blue: 249/255)
+                .ignoresSafeArea()
+            VStack(alignment: .center) {
+                Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
+                HStack(spacing:15){
+                    BodyPartResultView(detectionResult: .fakeCorrectData)
+                    BodyPartResultView(detectionResult: .fakeWrongData)
+                    BodyPartResultView(detectionResult: .fakeCorrectData)
+                    BodyPartResultView(detectionResult: .fakeWrongData)
+                    BodyPartResultView(detectionResult: .fakeCorrectData)
+                }
+                CameraView()
+                    .frame(width: 350, height: 467)  // 指定CameraView的尺寸
+                    .clipped()  // 確保視圖不會超出指定的尺寸
             }
-            CameraView()
-                .frame(width: 350, height: 467)  // 指定CameraView的尺寸
-                .clipped()  // 確保視圖不會超出指定的尺寸
         }
     }
 }

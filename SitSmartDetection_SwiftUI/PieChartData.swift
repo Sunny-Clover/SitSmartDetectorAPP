@@ -1,5 +1,22 @@
 import SwiftUI
 
+var home_allPartPieChartData: [PieDataSeries] = [
+    PieDataSeries(title: "init", ratios: [
+        RatioData(
+            title: "All Correct",
+            day: Date(timeIntervalSince1970: 1711309674.574878),
+            ratio: 0.6,
+            uiColor: #colorLiteral(red: 0.9663307071, green: 0.8874198794, blue: 0.495652616, alpha: 1)
+        ),
+        RatioData(
+            title: "Partially Correct",
+            day: Date(timeIntervalSince1970: 1711396074.574878),
+            ratio: 0.4,
+            uiColor: #colorLiteral(red: 1, green: 0.7918434143, blue: 0.8307861686, alpha: 1)
+        )
+    ])
+]
+
 var allPartPieChartData: [PieDataSeries] = [
     PieDataSeries(title: "init", ratios: [
         RatioData(
