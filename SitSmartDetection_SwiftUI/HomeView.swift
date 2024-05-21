@@ -20,19 +20,6 @@ struct HomeView: View {
                    VStack(alignment: .center, spacing: 25) {
                        HeaderView()
                        StatCardsView()
-                       
-                       NavigationLink {
-                           BadgesAllView()
-                       } label: {
-                           BadgesView()
-                       }
-                       
-                       
-                       NavigationLink(destination: Text("Sitting Tips")) {
-                           Text("How to sit correctly?")
-                               .foregroundColor(.blue)
-                       }
-                       Spacer()
                    }
                 }
             }
@@ -75,11 +62,21 @@ struct StatCardsView: View {
                 AverageScore()
                 TotalTime()
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
             HStack{
                 Level()
                 ReachedGoal()
+            }
+            
+            NavigationLink {
+                BadgesView()
+            } label: {
+                Badges()
+            }
+            
+            NavigationLink {
+                SittingStandardView()
+            } label: {
+                SittingStandard()
             }
         }
     }
@@ -194,7 +191,7 @@ struct ReachedGoal: View {
     }
 }
 
-struct BadgesView: View {
+struct Badges: View {
     var body: some View {
         VStack {
             HStack {
@@ -223,6 +220,28 @@ struct BadgesView: View {
         }
         .padding()
         .frame(width: StatCard_Width*2, height: StatCard_Height)
+        .background(.accent)
+        .cornerRadius(10)
+        .shadow(radius: 3)
+    }
+}
+
+struct SittingStandard: View {
+    var body: some View {
+        HStack {
+            Image("Sitting")
+                .foregroundStyle(.white)
+            Spacer()
+            Text("How to sit correctly?")
+                .foregroundStyle(.white)
+                .font(.title2)
+                .bold()
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.white)
+        }
+        .padding()
+        .frame(width: StatCard_Width*2, height: StatCard_Height*0.5)
         .background(.accent)
         .cornerRadius(10)
         .shadow(radius: 3)

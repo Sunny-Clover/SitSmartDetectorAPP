@@ -10,11 +10,13 @@ import SwiftUI
 struct BadgesDetailView: View {
     var partName: String
     var title: String
-    var progress: Float
+    var progress: Double
     var color: Color
     
     var body: some View {
         VStack(spacing: 20) {
+            Spacer()
+            
             Image(partName)
                 .resizable()
                 .scaledToFit()
@@ -36,14 +38,17 @@ struct BadgesDetailView: View {
                     .foregroundStyle(.deepAccent)
             }
             
-            ProgressView(value: 0.3){}
+            ProgressView(value: progress){}
             currentValueLabel: {
-                Text("30%")
+                Text("\(Int(progress*100))%")
                     .font(.caption)
                     .foregroundColor(.gray)
             }
             .tint(.sysYellow)
             .frame(width: StatCard_Width*1.5)
+            
+            Spacer()
+                .frame(height: 250)
         }
     }
 }
