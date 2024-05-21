@@ -12,20 +12,29 @@ var StatCard_Height = UIScreen.main.bounds.width * 0.4
 
 struct HomeView: View {
     var body: some View {
-        ZStack {
-            Color(.bg)
-                .ignoresSafeArea()
-            ScrollView {
-               VStack(alignment: .center, spacing: 25) {
-                   HeaderView()
-                   StatCardsView()
-                   BadgesView()
-                   NavigationLink(destination: Text("Sitting Tips")) {
-                       Text("How to sit correctly?")
-                           .foregroundColor(.blue)
+        NavigationStack {
+            ZStack {
+                Color(.bg)
+                    .ignoresSafeArea()
+                ScrollView {
+                   VStack(alignment: .center, spacing: 25) {
+                       HeaderView()
+                       StatCardsView()
+                       
+                       NavigationLink {
+                           BadgesAllView()
+                       } label: {
+                           BadgesView()
+                       }
+                       
+                       
+                       NavigationLink(destination: Text("Sitting Tips")) {
+                           Text("How to sit correctly?")
+                               .foregroundColor(.blue)
+                       }
+                       Spacer()
                    }
-                   Spacer()
-               }
+                }
             }
         }
    }
@@ -42,9 +51,13 @@ struct HeaderView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
                 Spacer()
-                Text("Lv.2")
-                    .foregroundStyle(.white)
+                HStack {
+                    Text("Lv.2")
+                        .foregroundStyle(.white)
                     .bold()
+                    ProgressView(value: 0.3)
+                        .tint(.sysYellow)
+                }
             }
             .padding()
             Spacer()
@@ -183,26 +196,36 @@ struct ReachedGoal: View {
 
 struct BadgesView: View {
     var body: some View {
-        HStack {
-            Badge(icon: "music.note", title: "Music Lover")
-            Badge(icon: "brain.head.profile", title: "Smart Thinker")
-        }
-    }
-}
-
-struct Badge: View {
-    var icon: String
-    var title: String
-    
-    var body: some View {
         VStack {
-            Image(systemName: icon)
-                .font(.largeTitle)
-            Text(title)
+            HStack {
+                Image(systemName: "medal.fill")
+                    .foregroundStyle(.white)
+                Text("Badges")
+                    .font(.title3)
+                    .foregroundStyle(.white)
+                    .bold()
+                Spacer()
+                Text("Show more")
+                    .font(.subheadline)
+                    .foregroundStyle(.white)
+                    .bold()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.white)
+
+            }
+            Spacer()
+            HStack {
+                Text("2")
+                    .font(.system(size: 70))
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+            }
         }
         .padding()
-        .background(Color.green.opacity(0.2))
+        .frame(width: StatCard_Width*2, height: StatCard_Height)
+        .background(.accent)
         .cornerRadius(10)
+        .shadow(radius: 3)
     }
 }
 

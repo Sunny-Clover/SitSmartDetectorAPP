@@ -13,14 +13,13 @@ struct ContentView: View {
     @State private var selection = 0
     
     init(){
-        UITabBar.appearance().backgroundColor = UIColor.white
+//        UITabBar.appearance().backgroundColor = UIColor.white
     }
 
     var body: some View {
         if userID == "" {
             AuthView()
         } else {
-            
             ZStack {
                 //            Color.gray.edgesIgnoringSafeArea(.all) // 设置整个视图的背景颜色为白色
                 TabView(selection: $selection) {
@@ -55,9 +54,7 @@ struct ContentView: View {
                             Label("Profile", systemImage: "person.crop.circle")
                         }
                         .tag(4)
-                    
                 }
-                
             }
         }
     }
