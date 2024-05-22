@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DetectionView: View {
+    @ObservedObject var cameraManager = CameraManager()
     var body: some View {
         ZStack {
             Color(red: 249/255, green: 249/255, blue: 249/255)
@@ -21,10 +22,15 @@ struct DetectionView: View {
                     BodyPartResultView(detectionResult: .fakeWrongData)
                     BodyPartResultView(detectionResult: .fakeCorrectData)
                 }
-                CameraView()
-                    .frame(width: 350, height: 467)  // 指定CameraView的尺寸
-                    .clipped()  // 確保視圖不會超出指定的尺寸
+                CameraView(cameraManager: cameraManager)
+                    .frame(width: 350, height: 467)
+                    .clipped()
             }
+        }.onAppear {
+            cameraManager.startRunning()
+        }
+        .onDisappear {
+            cameraManager.stopRunning()
         }
     }
 }

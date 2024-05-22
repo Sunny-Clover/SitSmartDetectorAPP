@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ResultData {
+struct ResultData: Decodable {
     
     var icon:String // = "backIcon"
     var bodyPartName:String // = "Back"
