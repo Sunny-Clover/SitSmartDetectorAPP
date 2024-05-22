@@ -9,7 +9,8 @@ import SwiftUI
 
 struct BadgesDetailView: View {
     var partName: String
-    var title: String
+    var stage: String
+    var timeStandard: Int
     var progress: Double
     var color: Color
     
@@ -23,14 +24,14 @@ struct BadgesDetailView: View {
                 .frame(width: StatCard_Width*0.4)
                 .padding(30)
                 .background(Circle().fill(color))
-            Text("\(partName) \(title)")
+            Text("\(partName) \(stage)")
                 .foregroundStyle(.deepAccent)
                 .font(.largeTitle)
                 .bold()
             Text("Achieving Correct Posture for")
                 .foregroundStyle(.deepAccent)
             HStack {
-                Text("100")
+                Text(String(timeStandard))
                     .foregroundStyle(.deepAccent)
                     .font(.largeTitle)
                 .bold()
@@ -54,5 +55,5 @@ struct BadgesDetailView: View {
 }
 
 #Preview {
-    BadgesDetailView(partName: "Head", title: "Starter", progress: 0.3, color: Color(red: 121/255, green: 180/255, blue: 115/255))
+    BadgesDetailView(partName: "Head", stage: "Starter", timeStandard: 100, progress: 0.3, color: Color(red: 121/255, green: 180/255, blue: 115/255))
 }

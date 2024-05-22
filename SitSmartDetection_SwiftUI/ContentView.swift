@@ -13,7 +13,7 @@ struct ContentView: View {
     @State private var selection = 0
     
     init(){
-//        UITabBar.appearance().backgroundColor = UIColor.white
+        UITabBar.appearance().backgroundColor = UIColor(.bg)
     }
 
     var body: some View {

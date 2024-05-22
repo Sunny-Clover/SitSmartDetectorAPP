@@ -1,5 +1,5 @@
 //
-//  HomeScreen.swift
+//  HomeView.swift
 //  SitSmartDetection_SwiftUI
 //
 //  Created by 詹採晴 on 2024/5/14.
@@ -22,6 +22,7 @@ struct HomeView: View {
                        StatCardsView()
                    }
                 }
+                .ignoresSafeArea()
             }
         }
    }
@@ -49,9 +50,10 @@ struct HeaderView: View {
             .padding()
             Spacer()
         }
-        .padding()
+        .padding(EdgeInsets(top: 50, leading: 15, bottom: 9, trailing: 15))
         .background(.accent)
-        .clipShape(.rect(cornerRadius: 20))
+        .clipShape(.rect(cornerRadius: 35))
+        
     }
 }
 
@@ -212,14 +214,31 @@ struct Badges: View {
             }
             Spacer()
             HStack {
-                Text("2")
+                Spacer()
+                    .frame(width: StatCard_Width*0.1)
+                Text("\(achievedPartsStages.count)")
                     .font(.system(size: 70))
                     .foregroundColor(.white)
                     .fontWeight(.bold)
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(Array(achievedPartsStages.keys), id: \.self) { part in
+                            if let stage = achievedPartsStages[part],
+                               let stageIndex = stages.firstIndex(of: stage) {
+                                    Image(part) // 確保圖片名稱與部位名稱一致
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: StatCard_Width * 0.2)
+                                        .padding(10)
+                                        .background(Circle().fill(colors[stageIndex]))
+                            }
+                        }
+                    }
+                }
             }
         }
         .padding()
-        .frame(width: StatCard_Width*2, height: StatCard_Height)
+        .frame(width: StatCard_Width*2.05, height: StatCard_Height)
         .background(.accent)
         .cornerRadius(10)
         .shadow(radius: 3)
@@ -241,7 +260,7 @@ struct SittingStandard: View {
                 .foregroundStyle(.white)
         }
         .padding()
-        .frame(width: StatCard_Width*2, height: StatCard_Height*0.5)
+        .frame(width: StatCard_Width*2.05, height: StatCard_Height*0.5)
         .background(.accent)
         .cornerRadius(10)
         .shadow(radius: 3)
