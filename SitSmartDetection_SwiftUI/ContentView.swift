@@ -61,12 +61,6 @@ struct ContentView: View {
 }
 
 
-struct FriendsView: View {
-    var body: some View {
-        Text("Friends Screen")
-    }
-}
-
 //struct ProfileView: View {
 //    var body: some View {
 //        Text("Profile Screen")

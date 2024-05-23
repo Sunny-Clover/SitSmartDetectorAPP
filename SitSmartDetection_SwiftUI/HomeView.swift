@@ -32,7 +32,7 @@ struct HeaderView: View {
     var body: some View {
         HStack {
             Spacer()
-            Image("Avatar")
+            Image("Sunny")
             VStack(alignment: .leading) {
                 Text("Hi, Sunny!")
                     .font(.largeTitle)
