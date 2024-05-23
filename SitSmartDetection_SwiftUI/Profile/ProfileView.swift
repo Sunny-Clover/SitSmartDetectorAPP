@@ -8,6 +8,12 @@
 import SwiftUI
 import FirebaseAuth
 
+struct profileStatics{
+    let level:Int
+    let Score:Int
+    let ReachedGaol:Int
+}
+
 class ProfileViewModel: ObservableObject {
 //    @Published var users: [User] = []
     @Published var statics: profileStatics = profileStatics(level: 2, Score: 89, ReachedGaol: 6)
@@ -18,11 +24,6 @@ class ProfileViewModel: ObservableObject {
     func getUserName() -> String{
         return "Sunny"
     }
-}
-struct profileStatics{
-    let level:Int
-    let Score:Int
-    let ReachedGaol:Int
 }
 
 
@@ -82,16 +83,16 @@ struct ProfileView: View {
                         Text("ReachedGoal")
                             .font(.system(size: 14, weight: .medium, design: .default))
                     }.frame(width: 90)
-                }.foregroundColor(.profileAccent) // 設置文字顏色
+                }.foregroundColor(.profileAccent).padding(20)
                 // Profile setting button
                 NavigationLink(destination: ProfileSettingView()) {
                     HStack {
-                        Image(systemName: "person.fill").resizable().frame(width:32, height: 32)
+                        Image(systemName: "person.fill").resizable().frame(width:32, height: 32).padding(.leading, 10)
                         Text("Profile")
                             .font(.system(size: 24, weight: .medium, design: .default))
                             .padding() // 添加內邊距
                         Spacer()
-                        Image(systemName: "arrowtriangle.right.fill")
+                        Image(systemName: "chevron.right").font(.title2)
                     }
                     .padding()
                     .frame(width: 300, height: 64)
@@ -102,14 +103,14 @@ struct ProfileView: View {
                 }
 
                 // Custom setting button
-                NavigationLink(destination: ProfileSettingView()) {
+                NavigationLink(destination: ProfileCustomizationView()) {
                     HStack {
-                        Image(systemName: "gearshape.fill").resizable().frame(width:32, height: 32)
+                        Image(systemName: "gearshape.fill").resizable().frame(width:32, height: 32).padding(.leading, 10)
                         Text("Customization")
                             .font(.system(size: 24, weight: .medium, design: .default))
                             .padding() // 添加內邊距
                         Spacer()
-                        Image(systemName: "arrowtriangle.right.fill")
+                        Image(systemName: "chevron.right").font(.title2)
                     }
                     .padding()
                     .frame(width: 300, height: 64)

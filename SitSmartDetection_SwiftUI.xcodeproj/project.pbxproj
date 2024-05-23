@@ -29,6 +29,7 @@
 		634111DA2BFB355A00A8FF53 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 634111D92BFB355A00A8FF53 /* FirebaseFirestoreSwift */; };
 		634111DC2BFB355A00A8FF53 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 634111DB2BFB355A00A8FF53 /* FirebaseStorage */; };
 		634112042BFF1B9B00A8FF53 /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634112032BFF1B9B00A8FF53 /* ProfileSettingView.swift */; };
+		634112062BFF246700A8FF53 /* ProfileCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634112052BFF246700A8FF53 /* ProfileCustomizationView.swift */; };
 		6344D8252BF38AD6002E0B18 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6344D8242BF38AD6002E0B18 /* AuthView.swift */; };
 		636239602BF700C8007836A7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6362395F2BF700C8007836A7 /* ProfileView.swift */; };
 		6B98B3B42BF38B1E00C57B53 /* HomeView_PieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B98B3B32BF38B1E00C57B53 /* HomeView_PieChart.swift */; };
@@ -55,6 +56,7 @@
 		6321826C2BF2781B000BCED0 /* SigninView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninView.swift; sourceTree = "<group>"; };
 		634111D52BFB2F5B00A8FF53 /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
 		634112032BFF1B9B00A8FF53 /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
+		634112052BFF246700A8FF53 /* ProfileCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCustomizationView.swift; sourceTree = "<group>"; };
 		6344D8242BF38AD6002E0B18 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		6362395F2BF700C8007836A7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		6B98B3B32BF38B1E00C57B53 /* HomeView_PieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView_PieChart.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			children = (
 				6362395F2BF700C8007836A7 /* ProfileView.swift */,
 				634112032BFF1B9B00A8FF53 /* ProfileSettingView.swift */,
+				634112052BFF246700A8FF53 /* ProfileCustomizationView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 				6321826D2BF2781B000BCED0 /* SigninView.swift in Sources */,
 				1583831B2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift in Sources */,
 				15EBFBFF2BF0B325009E76AF /* HistoryPieChart.swift in Sources */,
+				634112062BFF246700A8FF53 /* ProfileCustomizationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
