@@ -1,5 +1,5 @@
 //
-//  HomeScreen.swift
+//  HomeView.swift
 //  SitSmartDetection_SwiftUI
 //
 //  Created by 詹採晴 on 2024/5/14.
@@ -12,20 +12,17 @@ var StatCard_Height = UIScreen.main.bounds.width * 0.4
 
 struct HomeView: View {
     var body: some View {
-        ZStack {
-            Color(.bg)
-                .ignoresSafeArea()
-            ScrollView {
-               VStack(alignment: .center, spacing: 25) {
-                   HeaderView()
-                   StatCardsView()
-                   BadgesView()
-                   NavigationLink(destination: Text("Sitting Tips")) {
-                       Text("How to sit correctly?")
-                           .foregroundColor(.blue)
+        NavigationStack {
+            ZStack {
+                Color(.bg)
+                    .ignoresSafeArea()
+                ScrollView {
+                   VStack(alignment: .center, spacing: 25) {
+                       HeaderView()
+                       StatCardsView()
                    }
-                   Spacer()
-               }
+                }
+                .ignoresSafeArea()
             }
         }
    }
@@ -35,23 +32,28 @@ struct HeaderView: View {
     var body: some View {
         HStack {
             Spacer()
-            Image("Avatar")
+            Image("Sunny")
             VStack(alignment: .leading) {
                 Text("Hi, Sunny!")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
                 Spacer()
-                Text("Lv.2")
-                    .foregroundStyle(.white)
+                HStack {
+                    Text("Lv.2")
+                        .foregroundStyle(.white)
                     .bold()
+                    ProgressView(value: 0.3)
+                        .tint(.sysYellow)
+                }
             }
             .padding()
             Spacer()
         }
-        .padding()
+        .padding(EdgeInsets(top: 50, leading: 15, bottom: 9, trailing: 15))
         .background(.accent)
-        .clipShape(.rect(cornerRadius: 20))
+        .clipShape(.rect(cornerRadius: 35))
+        
     }
 }
 
@@ -62,11 +64,21 @@ struct StatCardsView: View {
                 AverageScore()
                 TotalTime()
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
             HStack{
                 Level()
                 ReachedGoal()
+            }
+            
+            NavigationLink {
+                BadgesView()
+            } label: {
+                Badges()
+            }
+            
+            NavigationLink {
+                SittingStandardView()
+            } label: {
+                SittingStandard()
             }
         }
     }
@@ -181,28 +193,77 @@ struct ReachedGoal: View {
     }
 }
 
-struct BadgesView: View {
+struct Badges: View {
     var body: some View {
-        HStack {
-            Badge(icon: "music.note", title: "Music Lover")
-            Badge(icon: "brain.head.profile", title: "Smart Thinker")
+        VStack {
+            HStack {
+                Image(systemName: "medal.fill")
+                    .foregroundStyle(.white)
+                Text("Badges")
+                    .font(.title3)
+                    .foregroundStyle(.white)
+                    .bold()
+                Spacer()
+                Text("Show more")
+                    .font(.subheadline)
+                    .foregroundStyle(.white)
+                    .bold()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.white)
+
+            }
+            Spacer()
+            HStack {
+                Spacer()
+                    .frame(width: StatCard_Width*0.1)
+                Text("\(achievedPartsStages.count)")
+                    .font(.system(size: 70))
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(Array(achievedPartsStages.keys), id: \.self) { part in
+                            if let stage = achievedPartsStages[part],
+                               let stageIndex = stages.firstIndex(of: stage) {
+                                    Image(part) // 確保圖片名稱與部位名稱一致
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: StatCard_Width * 0.2)
+                                        .padding(10)
+                                        .background(Circle().fill(colors[stageIndex]))
+                            }
+                        }
+                    }
+                }
+            }
         }
+        .padding()
+        .frame(width: StatCard_Width*2.05, height: StatCard_Height)
+        .background(.accent)
+        .cornerRadius(10)
+        .shadow(radius: 3)
     }
 }
 
-struct Badge: View {
-    var icon: String
-    var title: String
-    
+struct SittingStandard: View {
     var body: some View {
-        VStack {
-            Image(systemName: icon)
-                .font(.largeTitle)
-            Text(title)
+        HStack {
+            Image("Sitting")
+                .foregroundStyle(.white)
+            Spacer()
+            Text("How to sit correctly?")
+                .foregroundStyle(.white)
+                .font(.title2)
+                .bold()
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.white)
         }
         .padding()
-        .background(Color.green.opacity(0.2))
+        .frame(width: StatCard_Width*2.05, height: StatCard_Height*0.5)
+        .background(.accent)
         .cornerRadius(10)
+        .shadow(radius: 3)
     }
 }
 
