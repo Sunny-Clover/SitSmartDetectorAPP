@@ -52,7 +52,7 @@ struct ProfileView: View {
                             .foregroundColor(.accentColor)
                     }.padding()
                 }
-                Image("Avatar")
+                Image("Sunny") // TODO: refactor
                     .resizable()
                     .frame(width: 65, height: 65)
                     .clipShape(Circle())

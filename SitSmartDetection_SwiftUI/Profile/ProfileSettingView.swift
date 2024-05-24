@@ -9,24 +9,28 @@ import SwiftUI
 
 struct UserDataModel {
     var name: String
+    // TODO: should customize a enum data structure
+    var gender: String
     var email: String
+    var avatar: Image
 }
 
 class SettingViewModel: ObservableObject {
     @Published var userData: UserDataModel
     
     init() {
-        self.userData = UserDataModel(name: "Sunny", email: "t110590032@ntut.org.tw")
+        self.userData = UserDataModel(name: "Sunny",gender: "Female", email: "t110590032@ntut.org.tw", avatar: Image("Sunny"))
     }
 }
 
 struct ProfileSettingView: View {
-    @State private var selectedGender: String = "Female"
     @ObservedObject var viewModel = SettingViewModel()
+    @State private var selectedGender: String = "Female" // TODO: should be init by current gender in db
+    let titleWidth:CGFloat = 90
     
     var body: some View {
         VStack {
-            Image("Avatar")
+            viewModel.userData.avatar
                 .resizable()
                 .frame(width: 65, height: 65)
                 .clipShape(Circle())
@@ -36,6 +40,7 @@ struct ProfileSettingView: View {
             
             Button(action: {
                 // Button action
+                // TODO: Edit Picture function
             }) {
                 Text("Edit Picture").foregroundColor(Color(red: 149/255, green: 208/255, blue: 248/255))
             }
@@ -44,10 +49,16 @@ struct ProfileSettingView: View {
                     Text("Name")
                         .font(.headline)
                         .foregroundColor(.deepAccent)
-                    Spacer()
-                    TextField("Name", text: $viewModel.userData.name)
-                        .multilineTextAlignment(.trailing)
-                        .foregroundColor(.profileAccent)
+                        .frame(width: titleWidth)
+                    VStack {
+                        TextField("Name", text: $viewModel.userData.name)
+                            .foregroundColor(.profileAccent)
+                        Spacer()
+                            .frame(height: 2)
+                        Rectangle()
+                            .frame(height: 1.5)
+                            .foregroundColor(.deepAccent)
+                    }
                 }
                 .padding(.horizontal)
                 
@@ -55,7 +66,7 @@ struct ProfileSettingView: View {
                     Text("Gender")
                         .font(.headline)
                         .foregroundColor(.deepAccent)
-                    Spacer()
+                        .frame(width: titleWidth)
                     VStack(alignment: .leading, spacing: 10) {
                         RadioButtonField(id: "Male", label: "Male", isMarked: $selectedGender)
                         RadioButtonField(id: "Female", label: "Female", isMarked: $selectedGender)
@@ -68,12 +79,16 @@ struct ProfileSettingView: View {
                     Text("Email")
                         .font(.headline)
                         .foregroundColor(.deepAccent)
-                    Spacer()
-                    TextField("Email", text: $viewModel.userData.email)
-                        .multilineTextAlignment(.trailing)
-                        .foregroundColor(.profileAccent)
-                        .font(.body)
-                        .bold()
+                        .frame(width: titleWidth)
+                    VStack {
+                        TextField("Email", text: $viewModel.userData.email)
+                            .foregroundColor(.profileAccent)
+                        Spacer()
+                            .frame(height: 2)
+                        Rectangle()
+                            .frame(height: 1.5)
+                            .foregroundColor(.deepAccent)
+                    }
                 }
                 .padding(.horizontal)
                 
@@ -89,7 +104,9 @@ struct ProfileSettingView: View {
                 Button(action: {
                     // Button action
                 }) {
-                    Text("Done").foregroundColor(.deepAccent)
+                    Text("Done")
+                        .foregroundColor(.deepAccent)
+                        .bold()
                 }
             }
         }
