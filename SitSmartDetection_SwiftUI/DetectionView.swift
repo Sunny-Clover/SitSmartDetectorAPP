@@ -26,10 +26,9 @@ struct DetectionView: View {
                     .frame(width: 350, height: 467)
                     .clipped()
             }
-        }.onAppear {
+        }.onAppear { // TODO: start and stop with button trigger
             cameraManager.startRunning()
-        }
-        .onDisappear {
+        }.onDisappear {
             cameraManager.stopRunning()
         }
     }

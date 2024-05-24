@@ -57,43 +57,42 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
         let uiImage = UIImage(cgImage: cgImage)
         
-        guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else { return }
+        // guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else { return }
 
         // 如果正在等待服务器响应，则不发送新请求
         guard !isWaitingForServer else { return }
         
-        uploadImageToServer(imageData: imageData)
+        uploadImageToServer(image: uiImage)
     }
 
-    private func uploadImageToServer(imageData: Data) {
-        let url = URL(string: "http://192.168.1.109:8000/predict_movenet")!
+    private func uploadImageToServer(image: UIImage) {
+        guard let url = URL(string: "http://192.168.1.109:8000/predict_movenet"),
+              let imageData = image.jpegData(compressionQuality: 0.5) else { return }
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
 
-        isWaitingForServer = true // 设置标志，表示正在等待响应
+        let boundary = UUID().uuidString
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            defer { self.isWaitingForServer = false } // 无论请求是否成功，重置标志
+        var body = Data()
+        body.append("--\(boundary)\r\n")
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg\"\r\n")
+        body.append("Content-Type: image/jpeg\r\n\r\n")
+        body.append(imageData)
+        body.append("\r\n")
+        body.append("--\(boundary)--\r\n")
+        request.httpBody = body
 
+        URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("Error uploading image: \(error)")
                 return
             }
-            
-            guard let data = data else {
-                print("No data received")
-                return
+            if let data = data {
+                print("Server response: \(String(data: data, encoding: .utf8) ?? "No response data")")
             }
-            
-            if let predictionResult = String(data: data, encoding: .utf8) {
-                print("Prediction result: \(predictionResult)")
-            } else {
-                print("Failed to decode response")
-            }
-        }
-        
-        task.resume()
+        }.resume()
     }
 }
 
@@ -114,5 +113,12 @@ struct CameraView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UIView, context: Context) {
         // 更新视图时需要执行的操作
+    }
+}
+private extension Data {
+    mutating func append(_ string: String) {
+        if let data = string.data(using: .utf8) {
+            append(data)
+        }
     }
 }
