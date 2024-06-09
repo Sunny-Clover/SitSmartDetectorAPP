@@ -101,8 +101,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         // 標誌設置為正在等待伺服器響應
         isWaitingForServer = true
         
-        // 保存圖片到相簿
-        saveImageToPhotosAlbum(image: uiImage)
+        // 保存圖片到相簿:只用作測試！
+//        saveImageToPhotosAlbum(image: uiImage)
         
         uploadImageToServer(image: uiImage)
     }

@@ -12,6 +12,7 @@ import Firebase
 struct SitSmartDetection_SwiftUIApp: App {
     init() {
         FirebaseApp.configure()
+        ProgressCalculator.run()
     }
     var body: some Scene {
         WindowGroup {

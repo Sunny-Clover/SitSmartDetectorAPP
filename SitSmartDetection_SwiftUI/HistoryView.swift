@@ -17,6 +17,9 @@ struct HistoryView: View {
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
     @State private var selectedTime = 0
     @State private var maxTextWidth: CGFloat = 0
+    @State private var displayOptions = ["Trend Score", "Accuracy Distribution"]
+    @State private var selectedDisplayOption = 0
+    private let emojiSize: CGFloat = 45
     
     init() {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
@@ -25,30 +28,34 @@ struct HistoryView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color(red: 178/255, green: 206/255, blue: 222/255)
-                .ignoresSafeArea()
-            ScrollView {
-                VStack(spacing: 8) {
+        ScrollView {
+            ZStack {
+                Color(.accent)
+                    .ignoresSafeArea()
+                VStack(spacing: 3) {
+                    Spacer()
+                        .frame(height: 40)
                     timeSelectionView
                     currentTime
                     scoreDisplay
-                        .padding(5)
                     emojiWithScore
-                        .padding()
                 }
                 .background(GraySemicircleBackgroundView())
+            }
 
-                VStack(spacing: 30) {
-                    partsSelection
-    //                HistoryLineChart(data: history.lineChartData, timeUnit: history.timeUnit)
+            VStack(spacing: 3) {
+                partsSelection
+                displayOptionPicker
+                if selectedDisplayOption == 0 {
                     HistoryLineChart(lineChart: LineChart(data: history.lineChartData, timeUnit: history.timeUnit))
+                } else {
                     HistoryPieChart(data: history.pieChartData, timeUnit: history.timeUnit)
                 }
-                .padding()
-                .background(Color(red: 249/255, green: 249/255, blue: 249/255))
             }
+            .padding()
+            .background(.bg)
         }
+        .ignoresSafeArea()
         .onAppear {
             history.updateAvgScore()
         }
@@ -60,14 +67,14 @@ struct HistoryView: View {
                 let width = geometry.size.width
                 let height = geometry.size.height
                 Path { path in
-                    path.move(to: CGPoint(x: 0, y: height * 0.85))  // 定义半圆的底部起点
-                    path.addCurve(to: CGPoint(x: width, y: height * 0.85), control1: CGPoint(x: width / 3, y: 225), control2: CGPoint(x: 2 * width / 3, y: 225))
+                    path.move(to: CGPoint(x: 0, y: height * 0.9))  // 定义半圆的底部起点
+                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: 260), control2: CGPoint(x: 2 * width / 3, y: 260))
                     path.addLine(to: CGPoint(x: width, y: height))
                     path.addLine(to: CGPoint(x: 0, y: height))
                 }
-                .fill(Color(red: 249/255, green: 249/255, blue: 249/255))
+                .fill(.bg)
             }
-            .frame(height: 350)  // 根据需要调整高度
+            .frame(height: 360)  // 根据需要调整高度
         }
     }
     
@@ -131,17 +138,21 @@ struct HistoryView: View {
     }
     
     var emojiWithScore: some View {
-        if history.averageScore < 60{
-            Image("bad")
-        }
-        else if history.averageScore < 80{
-            Image("not good")
-        }
-        else{
-            Image("good")
+        if history.averageScore < 60 {
+            return AnyView(Image("bad")
+                .resizable()
+                .frame(width: emojiSize, height: emojiSize))
+        } else if history.averageScore < 80 {
+            return AnyView(Image("not good")
+                .resizable()
+                .frame(width: emojiSize, height: emojiSize))
+        } else {
+            return AnyView(Image("good")
+                .resizable()
+                .frame(width: emojiSize, height: emojiSize))
         }
     }
-    
+
     var partsSelection: some View {
         VStack(spacing: 13) {
             Text(history.selectedPartIndex == nil ? "All Body Parts" : parts[history.selectedPartIndex!])
@@ -172,6 +183,17 @@ struct HistoryView: View {
         }
     }
     
+    var displayOptionPicker: some View {
+        Picker("Display Option", selection: $selectedDisplayOption) {
+            ForEach(displayOptions.indices, id: \.self) { index in
+                Text(displayOptions[index]).tag(index)
+            }
+        }
+        .pickerStyle(SegmentedPickerStyle())
+        .background(Color(red: 151/255, green: 181/255, blue: 198/255)) // 设置整个Picker的背景色
+        .cornerRadius(7)
+        .padding()
+    }
 }
 
 struct HistoryView_Previews: PreviewProvider {
