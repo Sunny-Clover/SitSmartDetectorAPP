@@ -21,6 +21,7 @@ struct PostureResponse: Codable {
 // Usage: to do some action about the camera frame
 class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     @Published var detectionResult: PostureResponse?
+    @Published var isDetecting = false // toggle by button
     private let captureSession = AVCaptureSession() //協調設備的輸入輸出數據流，功能：啟動、停止capture等等等
     private let videoOutput = AVCaptureVideoDataOutput()
 //    private let sessionQueue = DispatchQueue(label: "cameraSessionQueue")
@@ -81,6 +82,13 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             isRunning = false
         }
     }
+    func startDetection() {
+        isDetecting = true
+    }
+
+    func stopDetection() {
+        isDetecting = false
+    }
     // callback function，對輸出做操作
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // 提取整個緩衝區中的Image緩衝區
@@ -97,7 +105,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         // uiImage = uiImage.fixOrientation() ?? uiImage
         // 如果正在等待服务器响应，则不发送新请求
         guard !isWaitingForServer else { return }
-        
+        guard isDetecting else { return } // 只在检测状态下上传图片
+
         // 標誌設置為正在等待伺服器響應
         isWaitingForServer = true
         

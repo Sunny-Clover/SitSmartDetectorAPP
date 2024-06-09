@@ -9,11 +9,11 @@ import SwiftUI
 import Combine
 
 class DetectionViewModel: ObservableObject {
-    @Published var headResult = ResultData(icon: "headIcon", bodyPartName: "Head", result: "correct", postureType: "Neutral")
-    @Published var neckResult = ResultData(icon: "neckIcon", bodyPartName: "Neck", result: "correct", postureType: "Neutral")
-    @Published var shoulderResult = ResultData(icon: "shoulderIcon", bodyPartName: "Shoulder", result: "correct", postureType: "Neutral")
-    @Published var backResult = ResultData(icon: "backIcon", bodyPartName: "Back", result: "correct", postureType: "Neutral")
-    @Published var legResult = ResultData(icon: "legIcon", bodyPartName: "Leg", result: "correct", postureType: "Flat")
+    @Published var headResult = ResultData(icon: "headIcon", bodyPartName: "Head", result: nil, postureType: nil)
+    @Published var neckResult = ResultData(icon: "neckIcon", bodyPartName: "Neck", result: nil, postureType: nil)
+    @Published var shoulderResult = ResultData(icon: "shoulderIcon", bodyPartName: "Shoulder", result: nil, postureType: nil)
+    @Published var backResult = ResultData(icon: "backIcon", bodyPartName: "Back", result: nil, postureType: nil)
+    @Published var legResult = ResultData(icon: "legIcon", bodyPartName: "Leg", result: nil, postureType: nil)
     
     func getResults() -> [ResultData] {
         return [headResult, neckResult, shoulderResult, backResult, legResult]
@@ -33,6 +33,13 @@ class DetectionViewModel: ObservableObject {
         backResult.result = (response.body == "Neutral") ? "correct" : "wrong"
         legResult.result = (response.feet == "Flat") ? "correct" : "wrong"
     }
+    func resetResults() {
+        headResult.result = nil
+        neckResult.result = nil
+        shoulderResult.result = nil
+        backResult.result = nil
+        legResult.result = nil
+    }
 }
 
 
@@ -45,6 +52,7 @@ struct DetectionView: View {
             Color(red: 249/255, green: 249/255, blue: 249/255)
                 .ignoresSafeArea()
             VStack(alignment: .center) {
+//                Spacer().frame(height: 10)
                 Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
                 HStack(spacing:15){
                     let rst = viewModel.getResults()
@@ -57,13 +65,24 @@ struct DetectionView: View {
                 CameraView(cameraManager: cameraManager)
                     .frame(width: 350, height: 467)
                     .clipped()
+                Button(action: {
+                    if cameraManager.isDetecting {
+                        cameraManager.stopDetection()
+                        viewModel.resetResults()
+                    } else {
+                        cameraManager.startDetection()
+                    }
+                }, label: {
+                    Image(systemName: cameraManager.isDetecting ? "stop.circle.fill" : "play.circle.fill")
+                })
             }
         }.onAppear { // TODO: start and stop with button trigger
             cameraManager.startRunning()
         }.onDisappear {
             cameraManager.stopRunning()
         }.onReceive(cameraManager.$detectionResult) { result in
-            if let result = result {
+            if let result = result{
+                if !cameraManager.isDetecting {return}
                 viewModel.updateResults(from: result)
             }
         }
@@ -97,20 +116,22 @@ struct BodyPartResultView: View{
                             .frame(width:48, height: 58)
                         .padding(.bottom, 3)
                 VStack {
-                    if detectionResult.result == "correct"{
-                        Image(systemName: "checkmark").resizable().frame(width:20, height:20)
-                            .foregroundColor(.accent)
-                        Text(detectionResult.postureType).fontWeight(.regular)
-                            .foregroundColor(.accent)
-                            .font(.system(size: 12))
-                            .padding(.bottom, 3)
-                    }else{
-                        Image(systemName: "xmark").resizable().frame(width:20, height:20)
-                            .foregroundColor(.red)
-                        Text(detectionResult.postureType).fontWeight(.regular)
-                            .foregroundColor(.red)
-                            .font(.system(size: 12))
-                            .padding(.bottom, 3)
+                    if let result = detectionResult.result, let postureType = detectionResult.postureType {
+                        if result == "correct" {
+                            Image(systemName: "checkmark").resizable().frame(width: 20, height: 20)
+                                .foregroundColor(.accent)
+                            Text(postureType).fontWeight(.regular)
+                                .foregroundColor(.accent)
+                                .font(.system(size: 12))
+                                .padding(.bottom, 3)
+                        } else if result == "wrong" {
+                            Image(systemName: "xmark").resizable().frame(width: 20, height: 20)
+                                .foregroundColor(.red)
+                            Text(postureType).fontWeight(.regular)
+                                .foregroundColor(.red)
+                                .font(.system(size: 12))
+                                .padding(.bottom, 3)
+                        }
                     }
                     
                 }

@@ -11,8 +11,8 @@ struct ResultData: Decodable {
     
     var icon:String // = "backIcon"
     var bodyPartName:String // = "Back"
-    var result:String // = "correct" // or "wrong"
-    var postureType:String // = "neutral"
+    var result:String? // = "correct" // or "wrong"
+    var postureType:String? // = "neutral"
 }
 extension ResultData{
     static var fakeCorrectData = ResultData(icon: "backIcon", bodyPartName: "Back", result: "correct", postureType: "neutral")
