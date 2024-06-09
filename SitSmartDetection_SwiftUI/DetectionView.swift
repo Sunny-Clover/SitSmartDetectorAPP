@@ -6,8 +6,40 @@
 //
 
 import SwiftUI
+import Combine
+
+class DetectionViewModel: ObservableObject {
+    @Published var headResult = ResultData(icon: "headIcon", bodyPartName: "Head", result: "correct", postureType: "Neutral")
+    @Published var neckResult = ResultData(icon: "neckIcon", bodyPartName: "Neck", result: "correct", postureType: "Neutral")
+    @Published var shoulderResult = ResultData(icon: "shoulderIcon", bodyPartName: "Shoulder", result: "correct", postureType: "Neutral")
+    @Published var backResult = ResultData(icon: "backIcon", bodyPartName: "Back", result: "correct", postureType: "Neutral")
+    @Published var legResult = ResultData(icon: "legIcon", bodyPartName: "Leg", result: "correct", postureType: "Flat")
+    
+    func getResults() -> [ResultData] {
+        return [headResult, neckResult, shoulderResult, backResult, legResult]
+    }
+    
+    func updateResults(from response: PostureResponse) {
+        headResult.postureType = response.head
+        neckResult.postureType = response.neck
+        shoulderResult.postureType = response.shoulder
+        backResult.postureType = response.body
+        legResult.postureType = response.feet
+        
+        // 更新 result 字段，這裡假設如果 postureType 不是 neutral 或 flat 就是 wrong
+        headResult.result = (response.head == "Neutral") ? "correct" : "wrong"
+        neckResult.result = (response.neck == "Neutral") ? "correct" : "wrong"
+        shoulderResult.result = (response.shoulder == "Neutral") ? "correct" : "wrong"
+        backResult.result = (response.body == "Neutral") ? "correct" : "wrong"
+        legResult.result = (response.feet == "Flat") ? "correct" : "wrong"
+    }
+}
+
 
 struct DetectionView: View {
+    @ObservedObject var cameraManager = CameraManager()
+    @ObservedObject var viewModel = DetectionViewModel()
+    
     var body: some View {
         ZStack {
             Color(red: 249/255, green: 249/255, blue: 249/255)
@@ -15,15 +47,24 @@ struct DetectionView: View {
             VStack(alignment: .center) {
                 Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
                 HStack(spacing:15){
-                    BodyPartResultView(detectionResult: .fakeCorrectData)
-                    BodyPartResultView(detectionResult: .fakeWrongData)
-                    BodyPartResultView(detectionResult: .fakeCorrectData)
-                    BodyPartResultView(detectionResult: .fakeWrongData)
-                    BodyPartResultView(detectionResult: .fakeCorrectData)
+                    let rst = viewModel.getResults()
+                    BodyPartResultView(detectionResult: rst[0])
+                    BodyPartResultView(detectionResult: rst[1])
+                    BodyPartResultView(detectionResult: rst[2])
+                    BodyPartResultView(detectionResult: rst[3])
+                    BodyPartResultView(detectionResult: rst[4])
                 }
-                CameraView()
-                    .frame(width: 350, height: 467)  // 指定CameraView的尺寸
-                    .clipped()  // 確保視圖不會超出指定的尺寸
+                CameraView(cameraManager: cameraManager)
+                    .frame(width: 350, height: 467)
+                    .clipped()
+            }
+        }.onAppear { // TODO: start and stop with button trigger
+            cameraManager.startRunning()
+        }.onDisappear {
+            cameraManager.stopRunning()
+        }.onReceive(cameraManager.$detectionResult) { result in
+            if let result = result {
+                viewModel.updateResults(from: result)
             }
         }
     }
