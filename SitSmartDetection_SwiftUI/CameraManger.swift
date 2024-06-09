@@ -126,7 +126,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     }
     
     private func uploadImageToServer(image: UIImage) {
-        guard let url = URL(string: "http://192.168.1.109:8000/predict_movenet"),
+         guard let url = URL(string: "http://192.168.1.109:8000/predict_movenet"), // windows IP
+//        guard let url = URL(string: "http://127.0.0.1:8000/predict_movenet"),
               let imageData = image.jpegData(compressionQuality: 0.5) else {
             isWaitingForServer = false // 確保即使出錯也能重置標誌
             return

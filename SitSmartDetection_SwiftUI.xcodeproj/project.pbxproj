@@ -117,11 +117,11 @@
 			children = (
 				63A460FD2BFFA3A3005557E9 /* SitSmartDetection-SwiftUI-Info.plist */,
 				632182682BF13343000BCED0 /* GoogleService-Info.plist */,
+				1583831A2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift */,
 				1555B6342BFC5A1000BBEF69 /* BadgesView.swift */,
 				6BE22D0E2BFDDE1800FCFF06 /* CalProgressRatio.swift */,
 				1555B6362BFC72F600BBEF69 /* BadgesDetailView.swift */,
 				6B98B3B32BF38B1E00C57B53 /* HomeView_PieChart.swift */,
-				1583831A2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift */,
 				1583831C2BE68ED2001FEE73 /* ContentView.swift */,
 				15B537D72BF2822100D2A557 /* HomeView.swift */,
 				1505BCF32BFD0A9A00F53D7B /* SittingStandardView.swift */,
@@ -137,12 +137,10 @@
 				15EBFBFE2BF0B325009E76AF /* HistoryPieChart.swift */,
 				15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */,
 				632182592BF0D5FD000BCED0 /* DetectionView.swift */,
-				6321825B2BF0E593000BCED0 /* DetectionResultData.swift */,
 				6321825D2BF0ED2E000BCED0 /* CameraManger.swift */,
-				6344D8242BF38AD6002E0B18 /* AuthView.swift */,
-				6321826A2BF2780A000BCED0 /* SignupView.swift */,
-				6321826C2BF2781B000BCED0 /* SigninView.swift */,
-				634112022BFF1B6C00A8FF53 /* Profile */,
+				63BF42322C15D68600F841C5 /* DataModel */,
+				63BF42312C15D63900F841C5 /* AuthView */,
+				634112022BFF1B6C00A8FF53 /* ProfileView */,
 				1583831E2BE68ED3001FEE73 /* Assets.xcassets */,
 				158383202BE68ED3001FEE73 /* Preview Content */,
 			);
@@ -157,14 +155,32 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		634112022BFF1B6C00A8FF53 /* Profile */ = {
+		634112022BFF1B6C00A8FF53 /* ProfileView */ = {
 			isa = PBXGroup;
 			children = (
 				6362395F2BF700C8007836A7 /* ProfileView.swift */,
 				634112032BFF1B9B00A8FF53 /* ProfileSettingView.swift */,
 				634112052BFF246700A8FF53 /* ProfileCustomizationView.swift */,
 			);
-			path = Profile;
+			path = ProfileView;
+			sourceTree = "<group>";
+		};
+		63BF42312C15D63900F841C5 /* AuthView */ = {
+			isa = PBXGroup;
+			children = (
+				6344D8242BF38AD6002E0B18 /* AuthView.swift */,
+				6321826A2BF2780A000BCED0 /* SignupView.swift */,
+				6321826C2BF2781B000BCED0 /* SigninView.swift */,
+			);
+			path = AuthView;
+			sourceTree = "<group>";
+		};
+		63BF42322C15D68600F841C5 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				6321825B2BF0E593000BCED0 /* DetectionResultData.swift */,
+			);
+			path = DataModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
