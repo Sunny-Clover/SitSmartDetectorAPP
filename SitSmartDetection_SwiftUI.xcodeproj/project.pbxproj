@@ -364,6 +364,7 @@
 				INFOPLIST_FILE = "SitSmartDetection-SwiftUI-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for detection";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "需要訪問本地網絡以進行姿態估計。";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "For testing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -396,6 +397,7 @@
 				INFOPLIST_FILE = "SitSmartDetection-SwiftUI-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for detection";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "需要訪問本地網絡以進行姿態估計。";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "For testing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
