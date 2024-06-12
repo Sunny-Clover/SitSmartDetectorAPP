@@ -18,6 +18,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     
     let queue = DispatchQueue(label: "serial_queue")
     var isRunning = false
+    var isDetecting = false
     
     // Pose classifier
     private var headClassifier:PoseClassifier?
@@ -100,6 +101,13 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             print("Camera session stopped")
         }
     }
+    func startDetection(){
+        isDetecting = true
+    }
+    func stopDetection(){
+        isDetecting = false
+    }
+    
     func getCaptureSession() -> AVCaptureSession {
         return session
     }
@@ -147,7 +155,9 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
                 DispatchQueue.main.async {
                     self.frame = UIImage(ciImage: CIImage(cvPixelBuffer: pixelBuffer))
                     self.person = result
-                    self.classifiedReslt = ["head": hResult, "neck": nResult, "shoulder": sResult, "body":bResult, "feet":fResult]
+                    if self.isDetecting {
+                        self.classifiedReslt = ["head": hResult, "neck": nResult, "shoulder": sResult, "body":bResult, "feet":fResult]
+                    }
                 }
             } catch {
                 os_log("Error running pose estimation.", type: .error)

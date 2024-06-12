@@ -5,7 +5,7 @@
 //  Created by 林君曆 on 2024/5/12.
 //
 import SwiftUI
-import TensorFlowLite
+import SwiftData
 
 class DetectionViewModel: ObservableObject {
     @Published var headResult = ResultData(icon: "headIcon", bodyPartName: "Head", result: nil, postureType: nil)
@@ -14,8 +14,21 @@ class DetectionViewModel: ObservableObject {
     @Published var backResult = ResultData(icon: "backIcon", bodyPartName: "Back", result: nil, postureType: nil)
     @Published var legResult = ResultData(icon: "legIcon", bodyPartName: "Leg", result: nil, postureType: nil)
     
+    private var record: DetectionRecord
+    
+    init(record: DetectionRecord) {
+        self.record = record
+    }
+    
     func getResults() -> [ResultData] {
         return [headResult, neckResult, shoulderResult, backResult, legResult]
+    }
+    func getRecord() -> DetectionRecord{
+        return record
+    }
+    func stopRecord(){
+        record.endDetectTimeStamp = Date()
+        record.detectionInterval = record.endDetectTimeStamp.timeIntervalSince(record.startDetectTimeStamp)
     }
     
     func updateResults(from response: [String:poseClassfiedResult]) {
@@ -25,11 +38,46 @@ class DetectionViewModel: ObservableObject {
         backResult.postureType = response["body"]?.category
         legResult.postureType = response["feet"]?.category
         
+        // 更新 result 字段，這裡假設如果 postureType 不是 neutral 或 flat 就是 wrong
         headResult.result = (response["head"]?.category == "Neutral") ? "correct" : "wrong"
         neckResult.result = (response["neck"]?.category == "Neutral") ? "correct" : "wrong"
         shoulderResult.result = (response["shoulder"]?.category == "Neutral") ? "correct" : "wrong"
         backResult.result = (response["body"]?.category == "Neutral") ? "correct" : "wrong"
         legResult.result = (response["feet"]?.category == "Flat") ? "correct" : "wrong"
+    }
+    
+    func updateCounts(from classifiedResult: [String: poseClassfiedResult]) {
+        if let headCategory = classifiedResult["head"]?.category {
+            record.head.count[headCategory, default: 0] += 1
+        }
+        if let neckCategory = classifiedResult["neck"]?.category {
+            record.neck.count[neckCategory, default: 0] += 1
+        }
+        if let shoulderCategory = classifiedResult["shoulder"]?.category {
+            record.shoulder.count[shoulderCategory, default: 0] += 1
+        }
+        if let bodyCategory = classifiedResult["body"]?.category {
+            record.body.count[bodyCategory, default: 0] += 1
+        }
+        if let feetCategory = classifiedResult["feet"]?.category {
+            record.feet.count[feetCategory, default: 0] += 1
+        }
+    }
+    
+    func countScore() {
+        record.head.score = calculateScore(for: record.head, neutralCategory: "Neutral")
+        record.neck.score = calculateScore(for: record.neck, neutralCategory: "Neutral")
+        record.shoulder.score = calculateScore(for: record.shoulder, neutralCategory: "Neutral")
+        record.body.score = calculateScore(for: record.body, neutralCategory: "Neutral")
+        record.feet.score = calculateScore(for: record.feet, neutralCategory: "Flat")
+    }
+    
+    private func calculateScore(for bodyPart: BodyPartScore, neutralCategory: String) -> Float {
+        let totalCount = bodyPart.count.values.reduce(0, +)
+        guard totalCount > 0 else { return 0 }
+        
+        let neutralCount = bodyPart.count[neutralCategory, default: 0]
+        return (Float(neutralCount) / Float(totalCount)) * 100
     }
     
     func resetResults() {
@@ -38,17 +86,32 @@ class DetectionViewModel: ObservableObject {
         shoulderResult.result = nil
         backResult.result = nil
         legResult.result = nil
+        
     }
+    func resetRecord() {
+        record = DetectionRecord()
+    }
+    // swiftData method
+//    func insertRecord(modelContext:ModelContext){
+//        modelContext.insert(record)
+//    }
 }
 
+
+
 struct DetectionView: View {
+    @AppStorage("uid") var userID: String = ""
     @ObservedObject var cameraManager = CameraManager()
-    @ObservedObject var viewModel = DetectionViewModel()
+    @ObservedObject var viewModel = DetectionViewModel(record: DetectionRecord())
+    @Environment(\.modelContext) private var modelContext
+    @State private var navigateToRecordList = false
     
     var body: some View {
+        NavigationStack{
+            
         VStack {
             Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
-            HStack(spacing: 15) {
+            HStack(spacing:15){
                 let rst = viewModel.getResults()
                 BodyPartResultView(detectionResult: rst[0])
                 BodyPartResultView(detectionResult: rst[1])
@@ -56,20 +119,37 @@ struct DetectionView: View {
                 BodyPartResultView(detectionResult: rst[3])
                 BodyPartResultView(detectionResult: rst[4])
             }
-            GeometryReader { geometry in
-                if let frame = cameraManager.frame {
-                    OverlayViewRepresentable(image: $cameraManager.frame, person: $cameraManager.person)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-//                        .clipped()
-                } else {
-                    Text("No Camera Feed")
-                        .foregroundColor(.white)
-                        .onAppear {
-                            print("No Camera Feed")
-                        }
-                }
+            if let frame = cameraManager.frame {
+                OverlayViewRepresentable(image: $cameraManager.frame, person: $cameraManager.person)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 350, height: 467)
+                    .clipped()
+            } else {
+                Text("No Camera Feed")
+                    .foregroundColor(.white)
+                    .frame(width: 350, height: 467)
+                    .onAppear {
+                        print("No Camera Feed")
+                    }
             }
+            Button(action: {
+                if cameraManager.isDetecting { //stop detection
+                    cameraManager.stopDetection()
+                    viewModel.countScore()
+                    let record = viewModel.getRecord()
+                    modelContext.insert(record)
+//                    viewModel.insertRecord(modelContext: modelContext)
+                    viewModel.resetResults()
+                    navigateToRecordList = true
+                } else { // start detection
+                    viewModel.resetRecord()
+                    cameraManager.startDetection()
+                }
+            }, label: {
+                Image(systemName: cameraManager.isDetecting ? "stop.circle.fill" : "play.circle.fill")
+            })
+            NavigationLink("", destination: DetectionRecordList(), isActive: $navigateToRecordList)
+                        }
         }
         .onAppear {
             cameraManager.startSession()
@@ -80,12 +160,17 @@ struct DetectionView: View {
             print("View disappeared, camera session stopped")
         }
         .onReceive(cameraManager.$classifiedReslt) { result in
-            if let result = result {
+            if let result = result{
+                if !cameraManager.isDetecting {return}
+                viewModel.updateCounts(from: result)
                 viewModel.updateResults(from: result)
             }
         }
+        }
+
     }
-}
+
+
 
 struct OverlayViewRepresentable: UIViewRepresentable {
     @Binding var image: UIImage?
@@ -101,15 +186,13 @@ struct OverlayViewRepresentable: UIViewRepresentable {
         guard let image = image, let person = person else { return }
         uiView.image = image
         uiView.draw(at: image, person: person)
-        
     }
 }
 
-struct BodyPartResultView: View {
-    var detectionResult: ResultData
-
+struct BodyPartResultView: View{
+    var detectionResult:ResultData
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center){
             Spacer()
             Image(detectionResult.icon).resizable().frame(width: 30, height: 30)
             Text(detectionResult.bodyPartName)
@@ -119,9 +202,9 @@ struct BodyPartResultView: View {
             
             ZStack {
                 UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 24, bottomTrailingRadius: 24, topTrailingRadius: 0)
-                    .foregroundStyle(.white)
-                    .frame(width: 48, height: 58)
-                    .padding(.bottom, 3)
+                            .foregroundStyle(.white)
+                            .frame(width:48, height: 58)
+                        .padding(.bottom, 3)
                 VStack {
                     if let result = detectionResult.result, let postureType = detectionResult.postureType {
                         if result == "correct" {
@@ -140,15 +223,58 @@ struct BodyPartResultView: View {
                                 .padding(.bottom, 3)
                         }
                     }
+                    
                 }
             }
-        }
-        .frame(width: 54, height: 128)
-        .background(.accent)
-        .cornerRadius(27)
+
+        }.frame(width: 54, height: 128)
+            .background(.accent)
+            .cornerRadius(27)
     }
 }
 
+#Preview {
+    DetectionView()
+}
+
+
+struct DetectionRecordList: View {
+    @Query private var records: [DetectionRecord]
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(records, id: \.id) { record in
+                    VStack(alignment: .leading) {
+                        Text("head:\(record.head.score)")
+                        Text("body:\(record.body.score)")
+                        Text("shoulder:\(record.shoulder.score)")
+                        Text("neck:\(record.neck.score)")
+                        Text("feet:\(record.feet.score)")
+
+                    }
+                }
+            }
+            .navigationTitle("Detection Records")
+            .toolbar {
+                ToolbarItem {
+                    Button(action: addRecord) {
+                        Label("Add Record", systemImage: "plus")
+                    }
+                }
+            }
+        }
+    }
+
+    private func addRecord() {
+        // 此處插入新增紀錄的代碼
+    }
+}
+
+#Preview {
+    DetectionRecordList()
+        .modelContainer(for: DetectionRecord.self, inMemory: true)
+}
 
 /*
 import SwiftUI
