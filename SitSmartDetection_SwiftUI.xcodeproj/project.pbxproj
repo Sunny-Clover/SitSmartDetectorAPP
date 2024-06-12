@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1505BCF42BFD0A9A00F53D7B /* SittingStandardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505BCF32BFD0A9A00F53D7B /* SittingStandardView.swift */; };
+		152211632C16027100626530 /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152211622C16027100626530 /* ReportView.swift */; };
 		1555B6352BFC5A1000BBEF69 /* BadgesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1555B6342BFC5A1000BBEF69 /* BadgesView.swift */; };
 		1555B6372BFC72F600BBEF69 /* BadgesDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1555B6362BFC72F600BBEF69 /* BadgesDetailView.swift */; };
 		1583831B2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1583831A2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		1505BCF32BFD0A9A00F53D7B /* SittingStandardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SittingStandardView.swift; sourceTree = "<group>"; };
+		152211622C16027100626530 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		1555B6342BFC5A1000BBEF69 /* BadgesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgesView.swift; sourceTree = "<group>"; };
 		1555B6362BFC72F600BBEF69 /* BadgesDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgesDetailView.swift; sourceTree = "<group>"; };
 		158383172BE68ED2001FEE73 /* SitSmartDetection_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SitSmartDetection_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,6 +129,7 @@
 				1505BCF32BFD0A9A00F53D7B /* SittingStandardView.swift */,
 				15EBFC022BF0B35C009E76AF /* LineChartData.swift */,
 				158383282BE69CCA001FEE73 /* HistoryView.swift */,
+				152211622C16027100626530 /* ReportView.swift */,
 				6B3D69742BFF26D300227C5A /* FriendsView.swift */,
 				6B3D697A2BFF5A8600227C5A /* MeScoreRow.swift */,
 				6B3D697C2BFF5C1D00227C5A /* FriendsScoreRow.swift */,
@@ -275,6 +278,7 @@
 				6B98B3B42BF38B1E00C57B53 /* HomeView_PieChart.swift in Sources */,
 				1555B6352BFC5A1000BBEF69 /* BadgesView.swift in Sources */,
 				15EBFBFD2BF0B2A9009E76AF /* HistoryClass.swift in Sources */,
+				152211632C16027100626530 /* ReportView.swift in Sources */,
 				634112042BFF1B9B00A8FF53 /* ProfileSettingView.swift in Sources */,
 				636239602BF700C8007836A7 /* ProfileView.swift in Sources */,
 				15EBFC032BF0B35C009E76AF /* LineChartData.swift in Sources */,
@@ -426,7 +430,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SitSmartDetection_SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = A5Z78GSVQ8;
+				DEVELOPMENT_TEAM = U8AADC9849;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "SitSmartDetection-SwiftUI-Info.plist";
@@ -443,7 +447,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "SunnyChan.SitSmartDetection-SwiftUI";
+				PRODUCT_BUNDLE_IDENTIFIER = "SunnyChan.SitSmartDetection-SwiftUI.2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -459,7 +463,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SitSmartDetection_SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = A5Z78GSVQ8;
+				DEVELOPMENT_TEAM = U8AADC9849;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "SitSmartDetection-SwiftUI-Info.plist";
@@ -476,7 +480,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "SunnyChan.SitSmartDetection-SwiftUI";
+				PRODUCT_BUNDLE_IDENTIFIER = "SunnyChan.SitSmartDetection-SwiftUI.2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

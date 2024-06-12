@@ -153,12 +153,13 @@ struct HistoryPieChart: View {
     
     var body: some View {
         VStack(spacing: 25){
-            HStack {
-                Text("Accuracy Distribution")
-                    .foregroundStyle(Color.gray)
-                    .bold()
-                Spacer()
-            }
+//            HStack {
+//                Spacer()
+//                Text("Accuracy Distribution")
+//                    .foregroundStyle(Color.gray)
+//                    .bold()
+//                Spacer()
+//            }
             Chart {
                 ForEach(aggregateData()) { series in
                     ForEach(series.ratios, id: \.id) { ratioData in
@@ -172,7 +173,7 @@ struct HistoryPieChart: View {
                     }
                 }
             }
-            .frame(height: 200)
+            .frame(height: 170)
             .shadow(radius: 5)
             .chartAngleSelection(value: $angleValue)
             .chartBackground { _ in

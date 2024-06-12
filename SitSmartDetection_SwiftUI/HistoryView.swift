@@ -32,7 +32,7 @@ struct HistoryView: View {
             ZStack {
                 Color(.accent)
                     .ignoresSafeArea()
-                VStack(spacing: 3) {
+                VStack(spacing: 13) {
                     Spacer()
                         .frame(height: 40)
                     timeSelectionView
@@ -45,6 +45,8 @@ struct HistoryView: View {
 
             VStack(spacing: 3) {
                 partsSelection
+                Spacer()
+                    .frame(height: 5)
                 displayOptionPicker
                 if selectedDisplayOption == 0 {
                     HistoryLineChart(lineChart: LineChart(data: history.lineChartData, timeUnit: history.timeUnit))
@@ -68,7 +70,7 @@ struct HistoryView: View {
                 let height = geometry.size.height
                 Path { path in
                     path.move(to: CGPoint(x: 0, y: height * 0.9))  // 定义半圆的底部起点
-                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: 260), control2: CGPoint(x: 2 * width / 3, y: 260))
+                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: 275), control2: CGPoint(x: 2 * width / 3, y: 275))
                     path.addLine(to: CGPoint(x: width, y: height))
                     path.addLine(to: CGPoint(x: 0, y: height))
                 }
