@@ -61,10 +61,10 @@ struct HistoryPieChart: View {
                                 .annotation(position: .overlay) {
                                     let totalRatios = pieChart.data.flatMap { $0.ratios }.flatMap { $0 }
                                     let totalRatio = totalRatios.reduce(0) { $0 + $1.ratio }
-                                    if totalRatio > 0 {
-                                        let percentage = Double(ratioData.ratio) / Double(totalRatio) * 100
+                                    let percentage = Double(ratioData.ratio) / Double(totalRatio) * 100
+                                    if totalRatio > 0 && percentage > 0{
                                         Text(String(format: "%.f%%", percentage))
-                                            .font(.title2)
+                                            .font(.system(size: 18))
                                             .foregroundStyle(.white)
                                     }
                                 }
@@ -172,5 +172,6 @@ extension Array where Element == RatioData {
 }
 
 #Preview {
-    HistoryPieChart(pieChart: PieChart(data: initNoneFilteredPieChartData.filter { $0.title == "Head" }, timeUnit: .year))
+//    HistoryPieChart(pieChart: PieChart(data: initNoneFilteredPieChartData.filter { $0.title == "Head" }, timeUnit: .year))
+    HistoryPieChart(pieChart: PieChart(data: allPartPieChartData, timeUnit: .year))
 }

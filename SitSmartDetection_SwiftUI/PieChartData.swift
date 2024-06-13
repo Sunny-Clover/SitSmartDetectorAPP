@@ -33,6 +33,32 @@ var allPartPieChartData: [PieDataSeries] = [
                 day: Date(timeIntervalSince1970: 1711396074.574878),
                 ratio: 40,
                 uiColor: UIColor(Color(red: 0.940, green: 0.503, blue: 0.502))
+            ),
+            RatioData(
+                title: "None",
+                day: Date(timeIntervalSince1970: 1711396074.574878),
+                ratio: 0,
+                uiColor: UIColor(Color(red: 0.930, green: 0.3, blue: 0.542))
+            )
+        ],
+        [
+            RatioData(
+                title: "All Correct",
+                day: Date(timeIntervalSince1970: 1711309674.574878),
+                ratio: 60,
+                uiColor: UIColor(Color(red: 0.549, green: 0.875, blue: 0.841))
+            ),
+            RatioData(
+                title: "Partially Correct",
+                day: Date(timeIntervalSince1970: 1711396074.574878),
+                ratio: 30,
+                uiColor: UIColor(Color(red: 0.940, green: 0.503, blue: 0.502))
+            ),
+            RatioData(
+                title: "None",
+                day: Date(timeIntervalSince1970: 1711396074.574878),
+                ratio: 10,
+                uiColor: UIColor(Color(red: 0.930, green: 0.3, blue: 0.542))
             )
         ]
     ])
@@ -78,6 +104,27 @@ var initNoneFilteredPieChartData: [PieDataSeries] = [
         ]
     ])
 ]
+
+//[SitSmartDetection_SwiftUI.PieDataSeries(id: A581D62B-5B51-496D-9D69-950E564EA31B,
+//                                         title: "Back", ratios: [
+//                                            [SitSmartDetection_SwiftUI.RatioData(id: 9EF7E0AC-86B4-4C88-972F-DBAB44AB269C, title: "Backward", day: 2024-03-24 20:29:47 +0000, ratio: 65, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1),
+//                                             SitSmartDetection_SwiftUI.RatioData(id: 68C88FAB-D0A3-469F-A6FA-06599F843B0D, 
+//                                                                                 title: "Forward", day: 2024-03-24 20:29:47 +0000, ratio: 30, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1), 
+//                                             SitSmartDetection_SwiftUI.RatioData(id: BDFA12BF-1DB8-4251-9CDF-51ECE3BBD6BE, title: "Neutral", day: 2024-03-24 20:29:47 +0000, ratio: 5, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1)
+//                                            ],
+//                                            [SitSmartDetection_SwiftUI.RatioData(id: B8BB80BE-F50A-4A8C-BBE6-004E32C4A373, title: "Backward", day: 2024-03-24 20:29:47 +0000, ratio: 65, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1),
+//                                             SitSmartDetection_SwiftUI.RatioData(id: B34D6E76-27CD-4E57-BABC-8A787E04DABD, title: "Forward", day: 2024-03-24 20:29:47 +0000, ratio: 30, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1),
+//                                             SitSmartDetection_SwiftUI.RatioData(id: 65DF1526-DF8E-453B-AD92-F959EB71BD92, title: "Neutral", day: 2024-03-24 20:29:47 +0000, ratio: 5, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1)
+//                                            ],
+//                                            [SitSmartDetection_SwiftUI.RatioData(id: 483EA915-E6F6-41D4-BD3F-D4D5A90FD17E, title: "Backward", day: 2024-06-13 18:06:34 +0000, ratio: 12, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1),
+//                                             SitSmartDetection_SwiftUI.RatioData(id: 1883D61A-9A32-4EFD-A124-CA1699AD1481, title: "Forward", day: 2024-06-13 18:06:34 +0000, ratio: 34, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1),
+//                                             SitSmartDetection_SwiftUI.RatioData(id: DED6D579-677C-4E9C-9E53-FB0EFB83C705, title: "Neutral", day: 2024-06-13 18:06:34 +0000, ratio: 12, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1)
+//                                            ]
+//                                         ]),
+// SitSmartDetection_SwiftUI.PieDataSeries(id: A2E75921-9CB3-40AC-BF88-DDF438CEA5BD, title: "Leg", ratios: [[SitSmartDetection_SwiftUI.RatioData(id: 1B8BE6CB-8321-4F70-9D44-F0CE64C49E91, title: "Ankle-on-knee", day: 2024-03-24 20:29:47 +0000, ratio: 41, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1), SitSmartDetection_SwiftUI.RatioData(id: 25A52025-ED78-4F38-A05F-5CC0CCD8D659, title: "Flat", day: 2024-03-24 20:29:47 +0000, ratio: 43, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1)], [SitSmartDetection_SwiftUI.RatioData(id: 521429A7-2BD3-4A0F-8FDB-99818D47041E, title: "Ankle-on-knee", day: 2024-06-13 18:06:34 +0000, ratio: 21, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1), SitSmartDetection_SwiftUI.RatioData(id: 623CC8DA-09AE-4FA3-8F6F-29E9AA3F3838, title: "Flat", day: 2024-06-13 18:06:34 +0000, ratio: 37, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1)]]), SitSmartDetection_SwiftUI.PieDataSeries(id: 15A54082-600E-409B-9615-AA8952144E6D, title: "Head", ratios: [[SitSmartDetection_SwiftUI.RatioData(id: 4C1F8770-CB29-4795-A89E-667EF584D817, title: "Bowed", day: 2024-03-24 20:29:47 +0000, ratio: 21, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1), SitSmartDetection_SwiftUI.RatioData(id: 33B99283-D445-49E6-8CE6-13F8E7FA66F4, title: "Neutral", day: 2024-03-24 20:29:47 +0000, ratio: 45, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1), SitSmartDetection_SwiftUI.RatioData(id: 0991A097-7997-415E-9AC8-CE782C7FD9B8, title: "Tilt Back", day: 2024-03-24 20:29:47 +0000, ratio: 34, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1)], [SitSmartDetection_SwiftUI.RatioData(id: 4AFB523A-7A4E-456B-A6F5-F9BC7180905D, title: "Bowed", day: 2024-06-13 18:06:34 +0000, ratio: 22, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1), SitSmartDetection_SwiftUI.RatioData(id: 73F569BD-8995-450E-B168-0DDE0780953E, title: "Neutral", day: 2024-06-13 18:06:34 +0000, ratio: 7, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1), SitSmartDetection_SwiftUI.RatioData(id: A0F9837A-7940-4838-B479-97F6E3078047, title: "Tilt Back", day: 2024-06-13 18:06:34 +0000, ratio: 29, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1)]]), SitSmartDetection_SwiftUI.PieDataSeries(id: F9DB6150-6DB3-41C2-9418-6CACF065ABD1, title: "Neck", ratios: [[SitSmartDetection_SwiftUI.RatioData(id: CF788755-8F94-4F98-95C9-A34C39C8FBC1, title: "Forward", day: 2024-03-24 20:29:47 +0000, ratio: 7, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1), SitSmartDetection_SwiftUI.RatioData(id: CA189FC6-8CD3-49B8-8FC9-05F0C64EFC93, title: "Neutral", day: 2024-03-24 20:29:47 +0000, ratio: 93, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1)], [SitSmartDetection_SwiftUI.RatioData(id: 90C4F107-6D7C-4618-8149-C3DAF25A2E1C, title: "Forward", day: 2024-06-13 18:06:34 +0000, ratio: 36, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1), SitSmartDetection_SwiftUI.RatioData(id: EA318D57-5F05-4F4D-AD5C-0A18EDC330F2, title: "Neutral", day: 2024-06-13 18:06:34 +0000, ratio: 22, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1)]]), SitSmartDetection_SwiftUI.PieDataSeries(id: 5D0AE0EF-37C3-44EE-A321-6B2475F442A2, title: "Shoulder", ratios: [[SitSmartDetection_SwiftUI.RatioData(id: 5EC9BC5F-6D91-4CFE-9831-48D2BB2C2092, title: "Hunched", day: 2024-03-24 20:29:47 +0000, ratio: 25, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1), SitSmartDetection_SwiftUI.RatioData(id: 8B458A86-DF35-4C14-8C6A-90D783AE0029, title: "Neutral", day: 2024-03-24 20:29:47 +0000, ratio: 22, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1), SitSmartDetection_SwiftUI.RatioData(id: 49CF0C17-D953-4CF4-8312-404DBB78C869, title: "Shrug", day: 2024-03-24 20:29:47 +0000, ratio: 53, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1)], [SitSmartDetection_SwiftUI.RatioData(id: 286A96C8-2E04-40E7-A331-19B6047B1760, title: "Hunched", day: 2024-06-13 18:06:34 +0000, ratio: 24, uiColor: UIExtendedSRGBColorSpace 0.947497 0.863704 0.361935 1), SitSmartDetection_SwiftUI.RatioData(id: 20EB8966-2EE2-4ECC-A9C3-4F68B3D64EAA, title: "Neutral", day: 2024-06-13 18:06:34 +0000, ratio: 8, uiColor: UIExtendedSRGBColorSpace 0.388067 0.669753 0.994203 1), SitSmartDetection_SwiftUI.RatioData(id: E79F1794-C793-461E-8EBA-9A7F35492A06, title: "Shrug", day: 2024-06-13 18:06:34 +0000, ratio: 26, uiColor: UIExtendedSRGBColorSpace 0.389965 0.380065 0.62885 1)]])]
+
+
+
 
 
 //var initNoneFilteredPieChartData: [PieDataSeries] = [

@@ -147,6 +147,7 @@ class DetectionViewModel: ObservableObject {
         pieChartData[3].ratios = [neckData]
         pieChartData[4].ratios = [shoulderData]
         
+        print(pieChartData)
         return pieChartData
     }
 }

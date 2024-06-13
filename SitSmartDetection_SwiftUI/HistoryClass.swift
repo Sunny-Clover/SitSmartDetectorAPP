@@ -99,6 +99,7 @@ class HistoryModel: ObservableObject{
     func fetchData(from records: [DetectionRecord]){
         self.initLineChartData = createLineChartData(from: records)
         self.initPieChartData = createPieChartData(from: records)
+//        print(self.initPieChartData.filter { $0.title == "Head" })
     }
     func createLineChartData(from records: [DetectionRecord]) -> [DataSeries] {
         // init five dataseries for the five body part
