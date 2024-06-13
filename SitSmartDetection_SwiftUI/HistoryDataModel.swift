@@ -10,9 +10,9 @@ import SwiftData
 
 struct BodyPartScore:Codable, Hashable {
     var count: [String: Int]
-    var score: Float
+    var score: Double
     
-    init(count: [String: Int], score: Float = 0) {
+    init(count: [String: Int], score: Double = 0) {
         self.count = count
         self.score = score
     }
@@ -30,6 +30,7 @@ final class DetectionRecord {
     var shoulder: BodyPartScore
     var body: BodyPartScore
     var feet: BodyPartScore
+    var totalCount: Int
     
     init() {
         self.id = UUID()
@@ -41,5 +42,6 @@ final class DetectionRecord {
         self.shoulder = BodyPartScore(count: ["Hunched": 0, "Neutral": 0, "Shrug": 0])
         self.body = BodyPartScore(count: ["Backward": 0, "Forward": 0, "Neutral": 0])
         self.feet = BodyPartScore(count: ["Ankle-on-knee": 0, "Flat": 0])
+        self.totalCount = 0
     }
 }

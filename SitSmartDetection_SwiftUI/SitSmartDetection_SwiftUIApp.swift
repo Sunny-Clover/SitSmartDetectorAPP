@@ -11,7 +11,14 @@ import SwiftData
 
 @main
 struct SitSmartDetection_SwiftUIApp: App {
+    let container: ModelContainer
     init() {
+        do {
+            container = try ModelContainer(for: DetectionRecord.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+
+        } catch {
+            fatalError("Failed to create ModelContainer for DetectionRecord.")
+        }
         FirebaseApp.configure()
         ProgressCalculator.run()
     }
@@ -20,7 +27,6 @@ struct SitSmartDetection_SwiftUIApp: App {
             ContentView()
                 .background(Color(UIColor(red: 249/255, green: 249/255, blue: 249/255, alpha: 1)))
                 .edgesIgnoringSafeArea(.all)
-//            AuthView()
-        }.modelContainer(for: DetectionRecord.self, inMemory: true)
+        }.modelContainer(container)
     }
 }

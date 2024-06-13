@@ -71,13 +71,14 @@ class DetectionViewModel: ObservableObject {
         record.body.score = calculateScore(for: record.body, neutralCategory: "Neutral")
         record.feet.score = calculateScore(for: record.feet, neutralCategory: "Flat")
     }
-    
-    private func calculateScore(for bodyPart: BodyPartScore, neutralCategory: String) -> Float {
+
+    private func calculateScore(for bodyPart: BodyPartScore, neutralCategory: String) -> Double {
         let totalCount = bodyPart.count.values.reduce(0, +)
         guard totalCount > 0 else { return 0 }
         
         let neutralCount = bodyPart.count[neutralCategory, default: 0]
-        return (Float(neutralCount) / Float(totalCount)) * 100
+        self.record.totalCount = totalCount //順便更新totalCount
+        return (Double(neutralCount) / Double(totalCount)) * 100
     }
     
     func resetResults() {
@@ -91,10 +92,7 @@ class DetectionViewModel: ObservableObject {
     func resetRecord() {
         record = DetectionRecord()
     }
-    // swiftData method
-//    func insertRecord(modelContext:ModelContext){
-//        modelContext.insert(record)
-//    }
+
 }
 
 

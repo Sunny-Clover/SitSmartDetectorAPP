@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 // 主視圖
 struct HistoryView: View {
-    
+    @Query private var records: [DetectionRecord]
+    @Environment (\.modelContext) private var modelContext
     @StateObject var history: HistoryModel = {
         return HistoryModel(averageScore: 0, initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
     }()
@@ -58,6 +60,7 @@ struct HistoryView: View {
         .ignoresSafeArea()
         .onAppear {
             history.updateAvgScore()
+            history.fetchData(from: records)
         }
     }
     

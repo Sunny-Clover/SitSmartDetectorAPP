@@ -17,7 +17,7 @@ struct ScoreData: Identifiable {
 struct DataSeries: Identifiable {
     let id = UUID()
     let title: String
-    let scores: [ScoreData]
+    var scores: [ScoreData]
 }
 
 struct LineChart: Identifiable{
