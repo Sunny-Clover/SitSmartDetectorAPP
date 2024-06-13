@@ -134,7 +134,7 @@ extension Array where Element == ScoreData {
 }
 
 extension LineChart{
-    static let demoLineChart = LineChart(data: lineChartData, timeUnit: .year)
+    static let demoLineChart = LineChart(data: lineChartDataDummy, timeUnit: .year)
 }
 
 struct HistoryLineChart_Previews: PreviewProvider {

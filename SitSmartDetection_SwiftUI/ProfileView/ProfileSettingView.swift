@@ -35,7 +35,7 @@ struct ProfileSettingView: View {
                 .frame(width: 65, height: 65)
                 .clipShape(Circle())
                 .overlay(
-                    Circle().stroke(Color.accentColor, lineWidth: 3)
+                    Circle().stroke(Color.accent, lineWidth: 3)
                 )
             
             Button(action: {

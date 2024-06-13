@@ -14,7 +14,7 @@ struct HistoryView: View {
     @Query private var records: [DetectionRecord]
     @Environment (\.modelContext) private var modelContext
     @StateObject var history: HistoryModel = {
-        return HistoryModel(initLineChartData: lineChartData, initPieChartData: initNoneFilteredPieChartData, timeUnit: .year)
+        return HistoryModel(initLineChartData: lineChartDataDummy, initPieChartData: initNoneFilteredPieChartData, timeUnit: .year)
     }()
     @State private var timePeriods = ["Year", "Month", "Week", "Day"]
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
@@ -58,7 +58,12 @@ struct HistoryView: View {
                     HistoryLineChart(lineChart: LineChart(data: history.lineChartData, timeUnit: history.timeUnit))
                 } else {
                     HistoryPieChart(pieChart: PieChart(data: history.pieChartData, timeUnit: history.timeUnit))
-//                    HistoryPieChart(pieChart: PieChart(data: actualData, timeUnit: history.timeUnit))
+//                    if !history.pieChartData.isEmpty {
+//                        HistoryPieChart(pieChart: PieChart(data: history.pieChartData, timeUnit: history.timeUnit))
+//                    } else {
+//                        Text("No data available")
+//                            .foregroundColor(.gray)
+//                    }
                 }
             }
             .padding()
@@ -99,11 +104,11 @@ struct HistoryView: View {
         .cornerRadius(7)
         .onChange(of: history.selectedTime) { _, _ in
             history.updateDisplayDate()
-            history.updateAvgScore()
             history.changeTimeUnit_N_currentTimeTextWidth()
             history.checkTimeLimit()
             history.filterDataByCurrentTime()
             history.updateChartData()
+            history.updateAvgScore()
         }
         .padding()
     }
@@ -140,10 +145,10 @@ struct HistoryView: View {
         }
         .onChange(of: history.currentTime) { _, _ in
             history.updateDisplayDate()
-            history.updateAvgScore()
             history.checkTimeLimit()
             history.filterDataByCurrentTime()
             history.updateChartData()
+            history.updateAvgScore()
         }
     }
     

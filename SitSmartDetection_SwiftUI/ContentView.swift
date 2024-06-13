@@ -53,33 +53,16 @@ struct ContentView: View {
                         }
                         .tag(4)
                 }
+                .tint(.accent)
             }
         }
     }
 }
 
 
-//struct ProfileView: View {
-//    var body: some View {
-//        Text("Profile Screen")
-//    }
-//}
-
 // MARK: - Preview Providers
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-    }
-}
-
-struct FriendsView_Previews: PreviewProvider {
-    static var previews: some View {
-        FriendsView()
-    }
-}
-
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView()
     }
 }

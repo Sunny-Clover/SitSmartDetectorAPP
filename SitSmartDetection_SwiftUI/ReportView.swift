@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct ReportView: View {
-    @StateObject var report: HistoryModel /*= {
-        return HistoryModel(averageScore: 80, initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
-    }()*/
+    @StateObject var report = HistoryModel(initLineChartData: lineChartDataDummy, initPieChartData: allPartPieChartData, timeUnit: .year)
     private let emojiSize: CGFloat = 45
     
     var body: some View {
@@ -106,7 +104,7 @@ struct ReportView: View {
                         }else{
                             report.selectedPartIndex = index  // Update selected index on tap
                         }
-                        report.updateChartData()
+                        report.updateChartData_ReportView()
                         report.updateAvgScore()
                     }) {
                         Image(parts[index])  // Assume image names match the parts array
@@ -124,5 +122,6 @@ struct ReportView: View {
 }
 
 #Preview {
-    ReportView(report: HistoryModel(initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year))
+//    ReportView(report: HistoryModel(initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year))
+    ReportView()
 }

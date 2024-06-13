@@ -49,7 +49,7 @@ struct ProfileView: View {
                         }
                     }) {
                         Image(.faRightFromBracket)
-                            .foregroundColor(.accentColor)
+                            .foregroundColor(.accent)
                     }.padding()
                 }
                 Image("Sunny") // TODO: refactor

@@ -63,9 +63,8 @@ class HistoryModel: ObservableObject{
                    }
                }
 
-               let totalCount = Double(allCorrectRatios.count + partiallyCorrectRatios.count)
-               let allCorrectRatio = Double(allCorrectRatios.count) / totalCount
-               let partiallyCorrectRatio = Double(partiallyCorrectRatios.count) / totalCount
+               let allCorrectRatio = allCorrectRatios.count
+               let partiallyCorrectRatio = partiallyCorrectRatios.count
 
                let allCorrectData = RatioData(
                    title: "All Correct",
@@ -107,60 +106,62 @@ class HistoryModel: ObservableObject{
         // append five part of record to corresponding dataseries
         // 明天就照上面的做
         var lineChartData: [DataSeries] = []
-
-        var headDataSerie = DataSeries(title:"Head", scores: [])
-        var neckDataSerie = DataSeries(title:"Neck", scores: [])
-        var shoulderDataSerie = DataSeries(title:"Shoulder", scores: [])
-        var bodyDataSerie = DataSeries(title:"Back", scores: [])
-        var feetDataSerie = DataSeries(title:"Leg", scores: [])
+        
+        // DummyData
+        var headDataSerie = DataSeries(title:"Head", scores: lineChartDataDummy[0].scores)
+        var neckDataSerie = DataSeries(title:"Neck", scores: lineChartDataDummy[1].scores)
+        var shoulderDataSerie = DataSeries(title:"Shoulder", scores: lineChartDataDummy[2].scores)
+        var bodyDataSerie = DataSeries(title:"Back", scores: lineChartDataDummy[3].scores)
+        var feetDataSerie = DataSeries(title:"Leg", scores: lineChartDataDummy[4].scores)
     
 
         for record in records {
             let time = record.startDetectTimeStamp
-            headDataSerie.scores.append(ScoreData(day: time, score: Double(record.head.score)))
-            neckDataSerie.scores.append(ScoreData(day: time, score: Double(record.neck.score)))
-            shoulderDataSerie.scores.append(ScoreData(day: time, score: Double(record.shoulder.score)))
-            bodyDataSerie.scores.append(ScoreData(day: time, score: Double(record.body.score)))
-            feetDataSerie.scores.append(ScoreData(day: time, score: Double(record.feet.score)))
+            headDataSerie.scores.append(ScoreData(day: time, score: record.head.score))
+            neckDataSerie.scores.append(ScoreData(day: time, score: record.neck.score))
+            shoulderDataSerie.scores.append(ScoreData(day: time, score: record.shoulder.score))
+            bodyDataSerie.scores.append(ScoreData(day: time, score: record.body.score))
+            feetDataSerie.scores.append(ScoreData(day: time, score: record.feet.score))
         }
         lineChartData = [headDataSerie, neckDataSerie, shoulderDataSerie, bodyDataSerie, feetDataSerie]
 //        print(lineChartData)
         return lineChartData
     }
-
+    
     func createPieChartData(from records: [DetectionRecord]) -> [PieDataSeries] {
+        // DummyData
         var pieChartData: [PieDataSeries] = [
-            PieDataSeries(title: "Back", ratios: []),
-            PieDataSeries(title: "Leg", ratios: []),
-            PieDataSeries(title: "head", ratios: []),
-            PieDataSeries(title: "Neck", ratios: []),
-            PieDataSeries(title: "Shoulder", ratios: [])
+            PieDataSeries(title: "Back", ratios: initNoneFilteredPieChartData[0].ratios),
+            PieDataSeries(title: "Leg", ratios: initNoneFilteredPieChartData[1].ratios),
+            PieDataSeries(title: "Head", ratios: initNoneFilteredPieChartData[2].ratios),
+            PieDataSeries(title: "Neck", ratios: initNoneFilteredPieChartData[3].ratios),
+            PieDataSeries(title: "Shoulder", ratios: initNoneFilteredPieChartData[4].ratios)
         ]
 
         for record in records {
             let time = record.startDetectTimeStamp
             let legData = [
-                RatioData(title: "Flat", day: time, ratio: 100*(Double(record.feet.count["Flat", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
-                RatioData(title: "Ankle-on-knee", day: time, ratio: 100*(Double(record.feet.count["Ankle-on-knee", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))
+                RatioData(title: "Ankle-on-knee", day: time, ratio: record.feet.count["Ankle-on-knee", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+                RatioData(title: "Flat", day: time, ratio: record.feet.count["Flat", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1))
             ]
             let backData = [
-                RatioData(title: "Backward", day: time, ratio: 100*(Double(record.body.count["Backward", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
-                RatioData(title: "Forward", day: time, ratio: 100*(Double(record.body.count["Forward", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
-                RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.body.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+                RatioData(title: "Backward", day: time, ratio: record.body.count["Backward", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+                RatioData(title: "Forward", day: time, ratio: record.body.count["Forward", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+                RatioData(title: "Neutral", day: time, ratio: record.body.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
             ]
             let headData = [
-                RatioData(title: "Bowed", day: time, ratio: 100*(Double(record.head.count["Bowed", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
-                RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.head.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
-                RatioData(title: "Tilt Back", day: time, ratio: 100*(Double(record.head.count["Tilt Back", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+                RatioData(title: "Bowed", day: time, ratio: record.head.count["Bowed", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+                RatioData(title: "Neutral", day: time, ratio: record.head.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+                RatioData(title: "Tilt Back", day: time, ratio: record.head.count["Tilt Back", default: 0], uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
             ]
             let neckData = [
-                RatioData(title: "Forward", day: time, ratio: 100*(Double(record.neck.count["Forward", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
-                RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.neck.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))
+                RatioData(title: "Forward", day: time, ratio: record.neck.count["Forward", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+                RatioData(title: "Neutral", day: time, ratio: record.neck.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))
             ]
             let shoulderData = [
-                RatioData(title: "Hunched", day: time, ratio: 100*(Double(record.shoulder.count["Hunched", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
-                RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.shoulder.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
-                RatioData(title: "Shrug", day: time, ratio: 100*(Double(record.shoulder.count["Shrug", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+                RatioData(title: "Hunched", day: time, ratio: record.shoulder.count["Hunched", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+                RatioData(title: "Neutral", day: time, ratio: record.shoulder.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+                RatioData(title: "Shrug", day: time, ratio: record.shoulder.count["Shrug", default: 0], uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
             ]
             pieChartData[0].ratios.append(backData)
             pieChartData[1].ratios.append(legData)
@@ -301,6 +302,7 @@ class HistoryModel: ObservableObject{
         switch self.selectedTime{
         case 0:
             self.averageScore = averageScoreForPeriod(data: lineChartData, year: year) ?? 0
+//            print("1, \(Date().formatted(.dateTime.hour().minute().second()))")
         case 1:
             self.averageScore = averageScoreForPeriod(data: lineChartData, year: year, month: month) ?? 0
         case 2:
@@ -308,6 +310,7 @@ class HistoryModel: ObservableObject{
         case 3:
             self.averageScore = averageScoreForPeriod(data: lineChartData, year: year, month: month, day: day) ?? 0
         default:
+//            print("4, \(Date().formatted(.dateTime.hour().minute().second()))")
             break
         }
     }
@@ -332,7 +335,7 @@ class HistoryModel: ObservableObject{
         guard !filteredScores.isEmpty else { return nil }
         
         let totalScore = filteredScores.reduce(0, +)
-        let averageScore = totalScore / Double(filteredScores.count)
+        let averageScore = Double(totalScore) / Double(filteredScores.count)
         
 //        print(averageScore)
         return averageScore
@@ -359,9 +362,8 @@ class HistoryModel: ObservableObject{
             }
         }
 
-        let totalCount = Double(allCorrectRatios.count + partiallyCorrectRatios.count)
-        let allCorrectRatio = Double(allCorrectRatios.count) / totalCount
-        let partiallyCorrectRatio = Double(partiallyCorrectRatios.count) / totalCount
+        let allCorrectRatio = allCorrectRatios.count
+        let partiallyCorrectRatio = partiallyCorrectRatios.count
 
         let allCorrectData = RatioData(
             title: "All Correct",
@@ -406,7 +408,6 @@ class HistoryModel: ObservableObject{
             endDate = currentTime
         }
 
-
         pieChartData = initPieChartData.map { series in
             let filteredRatios = series.ratios.map { ratioArray in
                 ratioArray.filter { ratio in
@@ -442,13 +443,34 @@ class HistoryModel: ObservableObject{
         case 4:
             self.pieChartData = pieChartData.filter { $0.title == "Leg" }
             self.lineChartData = self.lineChartData.filter { $0.title == "Leg" }
-        // Add cases for other body parts
         default:
             self.pieChartData = generateAllPartPieChartData(from: pieChartData)
             self.lineChartData = self.lineChartData
         }
 //        print(self.lineChartData)
     }
-//    self.pieChartData = aggregateData()
+    
+    func updateChartData_ReportView(){
+        switch self.selectedPartIndex {
+        case 0:
+            self.pieChartData = initPieChartData.filter { $0.title == "Head" }
+            self.lineChartData = self.initLineChartData.filter { $0.title == "Head" }
+        case 1:
+            self.pieChartData = initPieChartData.filter { $0.title == "Neck" }
+            self.lineChartData = self.initLineChartData.filter { $0.title == "Neck" }
+        case 2:
+            self.pieChartData = initPieChartData.filter { $0.title == "Shoulder" }
+            self.lineChartData = self.initLineChartData.filter { $0.title == "Shoulder" }
+        case 3:
+            self.pieChartData = initPieChartData.filter { $0.title == "Back" }
+            self.lineChartData = self.initLineChartData.filter { $0.title == "Back" }
+        case 4:
+            self.pieChartData = initPieChartData.filter { $0.title == "Leg" }
+            self.lineChartData = self.initLineChartData.filter { $0.title == "Leg" }
+        default:
+            self.pieChartData = generateAllPartPieChartData(from: pieChartData)
+            self.lineChartData = self.initLineChartData
+        }
+    }
 }
 

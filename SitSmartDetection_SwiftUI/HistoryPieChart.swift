@@ -10,7 +10,7 @@ struct RatioData: Identifiable, Hashable {
     let id = UUID()
     let title: String
     let day: Date
-    let ratio: Double
+    let ratio: Int
     let uiColor: UIColor
     var color: Color {
         Color(uiColor)
@@ -31,54 +31,78 @@ struct PieChart: Identifiable {
 
 struct HistoryPieChart: View {
     let pieChart: PieChart
-    @State private var angleValue: Double?
+    @State private var angleValue: Int?
+    @State private var selectedSector: String?
     @State private var selectedRatioData: RatioData? = nil
-
+    
     var body: some View {
         VStack(spacing: 25) {
-            Chart {
+            if pieChart.data.isEmpty || pieChart.data.allSatisfy({ $0.ratios.isEmpty }) {
+                Spacer()
+                Text("No data available")
+                    .foregroundColor(.gray)
+                    .font(.title)
+            } else {
                 ForEach(pieChart.data) { series in
-                    ForEach(aggregateRatios(for: pieChart.timeUnit, ratios: series.ratios), id: \.id) { ratioData in
-                        SectorMark(
-                            angle: .value(ratioData.title, ratioData.ratio),
-                            innerRadius: .ratio(0.6),
-                            angularInset: 8
-                        )
-                        .foregroundStyle(ratioData.color)
-                        .opacity(selectedRatioData == nil || selectedRatioData?.id == ratioData.id ? 1.0 : 0.3)
-                    }
-                }
-            }
-            .frame(height: 180)
-            .shadow(radius: 5)
-            .chartAngleSelection(value: $angleValue)
-            .chartBackground { _ in
-                Group {
-                    if let selectedRatioData = selectedRatioData {
-                        VStack {
-                            Text("\(selectedRatioData.ratio, specifier: "%.2f")%")
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                            Text(selectedRatioData.title)
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                        }
+                    let aggregatedRatios = aggregateRatios(for: pieChart.timeUnit, ratios: series.ratios)
+                    if aggregatedRatios.isEmpty {
+                        Text("No data available for \(series.title)")
+                            .foregroundColor(.gray)
+                            .font(.title)
                     } else {
-                        Text("Select a category")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 12))
+                        Chart {
+                            ForEach(aggregatedRatios, id: \.id) { ratioData in
+                                SectorMark(
+                                    angle: .value(ratioData.title, ratioData.ratio),
+                                    angularInset: 8
+                                )
+                                .foregroundStyle(ratioData.color)
+                                .opacity(selectedSector == nil ? 1.0 : (selectedSector == ratioData.title ? 1.0 : 0.5))
+                                .annotation(position: .overlay) {
+                                    let totalRatios = pieChart.data.flatMap { $0.ratios }.flatMap { $0 }
+                                    let totalRatio = totalRatios.reduce(0) { $0 + $1.ratio }
+                                    if totalRatio > 0 {
+                                        let percentage = Double(ratioData.ratio) / Double(totalRatio) * 100
+                                        Text(String(format: "%.f%%", percentage))
+                                            .font(.title2)
+                                            .foregroundStyle(.white)
+                                    }
+                                }
+                                //            .chartAngleSelection(value: $angleValue)
+                                //            .onChange(of: angleValue) { oldValue, newValue in
+                                //                if let newValue {
+                                //                    selectedSector = findSelectedSector(value: newValue)
+                                //                } else {
+                                //                    selectedSector = nil
+                                //                }
+                                //            }
+                            }
+                        }
+                        .frame(height: 180)
+                        .shadow(radius: 5)
                     }
                 }
+                legend
             }
-            .onChange(of: angleValue) { _, _ in
-                withAnimation {
-                    selectedRatioData = findSelectedRatioData(from: angleValue)
-                }
-            }
-
-            // Legend for the pie chart
-            legend
         }
+    }
+
+    
+    private func findSelectedSector(value: Int) -> String? {
+        var accumulatedRatio = 0
+
+        // 展平所有的 RatioData
+        let allRatios = pieChart.data.flatMap { $0.ratios }.flatMap { $0 }
+
+        // 找到符合條件的 RatioData
+        let selectedData = allRatios.first { ratioData in
+            accumulatedRatio += ratioData.ratio
+            return value <= accumulatedRatio
+        }
+        
+        selectedRatioData = selectedData
+        
+        return selectedRatioData?.title
     }
 
     private var legend: some View {
@@ -97,11 +121,11 @@ struct HistoryPieChart: View {
         }
         .padding(.horizontal)
     }
-
+    
     private func aggregateRatios(for timeUnit: Calendar.Component, ratios: [[RatioData]]) -> [RatioData] {
         let calendar = Calendar.current
         var aggregatedRatiosDict: [String: RatioData] = [:]
-
+        
         for ratioGroup in ratios {
             for ratioData in ratioGroup {
                 let date = calendar.startOfDay(for: ratioData.day)
@@ -124,27 +148,8 @@ struct HistoryPieChart: View {
                 }
             }
         }
-
+        
         return Array(aggregatedRatiosDict.values).sorted { $0.day < $1.day }
-    }
-
-    private func findSelectedRatioData(from angle: Double?) -> RatioData? {
-        guard let angle = angle else { return nil }
-        var cumulativeRatio: Double = 0.0
-        let totalRatio = pieChart.data.flatMap { $0.ratios.flatMap { $0 } }.reduce(0) { $0 + $1.ratio }
-
-        for series in pieChart.data {
-            for ratioGroup in series.ratios {
-                for ratio in ratioGroup {
-                    let ratioPercentage = ratio.ratio / totalRatio
-                    cumulativeRatio += ratioPercentage
-                    if cumulativeRatio >= angle {
-                        return ratio
-                    }
-                }
-            }
-        }
-        return nil
     }
 }
 
@@ -164,4 +169,8 @@ extension Array where Element == RatioData {
         }
         return groupedDictionary
     }
+}
+
+#Preview {
+    HistoryPieChart(pieChart: PieChart(data: initNoneFilteredPieChartData.filter { $0.title == "Head" }, timeUnit: .year))
 }
