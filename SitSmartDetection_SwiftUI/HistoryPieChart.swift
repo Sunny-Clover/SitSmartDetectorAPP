@@ -173,7 +173,7 @@ struct HistoryPieChart: View {
                     }
                 }
             }
-            .frame(height: 170)
+            .frame(height: 180)
             .shadow(radius: 5)
             .chartAngleSelection(value: $angleValue)
             .chartBackground { _ in

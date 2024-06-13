@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReportView: View {
-    @StateObject var history: HistoryModel = {
+    @StateObject var report: HistoryModel = {
         return HistoryModel(averageScore: 80, initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
     }()
     private let emojiSize: CGFloat = 45
@@ -38,15 +38,17 @@ struct ReportView: View {
             VStack(spacing: 3) {
                 partsSelection
                 Spacer()
+                    .frame(height: 30)
                 Text("Accuracy Distribution")
+                    .font(.title3)
                     .foregroundStyle(Color.gray)
                     .bold()
                     .padding()
-                HistoryPieChart(data: history.pieChartData, timeUnit: history.timeUnit)
+                HistoryPieChart(data: report.pieChartData, timeUnit: report.timeUnit)
             }
             .padding()
-            .background(.bg)
         }
+        .background(.bg)
         .ignoresSafeArea()
     }
     
@@ -68,18 +70,18 @@ struct ReportView: View {
     }
     
     var scoreDisplay: some View {
-        Text("\(Int(history.averageScore))")
+        Text("\(Int(report.averageScore))")
             .font(.system(size: 100))
             .bold()
             .foregroundStyle(Color.white)
     }
     
     var emojiWithScore: some View {
-        if history.averageScore < 60 {
+        if report.averageScore < 60 {
             return AnyView(Image("bad")
                 .resizable()
                 .frame(width: emojiSize, height: emojiSize))
-        } else if history.averageScore < 80 {
+        } else if report.averageScore < 80 {
             return AnyView(Image("not good")
                 .resizable()
                 .frame(width: emojiSize, height: emojiSize))
@@ -92,20 +94,20 @@ struct ReportView: View {
     
     var partsSelection: some View {
         VStack(spacing: 13) {
-            Text(history.selectedPartIndex == nil ? "All Body Parts" : parts[history.selectedPartIndex!])
-                .font(.title3)
+            Text(report.selectedPartIndex == nil ? "All Body Parts" : parts[report.selectedPartIndex!])
                 .foregroundStyle(Color.gray)
-                .bold()
+                .font(.title3)
+//                .bold()
             HStack(spacing: 6) {
                 ForEach(parts.indices, id: \.self) { index in
                     Button(action: {
-                        if(history.selectedPartIndex == index){
-                            history.selectedPartIndex = nil
+                        if(report.selectedPartIndex == index){
+                            report.selectedPartIndex = nil
                         }else{
-                            history.selectedPartIndex = index  // Update selected index on tap
+                            report.selectedPartIndex = index  // Update selected index on tap
                         }
-                        history.updateChartData()
-                        history.updateAvgScore()
+                        report.updateChartData()
+                        report.updateAvgScore()
                     }) {
                         Image(parts[index])  // Assume image names match the parts array
                             .resizable()
@@ -113,7 +115,7 @@ struct ReportView: View {
                             .frame(width: 45, height: 45)
                             .padding(7)
                             .background(Circle().fill(Color(red: 178/255, green: 206/255, blue: 222/255)))
-                            .opacity(history.selectedPartIndex == nil ? 1.0 : (history.selectedPartIndex == index ? 1.0 : 0.5))
+                            .opacity(report.selectedPartIndex == nil ? 1.0 : (report.selectedPartIndex == index ? 1.0 : 0.5))
                     }
                 }
             }

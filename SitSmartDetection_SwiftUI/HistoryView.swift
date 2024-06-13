@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 // 主視圖
 struct HistoryView: View {
@@ -20,6 +21,9 @@ struct HistoryView: View {
     @State private var displayOptions = ["Trend Score", "Accuracy Distribution"]
     @State private var selectedDisplayOption = 0
     private let emojiSize: CGFloat = 45
+    
+    var touchLandmarkTip = TouchLandmarkTip()
+    var touchToAllLandmarkTip = TouchToAllLandmarkTip()
     
     init() {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
@@ -55,8 +59,8 @@ struct HistoryView: View {
                 }
             }
             .padding()
-            .background(.bg)
         }
+        .background(.bg)
         .ignoresSafeArea()
         .onAppear {
             history.updateAvgScore()
@@ -160,7 +164,8 @@ struct HistoryView: View {
             Text(history.selectedPartIndex == nil ? "All Body Parts" : parts[history.selectedPartIndex!])
                 .font(.title3)
                 .foregroundStyle(Color.gray)
-                .bold()
+//                .bold()
+//            TipView(touchLandmarkTip, arrowEdge: .bottom)
             HStack(spacing: 6) {
                 ForEach(parts.indices, id: \.self) { index in
                     Button(action: {
@@ -171,6 +176,8 @@ struct HistoryView: View {
                         }
                         history.updateChartData()
                         history.updateAvgScore()
+                        touchLandmarkTip.invalidate(reason: .actionPerformed)
+                        TouchToAllLandmarkTip.hasTouchedButton = true
                     }) {
                         Image(parts[index])  // Assume image names match the parts array
                             .resizable()
@@ -182,7 +189,39 @@ struct HistoryView: View {
                     }
                 }
             }
+            .popoverTip(touchLandmarkTip, arrowEdge: .leading)
+            .popoverTip(touchToAllLandmarkTip, arrowEdge: .leading)
         }
+    }
+    
+    struct TouchLandmarkTip: Tip {
+        var title: Text {
+            Text("Touch")
+        }
+        var message: Text? {
+            Text("View the different body parts results")
+        }
+        var image: Image? {
+            Image(systemName: "hand.point.up.left")
+        }
+    }
+    
+    struct TouchToAllLandmarkTip: Tip {
+        var title: Text {
+            Text("Touch Again")
+        }
+        var message: Text? {
+            Text("View the all body parts results")
+        }
+        var image: Image? {
+            Image(systemName: "hand.point.up.left")
+        }
+        
+        var rules: [Rule] {
+            #Rule(Self.$hasTouchedButton) { $0 == true }
+        }
+        @Parameter
+        static var hasTouchedButton: Bool = false
     }
     
     var displayOptionPicker: some View {
@@ -201,5 +240,13 @@ struct HistoryView: View {
 struct HistoryView_Previews: PreviewProvider {
     static var previews: some View {
         HistoryView()
+            .task {
+                try? Tips.resetDatastore()
+                
+                try? Tips.configure([
+                    .displayFrequency(.immediate),
+                    .datastoreLocation(.applicationDefault)
+                ])
+            }
     }
 }
