@@ -14,7 +14,7 @@ struct HistoryView: View {
     @Query private var records: [DetectionRecord]
     @Environment (\.modelContext) private var modelContext
     @StateObject var history: HistoryModel = {
-        return HistoryModel(initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
+        return HistoryModel(initLineChartData: lineChartData, initPieChartData: initNoneFilteredPieChartData, timeUnit: .year)
     }()
     @State private var timePeriods = ["Year", "Month", "Week", "Day"]
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
