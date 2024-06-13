@@ -95,8 +95,6 @@ class HistoryModel: ObservableObject{
         default:
             currentTime = calendar.date(byAdding: .year, value: -1, to: currentTime) ?? currentTime
         }
-        updateDisplayDate()
-        checkTimeLimit()
     }
     
     func touchAdd() {
@@ -122,8 +120,6 @@ class HistoryModel: ObservableObject{
                 newDate = calendar.date(byAdding: .year, value: 1, to: currentTime)
             }
             currentTime = newDate!
-            updateDisplayDate()
-            checkTimeLimit()
         }
     }
     
@@ -212,44 +208,71 @@ class HistoryModel: ObservableObject{
         return averageScore
     }
     
+    func filterDataByCurrentTime() {
+        let calendar = Calendar.current
+        let startDate: Date
+        let endDate: Date
+
+        switch selectedTime {
+        case 0: // Year
+            startDate = calendar.dateInterval(of: .year, for: currentTime)?.start ?? currentTime
+            endDate = calendar.dateInterval(of: .year, for: currentTime)?.end ?? currentTime
+        case 1: // Month
+            startDate = calendar.dateInterval(of: .month, for: currentTime)?.start ?? currentTime
+            endDate = calendar.dateInterval(of: .month, for: currentTime)?.end ?? currentTime
+        case 2: // Week
+            startDate = calendar.dateInterval(of: .weekOfMonth, for: currentTime)?.start ?? currentTime
+            endDate = calendar.dateInterval(of: .weekOfMonth, for: currentTime)?.end ?? currentTime
+        case 3: // Day
+            startDate = calendar.startOfDay(for: currentTime)
+            endDate = calendar.date(byAdding: .day, value: 1, to: startDate) ?? currentTime
+        default:
+            startDate = currentTime
+            endDate = currentTime
+        }
+
+        pieChartData = initNoneFilteredPieChartData.map { series in
+            let filteredRatios = series.ratios.map { ratioArray in
+                ratioArray.filter { ratio in
+                    ratio.day >= startDate && ratio.day < endDate
+                }
+            }.filter { !$0.isEmpty }
+            return PieDataSeries(title: series.title, ratios: filteredRatios)
+        }
+        
+        lineChartData = initLineChartData.map { series in
+            let filteredScores = series.scores.filter { score in
+                score.day >= startDate && score.day < endDate
+            }
+            return DataSeries(title: series.title, scores: filteredScores)
+        }
+    }
+
+    
     func updateChartData(){
         switch self.selectedPartIndex {
         case 0:
-            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Head" }
-            self.lineChartData = self.initLineChartData.filter { $0.title == "Head" }
+            self.pieChartData = pieChartData.filter { $0.title == "Head" }
+            self.lineChartData = self.lineChartData.filter { $0.title == "Head" }
         case 1:
-            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Neck" }
-            self.lineChartData = self.initLineChartData.filter { $0.title == "Neck" }
+            self.pieChartData = pieChartData.filter { $0.title == "Neck" }
+            self.lineChartData = self.lineChartData.filter { $0.title == "Neck" }
         case 2:
-            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Shoulder" }
-            self.lineChartData = self.initLineChartData.filter { $0.title == "Shoulder" }
+            self.pieChartData = pieChartData.filter { $0.title == "Shoulder" }
+            self.lineChartData = self.lineChartData.filter { $0.title == "Shoulder" }
         case 3:
-            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Back" }
-            self.lineChartData = self.initLineChartData.filter { $0.title == "Back" }
+            self.pieChartData = pieChartData.filter { $0.title == "Back" }
+            self.lineChartData = self.lineChartData.filter { $0.title == "Back" }
         case 4:
-            self.pieChartData = initNoneFilteredPieChartData.filter { $0.title == "Leg" }
-            self.lineChartData = self.initLineChartData.filter { $0.title == "Leg" }
+            self.pieChartData = pieChartData.filter { $0.title == "Leg" }
+            self.lineChartData = self.lineChartData.filter { $0.title == "Leg" }
         // Add cases for other body parts
         default:
-            self.pieChartData = [
-                PieDataSeries(title: "init", ratios: [
-                    RatioData(
-                        title: "All Correct",
-                        day: Date(timeIntervalSince1970: 1711309674.574878),
-                        ratio: 0.6,
-                        uiColor: #colorLiteral(red: 0.5488034487, green: 0.8750266433, blue: 0.8405518532, alpha: 1)
-                    ),
-                    RatioData(
-                        title: "Partially Correct",
-                        day: Date(timeIntervalSince1970: 1711396074.574878),
-                        ratio: 0.4,
-                        uiColor: #colorLiteral(red: 0.9399127364, green: 0.5029041767, blue: 0.5018365979, alpha: 1)
-                    )
-                ])
-            ]
-            self.lineChartData = self.initLineChartData
+            self.pieChartData = allPartPieChartData
+            self.lineChartData = self.lineChartData
         }
 //        print(self.lineChartData)
     }
+//    self.pieChartData = aggregateData()
 }
 

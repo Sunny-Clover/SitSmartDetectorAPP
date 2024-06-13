@@ -55,7 +55,8 @@ struct HistoryView: View {
                 if selectedDisplayOption == 0 {
                     HistoryLineChart(lineChart: LineChart(data: history.lineChartData, timeUnit: history.timeUnit))
                 } else {
-                    HistoryPieChart(data: history.pieChartData, timeUnit: history.timeUnit)
+                    HistoryPieChart(pieChart: PieChart(data: history.pieChartData, timeUnit: history.timeUnit))
+//                    HistoryPieChart(pieChart: PieChart(data: actualData, timeUnit: history.timeUnit))
                 }
             }
             .padding()
@@ -98,6 +99,8 @@ struct HistoryView: View {
             history.updateAvgScore()
             history.changeTimeUnit_N_currentTimeTextWidth()
             history.checkTimeLimit()
+            history.filterDataByCurrentTime()
+            history.updateChartData()
         }
         .padding()
     }
@@ -108,7 +111,6 @@ struct HistoryView: View {
             
             Button {
                 history.touchReduce()
-                history.updateAvgScore()
             } label: {
                 Image(systemName: "chevron.left")
                     .foregroundColor(.white)
@@ -123,7 +125,6 @@ struct HistoryView: View {
             
             Button {
                 history.touchAdd()
-                history.updateAvgScore()
             } label: {
                 Image(systemName: "chevron.right")
                     .foregroundColor(.white)
@@ -133,6 +134,13 @@ struct HistoryView: View {
 //            .frame(width: maxTextWidth)
             
             Spacer()
+        }
+        .onChange(of: history.currentTime) { _, _ in
+            history.updateDisplayDate()
+            history.updateAvgScore()
+            history.checkTimeLimit()
+            history.filterDataByCurrentTime()
+            history.updateChartData()
         }
     }
     
@@ -174,6 +182,7 @@ struct HistoryView: View {
                         }else{
                             history.selectedPartIndex = index  // Update selected index on tap
                         }
+                        history.filterDataByCurrentTime()
                         history.updateChartData()
                         history.updateAvgScore()
                         touchLandmarkTip.invalidate(reason: .actionPerformed)

@@ -2,51 +2,81 @@ import SwiftUI
 
 var home_allPartPieChartData: [PieDataSeries] = [
     PieDataSeries(title: "init", ratios: [
-        RatioData(
-            title: "All Correct",
-            day: Date(timeIntervalSince1970: 1711309674.574878),
-            ratio: 0.6,
-            uiColor: #colorLiteral(red: 0.9663307071, green: 0.8874198794, blue: 0.495652616, alpha: 1)
-        ),
-        RatioData(
-            title: "Partially Correct",
-            day: Date(timeIntervalSince1970: 1711396074.574878),
-            ratio: 0.4,
-            uiColor: #colorLiteral(red: 1, green: 0.7918434143, blue: 0.8307861686, alpha: 1)
-        )
+        [
+            RatioData(
+                title: "All Correct",
+                day: Date(timeIntervalSince1970: 1711309674.574878),
+                ratio: 0.6,
+                uiColor: UIColor(Color(red: 0.966, green: 0.887, blue: 0.496))
+            ),
+            RatioData(
+                title: "Partially Correct",
+                day: Date(timeIntervalSince1970: 1711396074.574878),
+                ratio: 0.4,
+                uiColor: UIColor(Color(red: 1.0, green: 0.792, blue: 0.831))
+            )
+        ]
     ])
 ]
 
 var allPartPieChartData: [PieDataSeries] = [
     PieDataSeries(title: "init", ratios: [
-        RatioData(
-            title: "All Correct",
-            day: Date(timeIntervalSince1970: 1711309674.574878),
-            ratio: 0.6,
-            uiColor: #colorLiteral(red: 0.5488034487, green: 0.8750266433, blue: 0.8405518532, alpha: 1)
-        ),
-        RatioData(
-            title: "Partially Correct",
-            day: Date(timeIntervalSince1970: 1711396074.574878),
-            ratio: 0.4,
-            uiColor: #colorLiteral(red: 0.9399127364, green: 0.5029041767, blue: 0.5018365979, alpha: 1)
-        )
+        [
+            RatioData(
+                title: "All Correct",
+                day: Date(timeIntervalSince1970: 1711309674.574878),
+                ratio: 0.6,
+                uiColor: UIColor(Color(red: 0.549, green: 0.875, blue: 0.841))
+            ),
+            RatioData(
+                title: "Partially Correct",
+                day: Date(timeIntervalSince1970: 1711396074.574878),
+                ratio: 0.4,
+                uiColor: UIColor(Color(red: 0.940, green: 0.503, blue: 0.502))
+            )
+        ]
     ])
 ]
 
 var initNoneFilteredPieChartData: [PieDataSeries] = [
-    PieDataSeries(title: "Back", ratios: [RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.65, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.3, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.05, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)),
-      ]),
-//        PieDataSeries(title: "Back", ratios: [RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.65, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.3, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.05, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)),RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.29, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.56, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.15, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))]),
-        
-    PieDataSeries(title: "Leg", ratios: [RatioData(title: "Ankle-on-knee", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.15, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)), RatioData(title: "Crossed", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.42, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Flat", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.43, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))]),
-    PieDataSeries(title: "Head", ratios: [RatioData(title: "Bowed", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.21, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.45, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)), RatioData(title: "Tilt Back", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.34, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1))]),
-    PieDataSeries(title: "Neck", ratios: [RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.07, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.93, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))]),
-    PieDataSeries(title: "Shoulder", ratios: [RatioData(title: "Hunched", day: Date(timeIntervalSince1970: 1711916987.574123), ratio: 0.67, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711916987.574123), ratio: 0.15, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Shrug", day: Date(timeIntervalSince1970: 1711916987.574123), ratio: 0.18, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))]),
+    PieDataSeries(title: "Back", ratios: [
+        [
+            RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.65, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.3, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.05, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+        ]
+    ]),
+    PieDataSeries(title: "Leg", ratios: [
+        [
+            RatioData(title: "Ankle-on-knee", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.41, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)),
+            RatioData(title: "Crossed", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.16, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Flat", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.43, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1))
+        ]
+    ]),
+    PieDataSeries(title: "Head", ratios: [
+        [
+            RatioData(title: "Bowed", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.21, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.45, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)),
+            RatioData(title: "Tilt Back", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.34, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1))
+        ]
+    ]),
+    PieDataSeries(title: "Neck", ratios: [
+        [
+            RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.07, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.93, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))
+        ]
+    ]),
+    PieDataSeries(title: "Shoulder", ratios: [
+        [
+            RatioData(title: "Hunched", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.25, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.22, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Shrug", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.53, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+        ]
+    ])
 ]
 
-//
-//var pieChartData: [PieDataSeries] = [
+
+//var initNoneFilteredPieChartData: [PieDataSeries] = [
 //    PieDataSeries(title: "Back", ratios: [RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.65, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.3, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.05, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))]),
 //    PieDataSeries(title: "Back", ratios: [RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.29, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.56, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711398587.574123), ratio: 0.15, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))]),
 //    PieDataSeries(title: "Back", ratios: [RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711484987.574123), ratio: 0.18, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)), RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711484987.574123), ratio: 0.34, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)), RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711484987.574123), ratio: 0.48, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))]),

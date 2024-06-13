@@ -44,7 +44,7 @@ struct ReportView: View {
                     .foregroundStyle(Color.gray)
                     .bold()
                     .padding()
-                HistoryPieChart(data: report.pieChartData, timeUnit: report.timeUnit)
+                HistoryPieChart(pieChart: PieChart(data: report.pieChartData, timeUnit: report.timeUnit))
             }
             .padding()
         }

@@ -1,134 +1,12 @@
 //
-//  piechart.swift
+//  HistoryPieChart.swift
 //  SitSmartDetection
 //
-//  Created by 詹採晴 on 2024/4/20.
-//
-//
-//import SwiftUI
-//import Charts
-//
-//struct Product: Identifiable {
-//    let id = UUID()
-//    let title: String
-//    let revenue: Double
-//    let day: Date
-//    let uiColor: UIColor  // Storing UIColor if necessary
-//    var color: Color {  // Computed property to convert UIColor to Color
-//        Color(uiColor)
-//    }
-//}
-//
-//
-//struct HistoryPieChart: View {
-//    var products: [Product]
-//    var timeUnit: Calendar.Component
-//    @State private var angleValue: Double?
-//    @State private var sltProduct: Product? = nil
-//
-////    // 公共方法修改 sltProduct
-////    func resetSelection() {
-////        withAnimation {
-////            sltProduct = nil
-////        }
-////        if let sltProduct{
-////            print("not nil")
-////        }else{
-////            print("nil")
-////        }
-////    }
-//
-//    var body: some View {
-////        VStack {
-//            Chart(products) { product in
-//                SectorMark(
-//                    angle: .value(Text(verbatim: product.title), product.revenue),
-//                    innerRadius: .ratio(0.6),
-//                    angularInset: 8
-//                )
-//                .foregroundStyle(product.color)
-////                .opacity(sltProduct?.id == product.id ? 1.0 : 0.3)
-//                .opacity(sltProduct == nil || sltProduct?.id == product.id ? 1.0 : 0.3)
-//            }
-//            .chartAngleSelection(value: $angleValue)
-//            .chartBackground { _ in
-//                Group {
-//                    if let sltProduct = sltProduct {
-//                        VStack {
-//                            Text(String(format: "%.2f", sltProduct.revenue * 100) + "%")
-//                                .foregroundColor(.primary)
-//                            Text(sltProduct.title)
-//                                .foregroundColor(.secondary)
-//                                .font(.system(size: 12))
-//                        }
-//                    } else {
-//                        Text("Select")
-//                            .foregroundColor(.secondary)
-//                    }
-//                }
-//            }
-//
-//
-//            // 手動創建圖例
-//            HStack {
-//                ForEach(products) { product in
-//                    HStack {
-//                        Color(product.uiColor)
-//                            .frame(width: 20, height: 20)
-//                            .cornerRadius(5)
-//                        Text(product.title)
-//                            .foregroundColor(.secondary)
-//                            .font(.system(size: 12))
-//                    }
-//                }
-//            }
-////            .padding(.top)
-////        }
-//
-//        .onChange(of: angleValue, initial: false){ old,new in
-//            withAnimation {
-//                if let product = findSltProduct() {
-//                    if product.id == sltProduct?.id {
-//                        // 点击已被选中的元素时取消选择
-//                        sltProduct = nil
-//                    }else{
-//                        sltProduct = product //新點的
-//                    }
-//                }
-//            }
-//            if let new{
-//                print(new)
-//            }
-//        }
-////        .padding(.vertical, 50)
-//    }
-//
-//    private func findSltProduct() -> Product? {
-//        guard let slt = angleValue else { return nil }
-//
-//        var sum = 0.0
-//        // 若 angleValue 小于第一个 item.power ，则表示选择的是图表中首张“大饼”！
-//        var sltProduct = products.first
-//        for item in products {
-//            sum += item.revenue
-//            // 试探正确选中的饼图元素
-//            if sum >= slt {
-//                sltProduct = item
-//                break
-//            }
-//        }
-//        return sltProduct
-//    }
-//
-//
-//}
-
-
 
 import SwiftUI
 import Charts
 
-struct RatioData: Identifiable {
+struct RatioData: Identifiable, Hashable {
     let id = UUID()
     let title: String
     let day: Date
@@ -142,27 +20,25 @@ struct RatioData: Identifiable {
 struct PieDataSeries: Identifiable {
     let id = UUID()
     let title: String
-    let ratios: [RatioData]
+    let ratios: [[RatioData]]
+}
+
+struct PieChart: Identifiable {
+    let id = UUID()
+    var data: [PieDataSeries]
+    var timeUnit: Calendar.Component
 }
 
 struct HistoryPieChart: View {
-    var data: [PieDataSeries]
-    var timeUnit: Calendar.Component
+    let pieChart: PieChart
     @State private var angleValue: Double?
     @State private var selectedRatioData: RatioData? = nil
-    
+
     var body: some View {
-        VStack(spacing: 25){
-//            HStack {
-//                Spacer()
-//                Text("Accuracy Distribution")
-//                    .foregroundStyle(Color.gray)
-//                    .bold()
-//                Spacer()
-//            }
+        VStack(spacing: 25) {
             Chart {
-                ForEach(aggregateData()) { series in
-                    ForEach(series.ratios, id: \.id) { ratioData in
+                ForEach(pieChart.data) { series in
+                    ForEach(aggregateRatios(for: pieChart.timeUnit, ratios: series.ratios), id: \.id) { ratioData in
                         SectorMark(
                             angle: .value(ratioData.title, ratioData.ratio),
                             innerRadius: .ratio(0.6),
@@ -180,11 +56,9 @@ struct HistoryPieChart: View {
                 Group {
                     if let selectedRatioData = selectedRatioData {
                         VStack {
-                            //                        Text(selectedRatioData.title)
                             Text("\(selectedRatioData.ratio, specifier: "%.2f")%")
                                 .font(.headline)
                                 .foregroundColor(.primary)
-                            //                        Text("Ratio: \(selectedRatioData.ratio, specifier: "%.2f")%")
                             Text(selectedRatioData.title)
                                 .foregroundColor(.secondary)
                                 .font(.caption)
@@ -201,19 +75,19 @@ struct HistoryPieChart: View {
                     selectedRatioData = findSelectedRatioData(from: angleValue)
                 }
             }
-            
+
             // Legend for the pie chart
             legend
         }
     }
-    
+
     private var legend: some View {
-        let uniqueRatios = data.flatMap { $0.ratios }.uniqued(by: \.title)
+        let uniqueRatios = pieChart.data.flatMap { $0.ratios.flatMap { $0 } }.uniqued(by: \.title)
         return HStack(alignment: .center, spacing: 15) {
             ForEach(uniqueRatios, id: \.id) { ratioData in
                 HStack {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(ratioData.color) // ensure Color conforms to ShapeStyle
+                        .fill(ratioData.color)
                         .frame(width: 20, height: 20)
                     Text(ratioData.title)
                         .foregroundColor(.secondary)
@@ -224,83 +98,46 @@ struct HistoryPieChart: View {
         .padding(.horizontal)
     }
 
-    private func aggregateData() -> [PieDataSeries] {
-        let calendar = Calendar.current
-        var aggregatedData = [Date: [RatioData]]()
+    private func aggregateRatios(for timeUnit: Calendar.Component, ratios: [[RatioData]]) -> [RatioData] {
+        var aggregatedRatios: [RatioData] = []
 
-        for series in data {
-            for ratio in series.ratios {
-                let startDate: Date
-                switch timeUnit {
-                case .day:
-                    startDate = calendar.startOfDay(for: ratio.day) // 按天聚合，即每天的数据独立处理
-                default:
-                    startDate = calendar.dateInterval(of: timeUnit, for: ratio.day)?.start ?? ratio.day
+        for ratioGroup in ratios {
+            let groupedRatios = ratioGroup.groupedBy(timeUnit)
+            for (date, ratioDatas) in groupedRatios {
+                let totalRatio = ratioDatas.map { $0.ratio }.reduce(0, +)
+                for ratioData in ratioDatas {
+                    let aggregatedRatioData = RatioData(
+                        title: ratioData.title,
+                        day: date,
+                        ratio: ratioData.ratio / totalRatio,
+                        uiColor: ratioData.uiColor
+                    )
+                    aggregatedRatios.append(aggregatedRatioData)
                 }
-                aggregatedData[startDate, default: []].append(ratio)
             }
         }
 
-        return aggregatedData.map { date, ratios in
-            PieDataSeries(
-                title: "Aggregated for \(date.formatted())",
-                ratios: ratios
-            )
-        }
+        return aggregatedRatios.sorted { $0.day < $1.day }
     }
-
-//    private func aggregateData() -> [PieDataSeries] {
-//          let calendar = Calendar.current
-//          var aggregatedData = [Date: [RatioData]]()
-//
-//          for series in data {
-//              for ratio in series.ratios {
-//                  let startDate = calendar.dateInterval(of: timeUnit, for: ratio.day)?.start ?? ratio.day
-//                  aggregatedData[startDate, default: []].append(ratio)
-//              }
-//          }
-//
-//          return aggregatedData.map { date, ratios in
-//              PieDataSeries(
-//                  title: "Aggregated for \(date.formatted())",
-//                  ratios: ratios
-//  //                color: Color(uiColor: UIColor.systemBlue)  // Use a default system color or derive as needed
-//              )
-//          }
-//      }
 
     private func findSelectedRatioData(from angle: Double?) -> RatioData? {
         guard let angle = angle else { return nil }
         var cumulativeRatio: Double = 0.0
-        let totalRatio = data.flatMap { $0.ratios }.reduce(0) { $0 + $1.ratio }
+        let totalRatio = pieChart.data.flatMap { $0.ratios.flatMap { $0 } }.reduce(0) { $0 + $1.ratio }
 
-        for series in data {
-            for ratio in series.ratios {
-                let ratioPercentage = ratio.ratio / totalRatio
-                cumulativeRatio += ratioPercentage
-                if cumulativeRatio >= angle {
-                    return ratio
+        for series in pieChart.data {
+            for ratioGroup in series.ratios {
+                for ratio in ratioGroup {
+                    let ratioPercentage = ratio.ratio / totalRatio
+                    cumulativeRatio += ratioPercentage
+                    if cumulativeRatio >= angle {
+                        return ratio
+                    }
                 }
             }
         }
         return nil
     }
-
-//    private func findSelectedRatioData(from angle: Double?) -> RatioData? {
-//        guard let angle = angle else { return nil }
-//        let total = data.flatMap { $0.ratios }.reduce(0) { $0 + $1.ratio }
-//        var cumulative = 0.0
-//
-//        for series in data {
-//            for ratio in series.ratios {
-//                cumulative += ratio.ratio
-//                if cumulative / total >= angle {
-//                    return ratio
-//                }
-//            }
-//        }
-//        return nil
-//    }
 }
 
 extension Array where Element: Identifiable {

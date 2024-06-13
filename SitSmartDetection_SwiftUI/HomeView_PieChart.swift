@@ -26,13 +26,15 @@ struct HomeView_PieChart: View {
                 Spacer()
                 Chart {
                     ForEach(data) { series in
-                        ForEach(series.ratios, id: \.id) { ratioData in
-                            SectorMark(
-                                angle: .value(ratioData.title, ratioData.ratio),
-                                innerRadius: .ratio(0.6),
-                                angularInset: 8
-                            )
-                            .foregroundStyle(ratioData.color)
+                        ForEach(series.ratios, id: \.self) { ratioGroup in
+                            ForEach(ratioGroup, id: \.id) { ratioData in
+                                SectorMark(
+                                    angle: .value(ratioData.title, ratioData.ratio),
+                                    innerRadius: .ratio(0.6),
+                                    angularInset: 8
+                                )
+                                .foregroundStyle(ratioData.color)
+                            }
                         }
                     }
                 }
@@ -42,7 +44,7 @@ struct HomeView_PieChart: View {
     }
     
     private var legend: some View {
-        let uniqueRatios = data.flatMap { $0.ratios }.uniqued(by: \.title)
+        let uniqueRatios = data.flatMap { $0.ratios.flatMap { $0 } }.uniqued(by: \.title)
         return VStack(alignment: .leading) {
             Text("662.5 hr")
                 .foregroundStyle(.white)
