@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import SwiftData
+import TipKit
 
 @main
 struct SitSmartDetection_SwiftUIApp: App {
@@ -27,6 +28,13 @@ struct SitSmartDetection_SwiftUIApp: App {
             ContentView()
                 .background(Color(UIColor(red: 249/255, green: 249/255, blue: 249/255, alpha: 1)))
                 .edgesIgnoringSafeArea(.all)
+                .task {
+                    // Configure and load your tips at app launch.
+                    try? Tips.configure([
+                        .displayFrequency(.immediate),
+                        .datastoreLocation(.applicationDefault)
+                    ])
+                }
         }.modelContainer(container)
     }
 }

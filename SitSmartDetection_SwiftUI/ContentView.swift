@@ -42,14 +42,12 @@ struct ContentView: View {
                         .tag(2)
                     
                     FriendsView()
-                        .background(Color(red: 249/255, green: 249/255, blue: 249/255))
                         .tabItem {
                             Label("Friends", systemImage: "person.2")
                         }
                         .tag(3)
                     
                     ProfileView()
-                        .background(Color(red: 249/255, green: 249/255, blue: 249/255))
                         .tabItem {
                             Label("Profile", systemImage: "person.crop.circle")
                         }

@@ -92,7 +92,63 @@ class DetectionViewModel: ObservableObject {
     func resetRecord() {
         record = DetectionRecord()
     }
+    func getSingleRecordHistoryModel() -> HistoryModel{
+        return HistoryModel(initLineChartData: getSingleRecordLineChartData(), initPieChartData: getSingleRecordPieChartData(), timeUnit: .year)
+    }
+    private func getSingleRecordLineChartData() -> [DataSeries]{
+        var lineChartData: [DataSeries] = []
 
+        let time = record.startDetectTimeStamp
+        let headDataSerie = DataSeries(title:"Head", scores: [ScoreData(day: time, score: Double(record.head.score))])
+        let neckDataSerie = DataSeries(title:"Neck", scores: [ScoreData(day: time, score: Double(record.neck.score))])
+        let shoulderDataSerie = DataSeries(title:"Shoulder", scores: [ScoreData(day: time, score: Double(record.shoulder.score))])
+        let bodyDataSerie = DataSeries(title:"Back", scores: [ScoreData(day: time, score: Double(record.body.score))])
+        let feetDataSerie = DataSeries(title:"Leg", scores: [ScoreData(day: time, score: Double(record.feet.score))])
+
+        lineChartData = [headDataSerie, neckDataSerie, shoulderDataSerie, bodyDataSerie, feetDataSerie]
+        return lineChartData
+    }
+    private func getSingleRecordPieChartData() -> [PieDataSeries]{
+        let time = record.startDetectTimeStamp
+        var pieChartData: [PieDataSeries] = [
+            PieDataSeries(title: "Back", ratios: []),
+            PieDataSeries(title: "Leg", ratios: []),
+            PieDataSeries(title: "head", ratios: []),
+            PieDataSeries(title: "Neck", ratios: []),
+            PieDataSeries(title: "Shoulder", ratios: [])
+        ]
+        let legData = [
+            RatioData(title: "Flat", day: time, ratio: 100*(Double(record.feet.count["Flat", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Ankle-on-knee", day: time, ratio: 100*(Double(record.feet.count["Ankle-on-knee", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))
+        ]
+        let backData = [
+            RatioData(title: "Backward", day: time, ratio: 100*(Double(record.body.count["Backward", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Forward", day: time, ratio: 100*(Double(record.body.count["Forward", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.body.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+        ]
+        let headData = [
+            RatioData(title: "Bowed", day: time, ratio: 100*(Double(record.head.count["Bowed", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.head.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Tilt Back", day: time, ratio: 100*(Double(record.head.count["Tilt Back", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+        ]
+        let neckData = [
+            RatioData(title: "Forward", day: time, ratio: 100*(Double(record.neck.count["Forward", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.neck.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1))
+        ]
+        let shoulderData = [
+            RatioData(title: "Hunched", day: time, ratio: 100*(Double(record.shoulder.count["Hunched", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Neutral", day: time, ratio: 100*(Double(record.shoulder.count["Neutral", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Shrug", day: time, ratio: 100*(Double(record.shoulder.count["Shrug", default: 0])/Double(record.totalCount)), uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+        ]
+        
+        pieChartData[0].ratios = [backData]
+        pieChartData[1].ratios = [legData]
+        pieChartData[2].ratios = [headData]
+        pieChartData[3].ratios = [neckData]
+        pieChartData[4].ratios = [shoulderData]
+        
+        return pieChartData
+    }
 }
 
 
@@ -106,48 +162,52 @@ struct DetectionView: View {
     
     var body: some View {
         NavigationStack{
-            
-        VStack {
-            Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
-            HStack(spacing:15){
-                let rst = viewModel.getResults()
-                BodyPartResultView(detectionResult: rst[0])
-                BodyPartResultView(detectionResult: rst[1])
-                BodyPartResultView(detectionResult: rst[2])
-                BodyPartResultView(detectionResult: rst[3])
-                BodyPartResultView(detectionResult: rst[4])
-            }
-            if let frame = cameraManager.frame {
-                OverlayViewRepresentable(image: $cameraManager.frame, person: $cameraManager.person)
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 350, height: 467)
-                    .clipped()
-            } else {
-                Text("No Camera Feed")
-                    .foregroundColor(.white)
-                    .frame(width: 350, height: 467)
-                    .onAppear {
-                        print("No Camera Feed")
-                    }
-            }
-            Button(action: {
-                if cameraManager.isDetecting { //stop detection
-                    cameraManager.stopDetection()
-                    viewModel.countScore()
-                    let record = viewModel.getRecord()
-                    modelContext.insert(record)
-//                    viewModel.insertRecord(modelContext: modelContext)
-                    viewModel.resetResults()
-                    navigateToRecordList = true
-                } else { // start detection
-                    viewModel.resetRecord()
-                    cameraManager.startDetection()
+            VStack {
+                Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
+                HStack(spacing:15){
+                    let rst = viewModel.getResults()
+                    BodyPartResultView(detectionResult: rst[0])
+                    BodyPartResultView(detectionResult: rst[1])
+                    BodyPartResultView(detectionResult: rst[2])
+                    BodyPartResultView(detectionResult: rst[3])
+                    BodyPartResultView(detectionResult: rst[4])
                 }
-            }, label: {
-                Image(systemName: cameraManager.isDetecting ? "stop.circle.fill" : "play.circle.fill")
-            })
-            NavigationLink("", destination: DetectionRecordList(), isActive: $navigateToRecordList)
+                if let frame = cameraManager.frame {
+                    OverlayViewRepresentable(image: $cameraManager.frame, person: $cameraManager.person)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 350, height: 467)
+                        .clipped()
+                } else {
+                    Text("No Camera Feed")
+                        .foregroundColor(.white)
+                        .frame(width: 350, height: 467)
+                        .onAppear {
+                            print("No Camera Feed")
                         }
+                }
+                Button(action: {
+                    if cameraManager.isDetecting { //stop detection
+                        cameraManager.stopDetection()
+                        viewModel.countScore()
+                        let record = viewModel.getRecord()
+                        modelContext.insert(record)
+
+                        viewModel.resetResults()
+                        navigateToRecordList = true
+                    } else { // start detection
+                        viewModel.resetRecord()
+                        cameraManager.startDetection()
+                    }
+                }, label: {
+                    Image(systemName: cameraManager.isDetecting ? "stop.circle.fill" : "play.circle.fill")
+                        .foregroundColor(.accent)
+                })
+            }
+            .navigationDestination(isPresented: $navigateToRecordList) {
+                let historyModel = viewModel.getSingleRecordHistoryModel()
+                ReportView(report:historyModel)
+                // DetectionRecordList()
+            }
         }
         .onAppear {
             cameraManager.startSession()

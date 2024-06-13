@@ -7,13 +7,14 @@
 
 import SwiftUI
 import SwiftData
+import TipKit
 
 // 主視圖
 struct HistoryView: View {
     @Query private var records: [DetectionRecord]
     @Environment (\.modelContext) private var modelContext
     @StateObject var history: HistoryModel = {
-        return HistoryModel(averageScore: 0, initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
+        return HistoryModel(initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
     }()
     @State private var timePeriods = ["Year", "Month", "Week", "Day"]
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
@@ -22,6 +23,9 @@ struct HistoryView: View {
     @State private var displayOptions = ["Trend Score", "Accuracy Distribution"]
     @State private var selectedDisplayOption = 0
     private let emojiSize: CGFloat = 45
+    
+    var touchLandmarkTip = TouchLandmarkTip()
+    var touchToAllLandmarkTip = TouchToAllLandmarkTip()
     
     init() {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
@@ -34,7 +38,7 @@ struct HistoryView: View {
             ZStack {
                 Color(.accent)
                     .ignoresSafeArea()
-                VStack(spacing: 3) {
+                VStack(spacing: 13) {
                     Spacer()
                         .frame(height: 40)
                     timeSelectionView
@@ -47,16 +51,19 @@ struct HistoryView: View {
 
             VStack(spacing: 3) {
                 partsSelection
+                Spacer()
+                    .frame(height: 5)
                 displayOptionPicker
                 if selectedDisplayOption == 0 {
                     HistoryLineChart(lineChart: LineChart(data: history.lineChartData, timeUnit: history.timeUnit))
                 } else {
-                    HistoryPieChart(data: history.pieChartData, timeUnit: history.timeUnit)
+                    HistoryPieChart(pieChart: PieChart(data: history.pieChartData, timeUnit: history.timeUnit))
+//                    HistoryPieChart(pieChart: PieChart(data: actualData, timeUnit: history.timeUnit))
                 }
             }
             .padding()
-            .background(.bg)
         }
+        .background(.bg)
         .ignoresSafeArea()
         .onAppear {
             history.updateAvgScore()
@@ -71,7 +78,7 @@ struct HistoryView: View {
                 let height = geometry.size.height
                 Path { path in
                     path.move(to: CGPoint(x: 0, y: height * 0.9))  // 定义半圆的底部起点
-                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: 260), control2: CGPoint(x: 2 * width / 3, y: 260))
+                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: 275), control2: CGPoint(x: 2 * width / 3, y: 275))
                     path.addLine(to: CGPoint(x: width, y: height))
                     path.addLine(to: CGPoint(x: 0, y: height))
                 }
@@ -95,6 +102,8 @@ struct HistoryView: View {
             history.updateAvgScore()
             history.changeTimeUnit_N_currentTimeTextWidth()
             history.checkTimeLimit()
+            history.filterDataByCurrentTime()
+            history.updateChartData()
         }
         .padding()
     }
@@ -105,7 +114,6 @@ struct HistoryView: View {
             
             Button {
                 history.touchReduce()
-                history.updateAvgScore()
             } label: {
                 Image(systemName: "chevron.left")
                     .foregroundColor(.white)
@@ -120,7 +128,6 @@ struct HistoryView: View {
             
             Button {
                 history.touchAdd()
-                history.updateAvgScore()
             } label: {
                 Image(systemName: "chevron.right")
                     .foregroundColor(.white)
@@ -130,6 +137,13 @@ struct HistoryView: View {
 //            .frame(width: maxTextWidth)
             
             Spacer()
+        }
+        .onChange(of: history.currentTime) { _, _ in
+            history.updateDisplayDate()
+            history.updateAvgScore()
+            history.checkTimeLimit()
+            history.filterDataByCurrentTime()
+            history.updateChartData()
         }
     }
     
@@ -161,7 +175,8 @@ struct HistoryView: View {
             Text(history.selectedPartIndex == nil ? "All Body Parts" : parts[history.selectedPartIndex!])
                 .font(.title3)
                 .foregroundStyle(Color.gray)
-                .bold()
+//                .bold()
+//            TipView(touchLandmarkTip, arrowEdge: .bottom)
             HStack(spacing: 6) {
                 ForEach(parts.indices, id: \.self) { index in
                     Button(action: {
@@ -170,8 +185,11 @@ struct HistoryView: View {
                         }else{
                             history.selectedPartIndex = index  // Update selected index on tap
                         }
+                        history.filterDataByCurrentTime()
                         history.updateChartData()
                         history.updateAvgScore()
+                        touchLandmarkTip.invalidate(reason: .actionPerformed)
+                        TouchToAllLandmarkTip.hasTouchedButton = true
                     }) {
                         Image(parts[index])  // Assume image names match the parts array
                             .resizable()
@@ -183,7 +201,39 @@ struct HistoryView: View {
                     }
                 }
             }
+            .popoverTip(touchLandmarkTip, arrowEdge: .leading)
+            .popoverTip(touchToAllLandmarkTip, arrowEdge: .leading)
         }
+    }
+    
+    struct TouchLandmarkTip: Tip {
+        var title: Text {
+            Text("Touch")
+        }
+        var message: Text? {
+            Text("View the different body parts results")
+        }
+        var image: Image? {
+            Image(systemName: "hand.point.up.left")
+        }
+    }
+    
+    struct TouchToAllLandmarkTip: Tip {
+        var title: Text {
+            Text("Touch Again")
+        }
+        var message: Text? {
+            Text("View the all body parts results")
+        }
+        var image: Image? {
+            Image(systemName: "hand.point.up.left")
+        }
+        
+        var rules: [Rule] {
+            #Rule(Self.$hasTouchedButton) { $0 == true }
+        }
+        @Parameter
+        static var hasTouchedButton: Bool = false
     }
     
     var displayOptionPicker: some View {
@@ -202,5 +252,13 @@ struct HistoryView: View {
 struct HistoryView_Previews: PreviewProvider {
     static var previews: some View {
         HistoryView()
+            .task {
+                try? Tips.resetDatastore()
+                
+                try? Tips.configure([
+                    .displayFrequency(.immediate),
+                    .datastoreLocation(.applicationDefault)
+                ])
+            }
     }
 }

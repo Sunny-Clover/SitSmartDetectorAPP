@@ -21,7 +21,7 @@ struct BadgesDetailView: View {
             Image(partName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: StatCard_Width*0.4)
+//                .frame(width: StatCard_Width*0.4)
                 .padding(30)
                 .background(Circle().fill(color))
             Text("\(partName) \(stage)")

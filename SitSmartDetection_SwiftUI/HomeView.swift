@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import TipKit
 
 var StatCard_Width = UIScreen.main.bounds.width * 0.44
 var StatCard_Height = UIScreen.main.bounds.width * 0.4
 
 struct HomeView: View {
+//    private let favoriteLandmarkTip = FavoriteLandmarkTip()
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -129,6 +132,8 @@ struct TotalTime: View {
 }
 
 struct Level: View {
+    var touchLandmarkTip = TouchLandmarkTip()
+    @State private var showSheet = false
     var body: some View {
         VStack(alignment: .center) {
             HStack {
@@ -140,9 +145,19 @@ struct Level: View {
                     .foregroundColor(.white)
                     .bold()
                 Spacer()
-                Image(systemName: "questionmark.circle.fill")
-                    .foregroundStyle(.white)
-                    .opacity(0.8)
+                Button {
+                    showSheet.toggle()
+                } label: {
+                    Image(systemName: "questionmark.circle.fill")
+                        .foregroundStyle(.white)
+                        .opacity(0.8)
+                        .popoverTip(touchLandmarkTip, arrowEdge: .bottom)
+                }
+                .buttonStyle(.borderedProminent)
+                .sheet(isPresented: $showSheet) {
+                    Text("This is the expandable bottom sheet.")
+                        .presentationDetents([.medium, .large])
+                }
             }
             Spacer()
             Text("2")
@@ -156,6 +171,18 @@ struct Level: View {
         .background(.accent)
         .cornerRadius(10)
         .shadow(radius: 3)
+    }
+}
+
+struct TouchLandmarkTip: Tip {
+    var title: Text {
+        Text("Touch")
+    }
+    var message: Text? {
+        Text("View the rules for the level")
+    }
+    var image: Image? {
+        Image(systemName: "hand.point.up.left")
     }
 }
 
@@ -269,4 +296,12 @@ struct SittingStandard: View {
 
 #Preview {
     HomeView()
+        .task {
+            try? Tips.resetDatastore()
+            
+            try? Tips.configure([
+                .displayFrequency(.immediate),
+                .datastoreLocation(.applicationDefault)
+            ])
+        }
 }

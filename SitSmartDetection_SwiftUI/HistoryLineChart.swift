@@ -36,12 +36,13 @@ struct HistoryLineChart: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Text("Trend Score")
-                    .foregroundStyle(Color.gray)
-                .bold()
-                Spacer()
-            }
+//            HStack {
+//                Spacer()
+//                Text("Trend Score")
+//                    .foregroundStyle(Color.gray)
+//                .bold()
+//                Spacer()
+//            }
             Chart {
                 ForEach(lineChart.data) { series in
                     ForEach(aggregateScores(for: lineChart.timeUnit, scores: series.scores), id: \.day) { scoreData in
