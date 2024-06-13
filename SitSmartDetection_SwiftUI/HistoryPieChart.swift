@@ -99,25 +99,33 @@ struct HistoryPieChart: View {
     }
 
     private func aggregateRatios(for timeUnit: Calendar.Component, ratios: [[RatioData]]) -> [RatioData] {
-        var aggregatedRatios: [RatioData] = []
+        let calendar = Calendar.current
+        var aggregatedRatiosDict: [String: RatioData] = [:]
 
         for ratioGroup in ratios {
-            let groupedRatios = ratioGroup.groupedBy(timeUnit)
-            for (date, ratioDatas) in groupedRatios {
-                let totalRatio = ratioDatas.map { $0.ratio }.reduce(0, +)
-                for ratioData in ratioDatas {
-                    let aggregatedRatioData = RatioData(
+            for ratioData in ratioGroup {
+                let date = calendar.startOfDay(for: ratioData.day)
+                let key = "\(ratioData.title)-\(date)"
+                if let existingRatioData = aggregatedRatiosDict[key] {
+                    let newRatio = existingRatioData.ratio + ratioData.ratio
+                    aggregatedRatiosDict[key] = RatioData(
                         title: ratioData.title,
                         day: date,
-                        ratio: ratioData.ratio / totalRatio,
+                        ratio: newRatio,
                         uiColor: ratioData.uiColor
                     )
-                    aggregatedRatios.append(aggregatedRatioData)
+                } else {
+                    aggregatedRatiosDict[key] = RatioData(
+                        title: ratioData.title,
+                        day: date,
+                        ratio: ratioData.ratio,
+                        uiColor: ratioData.uiColor
+                    )
                 }
             }
         }
 
-        return aggregatedRatios.sorted { $0.day < $1.day }
+        return Array(aggregatedRatiosDict.values).sorted { $0.day < $1.day }
     }
 
     private func findSelectedRatioData(from angle: Double?) -> RatioData? {

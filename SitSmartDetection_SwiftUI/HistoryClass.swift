@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class HistoryModel: ObservableObject{
     @Published var selectedTime: Int = 0
@@ -35,9 +36,56 @@ class HistoryModel: ObservableObject{
         self.initLineChartData = initLineChartData
         self.lineChartData = initLineChartData
         self.initPieChartData = initPieChartData
-        self.pieChartData = initPieChartData
+//        self.pieChartData = initPieChartData
         self.timeUnit = timeUnit
+        self.currentTime = Date()
+        self.selectedTime = 0 // 默认值
+        
+        // 初始化 pieChartData
+               var allCorrectRatios: [RatioData] = []
+               var partiallyCorrectRatios: [RatioData] = []
+
+               for series in initPieChartData {
+                   for ratioGroup in series.ratios {
+                       for ratioData in ratioGroup {
+                           switch (series.title, ratioData.title) {
+                           case ("Back", "Neutral"),
+                                ("Leg", "Flat"),
+                                ("Head", "Neutral"),
+                                ("Neck", "Neutral"),
+                                ("Shoulder", "Neutral"):
+                               allCorrectRatios.append(ratioData)
+                           default:
+                               partiallyCorrectRatios.append(ratioData)
+                           }
+                       }
+                   }
+               }
+
+               let totalCount = Double(allCorrectRatios.count + partiallyCorrectRatios.count)
+               let allCorrectRatio = Double(allCorrectRatios.count) / totalCount
+               let partiallyCorrectRatio = Double(partiallyCorrectRatios.count) / totalCount
+
+               let allCorrectData = RatioData(
+                   title: "All Correct",
+                   day: Date(),
+                   ratio: allCorrectRatio,
+                   uiColor: UIColor(Color(red: 0.549, green: 0.875, blue: 0.841))
+               )
+               
+               let partiallyCorrectData = RatioData(
+                   title: "Partially Correct",
+                   day: Date(),
+                   ratio: partiallyCorrectRatio,
+                   uiColor: UIColor(Color(red: 0.940, green: 0.503, blue: 0.502))
+               )
+
+               self.pieChartData = [
+                   PieDataSeries(title: "init", ratios: [[allCorrectData, partiallyCorrectData]])
+               ]
+        
         updateDisplayDate()
+        updateAvgScore()
     }
     
     func changeTimeUnit_N_currentTimeTextWidth() {
@@ -208,6 +256,51 @@ class HistoryModel: ObservableObject{
         return averageScore
     }
     
+    func generateAllPartPieChartData(from data: [PieDataSeries]) -> [PieDataSeries] {
+        var allCorrectRatios: [RatioData] = []
+        var partiallyCorrectRatios: [RatioData] = []
+
+        for series in data {
+            for ratioGroup in series.ratios {
+                for ratioData in ratioGroup {
+                    switch (series.title, ratioData.title) {
+                    case ("Back", "Neutral"),
+                         ("Leg", "Flat"),
+                         ("Head", "Neutral"),
+                         ("Neck", "Neutral"),
+                         ("Shoulder", "Neutral"):
+                        allCorrectRatios.append(ratioData)
+                    default:
+                        partiallyCorrectRatios.append(ratioData)
+                    }
+                }
+            }
+        }
+
+        let totalCount = Double(allCorrectRatios.count + partiallyCorrectRatios.count)
+        let allCorrectRatio = Double(allCorrectRatios.count) / totalCount
+        let partiallyCorrectRatio = Double(partiallyCorrectRatios.count) / totalCount
+
+        let allCorrectData = RatioData(
+            title: "All Correct",
+            day: Date(),
+            ratio: allCorrectRatio,
+            uiColor: UIColor(Color(red: 0.549, green: 0.875, blue: 0.841))
+        )
+        
+        let partiallyCorrectData = RatioData(
+            title: "Partially Correct",
+            day: Date(),
+            ratio: partiallyCorrectRatio,
+            uiColor: UIColor(Color(red: 0.940, green: 0.503, blue: 0.502))
+        )
+
+        return [
+            PieDataSeries(title: "init", ratios: [[allCorrectData, partiallyCorrectData]])
+        ]
+    }
+
+    
     func filterDataByCurrentTime() {
         let calendar = Calendar.current
         let startDate: Date
@@ -231,7 +324,7 @@ class HistoryModel: ObservableObject{
             endDate = currentTime
         }
 
-        pieChartData = initNoneFilteredPieChartData.map { series in
+        pieChartData = initPieChartData.map { series in
             let filteredRatios = series.ratios.map { ratioArray in
                 ratioArray.filter { ratio in
                     ratio.day >= startDate && ratio.day < endDate
@@ -268,7 +361,7 @@ class HistoryModel: ObservableObject{
             self.lineChartData = self.lineChartData.filter { $0.title == "Leg" }
         // Add cases for other body parts
         default:
-            self.pieChartData = allPartPieChartData
+            self.pieChartData = generateAllPartPieChartData(from: pieChartData)
             self.lineChartData = self.lineChartData
         }
 //        print(self.lineChartData)

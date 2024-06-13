@@ -12,7 +12,7 @@ import TipKit
 struct HistoryView: View {
     
     @StateObject var history: HistoryModel = {
-        return HistoryModel(averageScore: 0, initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year)
+        return HistoryModel(averageScore: 0, initLineChartData: lineChartData, initPieChartData: initNoneFilteredPieChartData, timeUnit: .year)
     }()
     @State private var timePeriods = ["Year", "Month", "Week", "Day"]
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
@@ -29,6 +29,7 @@ struct HistoryView: View {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(red: 151/255, green: 181/255, blue: 198/255, alpha: 1)], for: .selected)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+        history.updateChartData()
     }
 
     var body: some View {

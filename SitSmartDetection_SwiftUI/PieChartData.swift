@@ -44,6 +44,11 @@ var initNoneFilteredPieChartData: [PieDataSeries] = [
             RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.65, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
             RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.3, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
             RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.05, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
+        ],
+        [
+            RatioData(title: "Backward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.65, uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
+            RatioData(title: "Forward", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.3, uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
+            RatioData(title: "Neutral", day: Date(timeIntervalSince1970: 1711312187.574123), ratio: 0.05, uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1))
         ]
     ]),
     PieDataSeries(title: "Leg", ratios: [
