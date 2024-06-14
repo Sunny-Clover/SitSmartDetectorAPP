@@ -147,11 +147,18 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
 
             do {
                 let (result, times) = try estimator.estimateSinglePose(on: pixelBuffer)
-                let hResult = hClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                let nResult = nClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                let sResult = sClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                let bResult = bClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                let fResult = fClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
+                var hResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
+                var nResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
+                var sResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
+                var bResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
+                var fResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
+                if (self.isDetecting){
+                    hResult = hClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
+                    nResult = nClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
+                    sResult = sClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
+                    bResult = bClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
+                    fResult = fClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
+                }
                 DispatchQueue.main.async {
                     self.frame = UIImage(ciImage: CIImage(cvPixelBuffer: pixelBuffer))
                     self.person = result

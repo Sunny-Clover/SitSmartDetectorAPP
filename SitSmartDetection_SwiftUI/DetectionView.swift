@@ -32,6 +32,7 @@ class DetectionViewModel: ObservableObject {
     }
     
     func updateResults(from response: [String:poseClassfiedResult]) {
+        print("updateResults called")
         headResult.postureType = response["head"]?.category
         neckResult.postureType = response["neck"]?.category
         shoulderResult.postureType = response["shoulder"]?.category
@@ -47,6 +48,7 @@ class DetectionViewModel: ObservableObject {
     }
     
     func updateCounts(from classifiedResult: [String: poseClassfiedResult]) {
+        print("update counts of record")
         if let headCategory = classifiedResult["head"]?.category {
             record.head.count[headCategory, default: 0] += 1
         }
@@ -93,6 +95,7 @@ class DetectionViewModel: ObservableObject {
         record = DetectionRecord()
     }
     func getSingleRecordHistoryModel() -> HistoryModel{
+        print("getting single record's data(HistoryModel)")
         return HistoryModel(initLineChartData: getSingleRecordLineChartData(), initPieChartData: getSingleRecordPieChartData(), timeUnit: .year)
     }
     private func getSingleRecordLineChartData() -> [DataSeries]{
@@ -147,7 +150,6 @@ class DetectionViewModel: ObservableObject {
         pieChartData[3].ratios = [neckData]
         pieChartData[4].ratios = [shoulderData]
         
-        print(pieChartData)
         return pieChartData
     }
 }
@@ -186,13 +188,18 @@ struct DetectionView: View {
                             print("No Camera Feed")
                         }
                 }
+                NavigationLink(destination: ReportView(report: viewModel.getSingleRecordHistoryModel()).onAppear {
+                    cameraManager.stopSession()
+                }, isActive: $navigateToRecordList) {
+                    EmptyView()
+                }
                 Button(action: {
-                    if cameraManager.isDetecting { //stop detection
+                    if cameraManager.isDetecting { // stop detection
                         cameraManager.stopDetection()
                         viewModel.countScore()
                         let record = viewModel.getRecord()
                         modelContext.insert(record)
-
+                        print("stop detection, isDetecting = \(cameraManager.isDetecting)")
                         viewModel.resetResults()
                         navigateToRecordList = true
                     } else { // start detection
@@ -205,31 +212,25 @@ struct DetectionView: View {
                         .frame(width: 50)
                 })
             }
-            .navigationDestination(isPresented: $navigateToRecordList) {
-                let historyModel = viewModel.getSingleRecordHistoryModel()
-                ReportView(report:historyModel)
-                // DetectionRecordList()
+            .onAppear {
+                cameraManager.startSession()
+                print("View appeared, camera session started")
+            }
+            .onDisappear {
+                cameraManager.stopSession()
+                print("View disappeared, camera session stopped")
+            }
+            .onReceive(cameraManager.$classifiedReslt) { result in
+                if let result = result{
+                    if !cameraManager.isDetecting {return}
+                    viewModel.updateCounts(from: result)
+                    viewModel.updateResults(from: result)
+                }
             }
         }
-        .onAppear {
-            cameraManager.startSession()
-            print("View appeared, camera session started")
-        }
-        .onDisappear {
-            cameraManager.stopSession()
-            print("View disappeared, camera session stopped")
-        }
-        .onReceive(cameraManager.$classifiedReslt) { result in
-            if let result = result{
-                if !cameraManager.isDetecting {return}
-                viewModel.updateCounts(from: result)
-                viewModel.updateResults(from: result)
-            }
-        }
-        }
-
+        
     }
-
+}
 
 
 struct OverlayViewRepresentable: UIViewRepresentable {
@@ -293,9 +294,9 @@ struct BodyPartResultView: View{
     }
 }
 
-#Preview {
-    DetectionView()
-}
+//#Preview {
+//    DetectionView()
+//}
 
 
 struct DetectionRecordList: View {
