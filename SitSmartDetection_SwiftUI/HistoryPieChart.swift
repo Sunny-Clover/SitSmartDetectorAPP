@@ -54,7 +54,7 @@ struct HistoryPieChart: View {
                             ForEach(aggregatedRatios, id: \.id) { ratioData in
                                 SectorMark(
                                     angle: .value(ratioData.title, ratioData.ratio),
-                                    angularInset: 8
+                                    angularInset: 4
                                 )
                                 .foregroundStyle(ratioData.color)
                                 .opacity(selectedSector == nil ? 1.0 : (selectedSector == ratioData.title ? 1.0 : 0.5))
@@ -128,8 +128,9 @@ struct HistoryPieChart: View {
         
         for ratioGroup in ratios {
             for ratioData in ratioGroup {
-                let date = calendar.startOfDay(for: ratioData.day)
+                let date = calendar.dateInterval(of: timeUnit, for: ratioData.day)?.start ?? calendar.startOfDay(for: ratioData.day)
                 let key = "\(ratioData.title)-\(date)"
+                
                 if let existingRatioData = aggregatedRatiosDict[key] {
                     let newRatio = existingRatioData.ratio + ratioData.ratio
                     aggregatedRatiosDict[key] = RatioData(
@@ -149,7 +150,14 @@ struct HistoryPieChart: View {
             }
         }
         
-        return Array(aggregatedRatiosDict.values).sorted { $0.day < $1.day }
+        let result = Array(aggregatedRatiosDict.values).sorted { $0.day < $1.day }
+        
+        // 打印結果以進行調試
+        print("aggregatedRatios:")
+        print(result)
+        print("~~~~~~~~~~~~~~~~~~~")
+        
+        return result
     }
 }
 
@@ -173,5 +181,5 @@ extension Array where Element == RatioData {
 
 #Preview {
 //    HistoryPieChart(pieChart: PieChart(data: initNoneFilteredPieChartData.filter { $0.title == "Head" }, timeUnit: .year))
-    HistoryPieChart(pieChart: PieChart(data: allPartPieChartData, timeUnit: .year))
+    HistoryPieChart(pieChart: PieChart(data: test, timeUnit: .year))
 }

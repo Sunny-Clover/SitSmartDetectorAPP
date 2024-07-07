@@ -155,7 +155,7 @@ struct Level: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .sheet(isPresented: $showSheet) {
-                    Text("This is the expandable bottom sheet.")
+                    Text("Accumulate by average score multiplied by total detection time.")
                         .presentationDetents([.medium, .large])
                 }
             }

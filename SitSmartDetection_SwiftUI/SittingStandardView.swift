@@ -13,10 +13,10 @@ struct SittingStandardView: View {
             VStack {
                 Image("SittingStandard")
                 HStack {
-                    VStack{
-                        Text("1. \n\n\n 2. \n\n\n 3. \n\n\n 4. \n\n\n\n 5. \n\n\n 6. \n\n\n 7. \n\n 8. \n\n\n 9. \n\n\n 10. \n\n\n\n 11. \n\n ")
-                        Spacer()
-                    }
+//                    VStack{
+//                        Text("1. \n\n\n 2. \n\n\n 3. \n\n\n 4. \n\n\n\n 5. \n\n\n 6. \n\n\n 7. \n\n 8. \n\n\n 9. \n\n\n 10. \n\n\n\n 11. \n\n ")
+//                        Spacer()
+//                    }
                     VStack {
                         
                         HStack {

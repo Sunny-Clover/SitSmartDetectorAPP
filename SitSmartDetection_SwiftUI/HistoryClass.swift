@@ -449,6 +449,8 @@ class HistoryModel: ObservableObject{
             self.lineChartData = self.lineChartData
         }
 //        print(self.lineChartData)
+        print(self.pieChartData)
+        print("-------------------------------------------")
     }
     
     func updateChartData_ReportView(){
