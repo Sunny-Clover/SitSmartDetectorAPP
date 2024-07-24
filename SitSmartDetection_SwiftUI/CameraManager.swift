@@ -4,19 +4,25 @@ import SwiftUI
 import os
 
 class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    @Published var frame: UIImage?
-    @Published var person: Person?
-    @Published var classifiedReslt:[String:poseClassfiedResult]?
+    @Published var frame: UIImage? // Pure camera frame
+    @Published var cgImage: CGImage?
+    @Published var detectionLayer = CALayer()
+    @Published var person: Person? // Movenet Detection results
+    @Published var previewLayer = AVCaptureVideoPreviewLayer() // To be used to make camera view with the detection results
+    @Published var classifiedReslt:[String:poseClassfiedResult]? // Pose classification results from person
+    
     private let session = AVCaptureSession()
-    private var poseEstimator: PoseEstimator?
-    private let videoQueue = DispatchQueue(label: "videoQueue")
+    private let videoQueue = DispatchQueue(label: "videoQueue") // allow run capture session on bg thread
 
+    // movenet settings
+    private var poseEstimator: PoseEstimator? // movenet
     private var modelType: ModelType = .movenetThunder
     private var threadCount: Int = 4
     private var delegate: Delegates = .gpu
     private let minimumScore = 0.2
     
     let queue = DispatchQueue(label: "serial_queue")
+    private let context = CIContext()
     var isRunning = false
     var isDetecting = false
     
@@ -54,7 +60,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
 
     private func setupCamera() {
         session.beginConfiguration()
-        guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+        guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else { // TODO: dual position must be accepted
             print("Failed to get default video device")
             return
         }
@@ -72,10 +78,10 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             return
         }
 
-        let videoOutput = AVCaptureVideoDataOutput()
+        let videoOutput = AVCaptureVideoDataOutput() // Data output sends frames to CMSampleBuffer and notify SampleBufferDelegate the frame is arrived, and the delegate read frame from sampleBuffer
         videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
         if session.canAddOutput(videoOutput) {
-            session.addOutput(videoOutput)
+            session.addOutput(videoOutput) //
             if let connection = videoOutput.connection(with: .video) {
                 connection.videoOrientation = .portrait
             }
@@ -111,6 +117,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     func getCaptureSession() -> AVCaptureSession {
         return session
     }
+    
 
     private func updateModel() {
         queue.async {
@@ -161,7 +168,15 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
                 }
                 DispatchQueue.main.async {
                     self.frame = UIImage(ciImage: CIImage(cvPixelBuffer: pixelBuffer))
+                    
+                    
+                    print("CameraManager: \(String(describing: self.frame?.size))")
                     self.person = result
+                    print(result)
+                    // draw the result on the UIImage
+                    if let image = self.frame, let person = self.person{
+                        self.drawPreviewLayer(person: person)
+                    }
                     if self.isDetecting {
                         self.classifiedReslt = ["head": hResult, "neck": nResult, "shoulder": sResult, "body":bResult, "feet":fResult]
                     }
@@ -172,29 +187,41 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         }
     }
 
+    
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        guard let cgImage = imageFromSampleBuffer(sampleBuffer: sampleBuffer) else { return }
         CVPixelBufferLockBaseAddress(pixelBuffer, CVPixelBufferLockFlags.readOnly)
         runModel(pixelBuffer)
+        DispatchQueue.main.async {
+            self.cgImage = cgImage
+        }
         CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags.readOnly)
+    }
+    private func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> CGImage? {
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
+        let ciImage = CIImage(cvPixelBuffer: imageBuffer)
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return nil }
+        
+        return cgImage
     }
 }
 
-struct poseClassfiedResult{
-    let category:String
-    let prob:Float32
-}
 
 struct CameraView: UIViewRepresentable {
     @ObservedObject var cameraManager: CameraManager
+    var drawTool = DrawTool()
 
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 350, height: 467))
         
         let previewLayer = AVCaptureVideoPreviewLayer(session: cameraManager.getCaptureSession())
         previewLayer.frame = view.frame
-        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.videoGravity = .resizeAspect
         view.layer.addSublayer(previewLayer)
+        if let person = cameraManager.person{
+            view.layer.addSublayer(drawTool.drawPerson(person: person))
+        }
         
         return view
     }
