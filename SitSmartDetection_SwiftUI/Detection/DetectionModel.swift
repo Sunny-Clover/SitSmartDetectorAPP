@@ -1,12 +1,14 @@
 //
-//  HistoryDataModel.swift
+//  DetectionModel.swift
 //  SitSmartDetection_SwiftUI
 //
-//  Created by 林君曆 on 2024/6/12.
+//  Created by 林君曆 on 2024/7/27.
 //
 
 import Foundation
 import SwiftData
+
+// Models for display UI
 
 struct BodyPartScore:Codable, Hashable {
     var count: [String: Int]
@@ -18,6 +20,24 @@ struct BodyPartScore:Codable, Hashable {
     }
 }
 
+struct poseClassfiedResult{
+    let category:String
+    let prob:Float32
+}
+
+struct ResultData: Decodable {
+    
+    var icon:String // = "backIcon"
+    var bodyPartName:String // = "Back"
+    var result:String? // = "correct" // or "wrong"
+    var postureType:String? // = "neutral"
+}
+extension ResultData{
+    static var fakeCorrectData = ResultData(icon: "backIcon", bodyPartName: "Back", result: "correct", postureType: "neutral")
+    static var fakeWrongData = ResultData(icon: "headIcon", bodyPartName: "Head", result: "wrong", postureType: "forward")
+}
+
+// SwiftData Model
 @Model
 final class DetectionRecord {
     var id: UUID

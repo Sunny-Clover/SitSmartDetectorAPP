@@ -11,6 +11,7 @@ import os
 
 
 class DrawTool{
+    /// Drawing config of the dot and line
     private enum Config {
         static let dot = (radius: CGFloat(10), color: UIColor.orange.cgColor)
         static let line = (width: CGFloat(5.0), color: UIColor.orange.cgColor)
@@ -32,19 +33,23 @@ class DrawTool{
       (from: BodyPart.rightKnee, to: BodyPart.rightAnkle),
     ]
     
+    /// Draw the person's trunk and joint
+    ///  - Parameters:
+    ///     - person: Person Instance from detection model
+    ///     - cgImage: Realtime camera cgImage
+    /// - Reference:
+    ///     https://developer.apple.com/documentation/uikit/uigraphicsimagerenderer
     func drawPerson(person: Person, cgImage: CGImage) -> CGImage? {
-        /// TODO: 參照影片的github code畫在perviewLayer上面
         let image = UIImage(cgImage: cgImage)
         let renderer = UIGraphicsImageRenderer(size: image.size)
         guard let strokes = strokes(from: person) else { return cgImage}
         
         let newImage = renderer.image{ context in
-            image.draw(at: .zero)
+            image.draw(at: .zero) // to put the image under our drawing first
             
             var cgContext = context.cgContext
             cgContext = drawLines(cgContext: cgContext, lines: strokes.lines)
             cgContext = drawDots(cgContext: cgContext, dots: strokes.dots)
-            
         }
         return newImage.cgImage
     }
@@ -73,11 +78,11 @@ class DrawTool{
         return cgContext
     }
 
+    /// Generate lines and dots from a person instance
     private func strokes(from person: Person) -> Strokes? {
-      var strokes = Strokes(dots: [], lines: []) //
-      // MARK: Visualization of detection result
+      var strokes = Strokes(dots: [], lines: [])
       var bodyPartToDotMap: [BodyPart: CGPoint] = [:] // 每個關鍵點對應的的座標(x, y)
-      for (index, part) in BodyPart.allCases.enumerated() {
+      for (index, part) in BodyPart.allCases.enumerated() { // allcase extract the enum to array
         let position = CGPoint(
           x: person.keyPoints[index].coordinate.x,
           y: person.keyPoints[index].coordinate.y)
@@ -86,7 +91,7 @@ class DrawTool{
       }
 
       do {
-          try strokes.lines = DrawTool.lines.map { map throws -> Line in // 如果有錯回傳Line
+          try strokes.lines = DrawTool.lines.map { map throws -> Line in // throw前綴代表有可能會有出錯
           guard let from = bodyPartToDotMap[map.from] else {
             throw VisualizationError.missingBodyPart(of: map.from)
           }
@@ -104,4 +109,20 @@ class DrawTool{
       }
       return strokes
     }
+}
+
+/// The strokes to be drawn in order to visualize a pose estimation result.
+struct Strokes {
+  var dots: [CGPoint]
+  var lines: [Line]
+}
+
+/// A straight line.
+struct Line {
+  let from: CGPoint
+  let to: CGPoint
+}
+
+enum VisualizationError: Error {
+  case missingBodyPart(of: BodyPart)
 }

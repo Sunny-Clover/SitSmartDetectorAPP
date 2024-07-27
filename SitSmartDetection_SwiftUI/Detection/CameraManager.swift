@@ -82,7 +82,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput) //
             if let connection = videoOutput.connection(with: .video) {
-                connection.videoOrientation = .portrait
+                connection.videoRotationAngle = 90
             }
         } else {
             print("Failed to add video output to session")
@@ -195,9 +195,4 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     }
     
 }
-struct poseClassfiedResult{
-    let category:String
-    let prob:Float32
-}
-
 
