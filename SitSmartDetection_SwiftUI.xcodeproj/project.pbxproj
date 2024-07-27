@@ -52,6 +52,8 @@
 		635B7DE72C50DD9B00AA6C75 /* DrawTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635B7DE62C50DD9B00AA6C75 /* DrawTool.swift */; };
 		635B7DEA2C54C2A000AA6C75 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635B7DE92C54C2A000AA6C75 /* DetectionViewModel.swift */; };
 		635B7DEE2C54C4A300AA6C75 /* DetectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635B7DED2C54C4A300AA6C75 /* DetectionModel.swift */; };
+		635B7DF12C5505B000AA6C75 /* SystemSoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635B7DF02C5505B000AA6C75 /* SystemSoundPlayer.swift */; };
+		635B7DF52C55436600AA6C75 /* WarningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635B7DF42C55436600AA6C75 /* WarningManager.swift */; };
 		636239602BF700C8007836A7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6362395F2BF700C8007836A7 /* ProfileView.swift */; };
 		6B3D69752BFF26D300227C5A /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3D69742BFF26D300227C5A /* FriendsView.swift */; };
 		6B3D69772BFF2A3E00227C5A /* FriendsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3D69762BFF2A3E00227C5A /* FriendsRow.swift */; };
@@ -109,6 +111,8 @@
 		635B7DE62C50DD9B00AA6C75 /* DrawTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTool.swift; sourceTree = "<group>"; };
 		635B7DE92C54C2A000AA6C75 /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 		635B7DED2C54C4A300AA6C75 /* DetectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionModel.swift; sourceTree = "<group>"; };
+		635B7DF02C5505B000AA6C75 /* SystemSoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSoundPlayer.swift; sourceTree = "<group>"; };
+		635B7DF42C55436600AA6C75 /* WarningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningManager.swift; sourceTree = "<group>"; };
 		6362395F2BF700C8007836A7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		63A460FD2BFFA3A3005557E9 /* SitSmartDetection-SwiftUI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SitSmartDetection-SwiftUI-Info.plist"; sourceTree = SOURCE_ROOT; };
 		6B3D69742BFF26D300227C5A /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
@@ -189,11 +193,11 @@
 				15EBFBFE2BF0B325009E76AF /* HistoryPieChart.swift */,
 				15C1A12F2C1B3A6D0045DD7D /* testPie.swift */,
 				15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */,
-				635B7DE62C50DD9B00AA6C75 /* DrawTool.swift */,
 				635B7DE82C54C26C00AA6C75 /* Detection */,
 				63BF42332C16E2D800F841C5 /* Movenet */,
 				63BF42312C15D63900F841C5 /* AuthView */,
 				634112022BFF1B6C00A8FF53 /* ProfileView */,
+				635B7DEF2C55056700AA6C75 /* Utilities */,
 				1583831E2BE68ED3001FEE73 /* Assets.xcassets */,
 				158383202BE68ED3001FEE73 /* Preview Content */,
 			);
@@ -247,8 +251,18 @@
 				635B7DE92C54C2A000AA6C75 /* DetectionViewModel.swift */,
 				635B7DED2C54C4A300AA6C75 /* DetectionModel.swift */,
 				63121E682C171B1A005C1974 /* CameraManager.swift */,
+				635B7DF42C55436600AA6C75 /* WarningManager.swift */,
 			);
 			path = Detection;
+			sourceTree = "<group>";
+		};
+		635B7DEF2C55056700AA6C75 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				635B7DE62C50DD9B00AA6C75 /* DrawTool.swift */,
+				635B7DF02C5505B000AA6C75 /* SystemSoundPlayer.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		63BF42312C15D63900F841C5 /* AuthView */ = {
@@ -428,11 +442,13 @@
 				6330E66C2C18759B0052FA7D /* PoseConfig.swift in Sources */,
 				6B3D697B2BFF5A8600227C5A /* MeScoreRow.swift in Sources */,
 				635B7DEA2C54C2A000AA6C75 /* DetectionViewModel.swift in Sources */,
+				635B7DF52C55436600AA6C75 /* WarningManager.swift in Sources */,
 				6BE22D0F2BFDDE1800FCFF06 /* CalProgressRatio.swift in Sources */,
 				1555B6372BFC72F600BBEF69 /* BadgesDetailView.swift in Sources */,
 				1583831B2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift in Sources */,
 				63121E692C171B1A005C1974 /* CameraManager.swift in Sources */,
 				15EBFBFF2BF0B325009E76AF /* HistoryPieChart.swift in Sources */,
+				635B7DF12C5505B000AA6C75 /* SystemSoundPlayer.swift in Sources */,
 				6330E6662C1874F10052FA7D /* PoseEstimator.swift in Sources */,
 				635B7DEE2C54C4A300AA6C75 /* DetectionModel.swift in Sources */,
 				634112062BFF246700A8FF53 /* ProfileCustomizationView.swift in Sources */,

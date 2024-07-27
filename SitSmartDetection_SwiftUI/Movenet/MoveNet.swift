@@ -261,9 +261,6 @@ final class MoveNet: PoseEstimator {
     // Calculates total confidence score of each key position.
     let totalScore = totalScoreSum / Float32(numKeyPoints)
 
-    // For Debug
-    print("---In Movenet postprocess function---")
-    print("imageWidth: \(imageWidth), imageHeight: \(imageHeight), inputWidth: \(inputWidth), inputHeight: \(inputHeight)")
     // Make `Person` from `keypoints'. Each point is adjusted to the coordinate of the input image.
     return Person(keyPoints: keyPoints, score: totalScore)
   }

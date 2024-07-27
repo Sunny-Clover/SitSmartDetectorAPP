@@ -29,7 +29,7 @@ struct ResultData: Decodable {
     
     var icon:String // = "backIcon"
     var bodyPartName:String // = "Back"
-    var result:String? // = "correct" // or "wrong"
+    var result:String? // = "correct" // or "wrong" // TODO: Use boolean type is better
     var postureType:String? // = "neutral"
 }
 extension ResultData{

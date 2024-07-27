@@ -156,6 +156,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
                         self.classifiedReslt = ["head": hResult, "neck": nResult, "shoulder": sResult, "body":bResult, "feet":fResult]
                     }
                 }
+//                // Debug: to monitor the latency
+//                print(times)
             } catch {
                 os_log("Error running pose estimation.", type: .error)
             }

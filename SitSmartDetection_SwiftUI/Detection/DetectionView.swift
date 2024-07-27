@@ -17,7 +17,6 @@ struct DetectionView: View {
     var body: some View {
         NavigationStack{
             VStack {
-                
                 Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
                 HStack(spacing:15){
                     let rst = viewModel.getResults()

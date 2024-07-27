@@ -15,6 +15,7 @@ class DetectionViewModel: ObservableObject {
     @Published var legResult = ResultData(icon: "legIcon", bodyPartName: "Leg", result: nil, postureType: nil)
     
     private var record: DetectionRecord
+    private var warningManager = WarningManager(maxIncorrectCount: 30) // TODO: Init by real user setting
     
     init(record: DetectionRecord) {
         self.record = record
@@ -32,8 +33,9 @@ class DetectionViewModel: ObservableObject {
         record.detectionInterval = record.endDetectTimeStamp.timeIntervalSince(record.startDetectTimeStamp)
     }
     
+    /// callback for receiving the new model output
     func updateResults(from response: [String:poseClassfiedResult]) {
-        print("updateResults called")
+//        print("updateResults called")
         headResult.postureType = response["head"]?.category
         neckResult.postureType = response["neck"]?.category
         shoulderResult.postureType = response["shoulder"]?.category
@@ -46,10 +48,15 @@ class DetectionViewModel: ObservableObject {
         shoulderResult.result = (response["shoulder"]?.category == "Neutral") ? "correct" : "wrong"
         backResult.result = (response["body"]?.category == "Neutral") ? "correct" : "wrong"
         legResult.result = (response["feet"]?.category == "Flat") ? "correct" : "wrong"
+        
+        // 更新WarmingManager裡面的紀錄
+        warningManager.updateResults(results: [headResult, neckResult, shoulderResult, backResult, legResult])
+        
     }
     
+    /// callback for receiving the new model output
     func updateCounts(from classifiedResult: [String: poseClassfiedResult]) {
-        print("update counts of record")
+//        print("update counts of record")
         if let headCategory = classifiedResult["head"]?.category {
             record.head.count[headCategory, default: 0] += 1
         }
