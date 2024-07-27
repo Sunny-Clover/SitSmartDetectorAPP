@@ -32,50 +32,47 @@ class DrawTool{
       (from: BodyPart.rightKnee, to: BodyPart.rightAnkle),
     ]
     
-    func drawPerson(person: Person) -> CALayer{
+    func drawPerson(person: Person, cgImage: CGImage) -> CGImage? {
         /// TODO: 參照影片的github code畫在perviewLayer上面
-        var detectionLayer = CALayer()
+        let image = UIImage(cgImage: cgImage)
+        let renderer = UIGraphicsImageRenderer(size: image.size)
+        guard let strokes = strokes(from: person) else { return cgImage}
         
-        guard let strokes = strokes(from: person) else { return detectionLayer}
-        detectionLayer = drawLines(at: detectionLayer, lines: strokes.lines)
-        detectionLayer = drawDots(at: detectionLayer, dots: strokes.dots)
-        
-        return detectionLayer
+        let newImage = renderer.image{ context in
+            image.draw(at: .zero)
+            
+            var cgContext = context.cgContext
+            cgContext = drawLines(cgContext: cgContext, lines: strokes.lines)
+            cgContext = drawDots(cgContext: cgContext, dots: strokes.dots)
+            
+        }
+        return newImage.cgImage
     }
-    func drawLines(at layer: CALayer , lines: [Line])->CALayer{
+    func drawLines(cgContext: CGContext, lines: [Line])->CGContext{
         for line in lines{
+            
             let linePath = UIBezierPath()
             linePath.move(to: line.from)
             linePath.addLine(to: line.to)
             
-            let lineLayer = CAShapeLayer()
-            lineLayer.path = linePath.cgPath
-            lineLayer.strokeColor = Config.line.color
-            lineLayer.lineWidth = Config.line.width
-            layer.addSublayer(lineLayer)
+            cgContext.addPath(linePath.cgPath)
+            cgContext.setStrokeColor(Config.line.color)
+            cgContext.setLineWidth(Config.line.width)
+            cgContext.strokePath()
+
         }
-        return layer
+        return cgContext
     }
-    func drawDots(at layer: CALayer, dots: [CGPoint])->CALayer{
+    func drawDots(cgContext: CGContext, dots: [CGPoint])->CGContext{
         for dot in dots {
-            let shapeLayer = CAShapeLayer()
             let circlePath = UIBezierPath(arcCenter: dot, radius: Config.dot.radius, startAngle: 0, endAngle: CGFloat(2 * Double.pi), clockwise: true)
-            shapeLayer.path = circlePath.cgPath
-            shapeLayer.fillColor = Config.dot.color
-            
-            layer.addSublayer(shapeLayer)
+            cgContext.addPath(circlePath.cgPath)
+            cgContext.setFillColor(Config.dot.color)
+            cgContext.fillPath()
         }
-        return layer
+        return cgContext
     }
-    
-    func drawBoundingBox(_ bounds: CGRect) -> CALayer {
-        let boxLayer = CALayer()
-        boxLayer.frame = bounds
-        boxLayer.borderWidth = 3.0
-        boxLayer.borderColor = CGColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
-        boxLayer.cornerRadius = 4
-        return boxLayer
-    }
+
     private func strokes(from person: Person) -> Strokes? {
       var strokes = Strokes(dots: [], lines: []) //
       // MARK: Visualization of detection result

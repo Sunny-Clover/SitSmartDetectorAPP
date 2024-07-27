@@ -4,25 +4,24 @@ import SwiftUI
 import os
 
 class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    @Published var frame: UIImage? // Pure camera frame
-    @Published var cgImage: CGImage?
-    @Published var detectionLayer = CALayer()
+    @Published var cgImage: CGImage? // Realtime detection image
     @Published var person: Person? // Movenet Detection results
-    @Published var previewLayer = AVCaptureVideoPreviewLayer() // To be used to make camera view with the detection results
     @Published var classifiedReslt:[String:poseClassfiedResult]? // Pose classification results from person
     
+    private let drawTool = DrawTool()
     private let session = AVCaptureSession()
     private let videoQueue = DispatchQueue(label: "videoQueue") // allow run capture session on bg thread
-
+    
     // movenet settings
     private var poseEstimator: PoseEstimator? // movenet
     private var modelType: ModelType = .movenetThunder
     private var threadCount: Int = 4
     private var delegate: Delegates = .gpu
-    private let minimumScore = 0.2
+    private let minimumScore = 0.2 // min bound to show detection rst
     
     let queue = DispatchQueue(label: "serial_queue")
     private let context = CIContext()
+    
     var isRunning = false
     var isDetecting = false
     
@@ -38,7 +37,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         updateModel()
         checkCameraAuthorization()
     }
-
+    
     private func checkCameraAuthorization() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -57,14 +56,14 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             fatalError("Unknown camera authorization status")
         }
     }
-
+    
     private func setupCamera() {
         session.beginConfiguration()
         guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else { // TODO: dual position must be accepted
             print("Failed to get default video device")
             return
         }
-
+        
         do {
             let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
             if session.canAddInput(videoDeviceInput) {
@@ -77,7 +76,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             print("Failed to create video device input: \(error)")
             return
         }
-
+        
         let videoOutput = AVCaptureVideoDataOutput() // Data output sends frames to CMSampleBuffer and notify SampleBufferDelegate the frame is arrived, and the delegate read frame from sampleBuffer
         videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
         if session.canAddOutput(videoOutput) {
@@ -89,36 +88,11 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             print("Failed to add video output to session")
             return
         }
-
+        
         session.commitConfiguration()
         print("Camera setup complete")
     }
-
-    func startSession() {
-        videoQueue.async {
-            self.session.startRunning()
-            print("Camera session started")
-        }
-    }
-
-    func stopSession() {
-        videoQueue.async {
-            self.session.stopRunning()
-            print("Camera session stopped")
-        }
-    }
-    func startDetection(){
-        isDetecting = true
-    }
-    func stopDetection(){
-        isDetecting = false
-    }
     
-    func getCaptureSession() -> AVCaptureSession {
-        return session
-    }
-    
-
     private func updateModel() {
         queue.async {
             do {
@@ -138,8 +112,11 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             }
         }
     }
-
+    
     private func runModel(_ pixelBuffer: CVPixelBuffer) {
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
+        
         guard !isRunning else { return }
         guard let estimator = poseEstimator else { return }
         guard let hClassifier = headClassifier else { return }
@@ -147,11 +124,11 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         guard let sClassifier = shoulderClassifier else { return }
         guard let bClassifier = bodyClassifier else { return }
         guard let fClassifier = feetClassifier else { return }
-
+        
         queue.async {
             self.isRunning = true
             defer { self.isRunning = false }
-
+            
             do {
                 let (result, times) = try estimator.estimateSinglePose(on: pixelBuffer)
                 var hResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
@@ -166,17 +143,15 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
                     bResult = bClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
                     fResult = fClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
                 }
-                DispatchQueue.main.async {
-                    self.frame = UIImage(ciImage: CIImage(cvPixelBuffer: pixelBuffer))
-                    
-                    
-                    print("CameraManager: \(String(describing: self.frame?.size))")
+                DispatchQueue.main.async { // data for UI
                     self.person = result
-                    print(result)
-                    // draw the result on the UIImage
-                    if let image = self.frame, let person = self.person{
-                        self.drawPreviewLayer(person: person)
+                    
+                    if result.score >= 0.2{
+                        self.cgImage = self.drawTool.drawPerson(person: result, cgImage: cgImage)
+                    }else{
+                        self.cgImage = cgImage
                     }
+                    
                     if self.isDetecting {
                         self.classifiedReslt = ["head": hResult, "neck": nResult, "shoulder": sResult, "body":bResult, "feet":fResult]
                     }
@@ -186,49 +161,43 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             }
         }
     }
-
+    
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        guard let cgImage = imageFromSampleBuffer(sampleBuffer: sampleBuffer) else { return }
+
         CVPixelBufferLockBaseAddress(pixelBuffer, CVPixelBufferLockFlags.readOnly)
         runModel(pixelBuffer)
-        DispatchQueue.main.async {
-            self.cgImage = cgImage
-        }
         CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags.readOnly)
     }
-    private func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> CGImage? {
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
-        let ciImage = CIImage(cvPixelBuffer: imageBuffer)
-        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return nil }
-        
-        return cgImage
-    }
-}
-
-
-struct CameraView: UIViewRepresentable {
-    @ObservedObject var cameraManager: CameraManager
-    var drawTool = DrawTool()
-
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 350, height: 467))
-        
-        let previewLayer = AVCaptureVideoPreviewLayer(session: cameraManager.getCaptureSession())
-        previewLayer.frame = view.frame
-        previewLayer.videoGravity = .resizeAspect
-        view.layer.addSublayer(previewLayer)
-        if let person = cameraManager.person{
-            view.layer.addSublayer(drawTool.drawPerson(person: person))
+    
+    // Setting functions
+    func startSession() {
+        videoQueue.async {
+            self.session.startRunning()
+            print("Camera session started")
         }
-        
-        return view
+    }
+    func stopSession() {
+        videoQueue.async {
+            self.session.stopRunning()
+            print("Camera session stopped")
+        }
+    }
+    func startDetection(){
+        isDetecting = true
+    }
+    func stopDetection(){
+        isDetecting = false
+    }
+    func getCaptureSession() -> AVCaptureSession {
+        return session
     }
     
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // 更新视图时需要执行的操作
-    }
+}
+struct poseClassfiedResult{
+    let category:String
+    let prob:Float32
 }
 
 

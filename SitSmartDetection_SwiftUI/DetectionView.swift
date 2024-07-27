@@ -180,15 +180,9 @@ struct DetectionView: View {
                 }
                 
                 if let image = cameraManager.cgImage {
-//                    OverlayViewRepresentable(image: $cameraManager.frame, person: $cameraManager.person)
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width: 350, height: 467)
-//                        .clipped()
-                    CameraView(cameraManager: cameraManager)
+                    Image(image, scale: 1.0, orientation: .up, label: Text("Image"))
+                        .resizable()
                         .frame(width: 350, height: 467)
-//                    Image(image, scale: 1.0, orientation: .up, label: Text("Image"))
-//                        .resizable()
-//                        .frame(width: 350, height: 467)
                         
                 } else {
                     Text("No Camera Feed")
@@ -244,29 +238,6 @@ struct DetectionView: View {
 }
 
 
-struct OverlayViewRepresentable: UIViewRepresentable {
-    @Binding var image: UIImage?
-    @Binding var person: Person?
-
-    func makeUIView(context: Context) -> OverlayView {
-        let overlayView = OverlayView()
-        overlayView.contentMode = .scaleAspectFit
-        return overlayView
-    }
-
-    func updateUIView(_ uiView: OverlayView, context: Context) {
-        guard let image = image, let person = person else { return }
-        uiView.image = image
-        uiView.draw(at: image, person: person)
-        if let temp = uiView.image {
-            print("OverlayView: \(temp.size)")
-            print("Camera: \(image.size)")
-            print("螢幕：\(UIScreen.main.bounds)")
-            
-        }
-    }
-}
-
 struct BodyPartResultView: View{
     var detectionResult:ResultData
     var body: some View {
@@ -311,45 +282,7 @@ struct BodyPartResultView: View{
     }
 }
 
-//#Preview {
-//    DetectionView()
-//}
-
-
-struct DetectionRecordList: View {
-    @Query private var records: [DetectionRecord]
-
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(records, id: \.id) { record in
-                    VStack(alignment: .leading) {
-                        Text("head:\(record.head.score)")
-                        Text("body:\(record.body.score)")
-                        Text("shoulder:\(record.shoulder.score)")
-                        Text("neck:\(record.neck.score)")
-                        Text("feet:\(record.feet.score)")
-
-                    }
-                }
-            }
-            .navigationTitle("Detection Records")
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addRecord) {
-                        Label("Add Record", systemImage: "plus")
-                    }
-                }
-            }
-        }
-    }
-
-    private func addRecord() {
-        // 此處插入新增紀錄的代碼
-    }
-}
 
 #Preview {
-    DetectionRecordList()
-        .modelContainer(for: DetectionRecord.self, inMemory: true)
+    DetectionView()
 }

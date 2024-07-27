@@ -194,6 +194,7 @@
 				632182592BF0D5FD000BCED0 /* DetectionView.swift */,
 				63121E682C171B1A005C1974 /* CameraManager.swift */,
 				6330E6742C18A8570052FA7D /* OverlayView.swift */,
+				635B7DE62C50DD9B00AA6C75 /* DrawTool.swift */,
 				6330E6832C19DC080052FA7D /* HistoryDataModel.swift */,
 				63BF42332C16E2D800F841C5 /* Movenet */,
 				63BF42322C15D68600F841C5 /* DataModel */,
@@ -201,7 +202,6 @@
 				634112022BFF1B6C00A8FF53 /* ProfileView */,
 				1583831E2BE68ED3001FEE73 /* Assets.xcassets */,
 				158383202BE68ED3001FEE73 /* Preview Content */,
-				635B7DE62C50DD9B00AA6C75 /* DrawTool.swift */,
 			);
 			path = SitSmartDetection_SwiftUI;
 			sourceTree = "<group>";
