@@ -236,7 +236,7 @@ final class MoveNet: PoseEstimator {
 
     let widthRatio = (cropRegion.width * imageWidth / inputWidth)
     let heightRatio = (cropRegion.height * imageHeight / inputHeight)
-
+      
     // Translate the coordinates from the model output's [0..1] back to that of
     // the input image
     var positions: [CGFloat] = []

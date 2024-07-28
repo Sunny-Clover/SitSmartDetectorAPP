@@ -51,7 +51,7 @@ class OverlayView: UIImageView {
   ///     - person: Keypoints of the person detected (i.e. output of a pose estimation model)
   func draw(at image: UIImage, person: Person) {
     if context == nil {
-      UIGraphicsBeginImageContext(image.size)
+      UIGraphicsBeginImageContextWithOptions(image.size, false, 0.5) // Begin drawing
       guard let context = UIGraphicsGetCurrentContext() else {
         fatalError("set current context faild")
       }
@@ -102,9 +102,9 @@ class OverlayView: UIImageView {
   /// - Parameters:
   ///     - person: The detected person (i.e. output of a pose estimation model).
   private func strokes(from person: Person) -> Strokes? {
-    var strokes = Strokes(dots: [], lines: [])
+    var strokes = Strokes(dots: [], lines: []) // 
     // MARK: Visualization of detection result
-    var bodyPartToDotMap: [BodyPart: CGPoint] = [:]
+    var bodyPartToDotMap: [BodyPart: CGPoint] = [:] // 每個關鍵點的(x, y)
     for (index, part) in BodyPart.allCases.enumerated() {
       let position = CGPoint(
         x: person.keyPoints[index].coordinate.x,
@@ -135,17 +135,17 @@ class OverlayView: UIImageView {
 }
 
 /// The strokes to be drawn in order to visualize a pose estimation result.
-fileprivate struct Strokes {
+struct Strokes {
   var dots: [CGPoint]
   var lines: [Line]
 }
 
 /// A straight line.
-fileprivate struct Line {
+struct Line {
   let from: CGPoint
   let to: CGPoint
 }
 
-fileprivate enum VisualizationError: Error {
+enum VisualizationError: Error {
   case missingBodyPart(of: BodyPart)
 }
