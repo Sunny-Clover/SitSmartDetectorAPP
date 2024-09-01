@@ -155,6 +155,13 @@ class UserService {
             }
             .store(in: &cancellables) // Retain this subscription
     }
+    
+    func logout(completion: @escaping () -> Void){
+        // remove token
+        TokenManager.shared.deleteToken(key: TokenManager.shared.accessTokenKey)
+        TokenManager.shared.deleteToken(key: TokenManager.shared.refreshTokenKey)
+        completion()
+    }
 }
 
 

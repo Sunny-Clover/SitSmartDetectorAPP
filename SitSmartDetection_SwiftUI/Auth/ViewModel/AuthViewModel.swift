@@ -22,15 +22,130 @@ final class AuthViewModel: ObservableObject {
         checkAuthentication()
     }
     
+    func checkAuthentication() {
+        if let _ = TokenManager.shared.retrieveToken(key: TokenManager.shared.accessTokenKey){
+            DispatchQueue.main.async {
+                self.isAuthenticated = true
+            }
+        }else{
+            DispatchQueue.main.async {
+                self.isAuthenticated = false
+            }
+        }
+     }
+
+     func fetchUserData() {
+         print("VM's fetchUserData called!")
+         userService.fetchUserData { [weak self] result in
+             switch result {
+             case .success(let user):
+                 self?.handleSuccessfulFetch(user)
+             case .failure(let error):
+                 // TODO: 還未實作
+                 if (error == .Unauthorized){
+                     self?.refreshTokenAndFetchUserData()
+                 }
+//                 self?.handleFetchError(error)
+             }
+         }
+     }
+
+     private func handleSuccessfulFetch(_ user: UserResponse) {
+         // Handle successful data fetch, update UI, navigate to MainView
+         // Store user data and update UI
+         DispatchQueue.main.async {
+             self.isAuthenticated = true
+             self.userInfo = user // Data Binding automatically update UI
+         }
+     }
+
+     private func handleFetchError(_ error: AuthError) {
+         // TODO: 要加上fetch資料的錯誤處理，像是過期了怎辦
+//         if error.isTokenExpired {
+//             refreshTokenAndFetchUserData()
+//         } else {
+//             isAuthenticated = false
+//             // Navigate to AuthView
+//         }
+         
+     }
+
+    // TBU
+     private func refreshTokenAndFetchUserData() {
+         userService.refreshToken { [weak self] result in
+             switch result {
+             case .success:
+                 self?.fetchUserData()  // 重新获取用户数据
+             case .failure:
+                 
+                 self?.isAuthenticated = false
+                 // 导航至 AuthView
+             }
+         }
+     }
+
+    func login(username:String, password:String) {
+         // Handle user login and fetch user data
+        print("AuthVM login called")
+        userService.login(username: username, password: password){
+            DispatchQueue.main.async {
+                self.isAuthenticated = true
+            }
+            self.fetchUserData()
+        }
+
+        // TODO: Add additional oper e.g. fetchUserData automatically
+//         userService.login() { [weak self] success in
+//             if success {
+//                 self?.fetchUserData()
+//             } else {
+//                 self?.isAuthenticated = false
+//                 // Handle login failure, possibly show an error
+//             }
+//         }
+     }
+    
+    func logout(){
+        print("AuthVM logout called")
+        userService.logout(){
+            DispatchQueue.main.async {
+                self.isAuthenticated = false
+            }
+        }
+    }
+}
+
+enum AuthError: Error, Equatable {
+    case missingToken
+    case Unauthorized
+    case tokenExpired
+    case other(Error)
+    
+    static func ==(lhs: AuthError, rhs: AuthError) -> Bool {
+        switch (lhs, rhs) {
+        case (.missingToken, .missingToken),
+             (.Unauthorized, .Unauthorized),
+             (.tokenExpired, .tokenExpired):
+            return true
+        case (.other(let lhsError), .other(let rhsError)):
+            return lhsError.localizedDescription == rhsError.localizedDescription
+        default:
+            return false
+        }
+    }
+}
+
+
+
 //    @Published var username: String = ""
 //    @Published var password: String = ""
 //    @Published var userID: String?
 //    @Published var isLoading: Bool = false
 //    @Published var errorMessage: String?
-    
+
 //    private var baseURL:URL = Config.shared.baseURL
 //    private var cancellables = Set<AnyCancellable>()
-//    
+//
 //    func signin() {
 //        isLoading = true
 //        errorMessage = nil
@@ -39,10 +154,10 @@ final class AuthViewModel: ObservableObject {
 //        var tokenRequest = URLRequest(url: tokenURL)
 //        tokenRequest.httpMethod = "POST"
 //        tokenRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        
+//
 //        let tokenBody: [String: Any] = ["username": username, "password": password]
 //        tokenRequest.httpBody = try? JSONSerialization.data(withJSONObject: tokenBody)
-//        
+//
 //        // Request for tokens then call callback getUserInfo
 //        URLSession.shared.dataTaskPublisher(for: tokenRequest) // return a dataTaskPublisher
 //            .tryMap { output in // = dataTaskPublisher.Output, which is the result of the request
@@ -86,100 +201,4 @@ final class AuthViewModel: ObservableObject {
 //            .decode(type: UserResponse.self, decoder: JSONDecoder())
 //            .eraseToAnyPublisher()
 //    }
-//    
-    
-    func checkAuthentication() {
-        if let _ = TokenManager.shared.retrieveToken(key: TokenManager.shared.accessTokenKey){
-            self.isAuthenticated = true
-        }else{
-            self.isAuthenticated = false
-        }
-     }
-
-     func fetchUserData() {
-         print("VM's fetchUserData called!")
-         userService.fetchUserData { [weak self] result in
-             switch result {
-             case .success(let user):
-                 self?.handleSuccessfulFetch(user)
-             case .failure(let error):
-                 // TODO: 還未實作
-                 if (error == .Unauthorized){
-                     self?.refreshTokenAndFetchUserData()
-                 }
-//                 self?.handleFetchError(error)
-             }
-         }
-     }
-
-     private func handleSuccessfulFetch(_ user: UserResponse) {
-         // Handle successful data fetch, update UI, navigate to MainView
-         // Store user data and update UI
-         isAuthenticated = true
-         userInfo = user // Data Binding automatically update UI
-     }
-
-     private func handleFetchError(_ error: AuthError) {
-         // TODO: 要加上fetch資料的錯誤處理，像是過期了怎辦
-//         if error.isTokenExpired {
-//             refreshTokenAndFetchUserData()
-//         } else {
-//             isAuthenticated = false
-//             // Navigate to AuthView
-//         }
-         
-     }
-
-    // TBU
-     private func refreshTokenAndFetchUserData() {
-         userService.refreshToken { [weak self] result in
-             switch result {
-             case .success:
-                 self?.fetchUserData()  // 重新获取用户数据
-             case .failure:
-                 self?.isAuthenticated = false
-                 // 导航至 AuthView
-             }
-         }
-     }
-
-    func login(username:String, password:String) {
-         // Handle user login and fetch user data
-        print("AuthVM login called")
-        userService.login(username: username, password: password){
-            print("After VM login seccess!")
-            self.isAuthenticated = true
-            self.fetchUserData()
-        }
-
-        // TODO: Add additional oper e.g. fetchUserData automatically
-//         userService.login() { [weak self] success in
-//             if success {
-//                 self?.fetchUserData()
-//             } else {
-//                 self?.isAuthenticated = false
-//                 // Handle login failure, possibly show an error
-//             }
-//         }
-     }
-}
-
-enum AuthError: Error, Equatable {
-    case missingToken
-    case Unauthorized
-    case tokenExpired
-    case other(Error)
-    
-    static func ==(lhs: AuthError, rhs: AuthError) -> Bool {
-        switch (lhs, rhs) {
-        case (.missingToken, .missingToken),
-             (.Unauthorized, .Unauthorized),
-             (.tokenExpired, .tokenExpired):
-            return true
-        case (.other(let lhsError), .other(let rhsError)):
-            return lhsError.localizedDescription == rhsError.localizedDescription
-        default:
-            return false
-        }
-    }
-}
+//

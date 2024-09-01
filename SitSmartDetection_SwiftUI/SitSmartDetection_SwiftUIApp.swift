@@ -13,6 +13,7 @@ import TipKit
 @main
 struct SitSmartDetection_SwiftUIApp: App {
 //    let container: ModelContainer
+    @StateObject private var authVM = AuthViewModel()
     init() {
 //        do {
 //            let models = [DetectionRecord.self]
@@ -36,6 +37,7 @@ struct SitSmartDetection_SwiftUIApp: App {
                         .datastoreLocation(.applicationDefault)
                     ])
                 }
+                .environmentObject(authVM)
         }.modelContainer(for: [DetectionRecord.self], inMemory: true)
 //        }.modelContainer(container)
     }

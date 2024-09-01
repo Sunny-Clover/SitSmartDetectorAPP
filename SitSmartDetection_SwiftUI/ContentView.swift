@@ -9,9 +9,9 @@ import SwiftUI
 import FirebaseAuth
 
 struct ContentView: View {
-    @StateObject private var authVM = AuthViewModel()
+    @EnvironmentObject private var authVM: AuthViewModel
 //    @State private var userInfo: UserResponse?
-    @State private var selection = 0
+//    @State private var selection = 0
 
     init(){
         UITabBar.appearance().backgroundColor = UIColor(.bg)
@@ -24,14 +24,14 @@ struct ContentView: View {
                 MainView(userInfo: userInfo)
             } else {
                 ProgressView()
-                .onAppear {
+                .task {
                     authVM.fetchUserData()
                 }
             }
         } else {
             AuthView()
                 .environmentObject(authVM)
-                .onAppear {
+                .task {
                     authVM.checkAuthentication()
                 }
         }
