@@ -12,14 +12,15 @@ import TipKit
 
 @main
 struct SitSmartDetection_SwiftUIApp: App {
-    let container: ModelContainer
+//    let container: ModelContainer
     init() {
-        do {
-            container = try ModelContainer(for: DetectionRecord.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-
-        } catch {
-            fatalError("Failed to create ModelContainer for DetectionRecord.")
-        }
+//        do {
+//            let models = [DetectionRecord.self]
+//            container = try ModelContainer(for: DetectionRecord.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+//
+//        } catch {
+//            fatalError("Failed to create ModelContainer for DetectionRecord.")
+//        }
         FirebaseApp.configure()
         ProgressCalculator.run()
     }
@@ -35,6 +36,7 @@ struct SitSmartDetection_SwiftUIApp: App {
                         .datastoreLocation(.applicationDefault)
                     ])
                 }
-        }.modelContainer(container)
+        }.modelContainer(for: [DetectionRecord.self], inMemory: true)
+//        }.modelContainer(container)
     }
 }

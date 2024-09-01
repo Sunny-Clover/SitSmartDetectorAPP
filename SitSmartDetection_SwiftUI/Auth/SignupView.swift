@@ -9,7 +9,9 @@ import SwiftUI
 import FirebaseAuth
 
 struct SignupView: View {
-    @Binding var currentShowingView: String
+    @Binding var currentShowingView: authState
+    @EnvironmentObject var authVM: AuthViewModel
+    
     @AppStorage("uid") var userID: String = ""
 
     @State private var email: String = ""
@@ -137,7 +139,7 @@ struct SignupView: View {
                 Button(action: {
                     // TODO: link to sign in view
                     withAnimation{
-                        self.currentShowingView = "signin"
+                        self.currentShowingView = .signin
                     }
                 }){
                     Text("Sign In")
