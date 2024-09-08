@@ -12,28 +12,24 @@ class UserService {
     // TBU: 了解各個function的細節語法
     
     let baseURL = Config.shared.baseURL
-    let mng = TokenManager.shared
-    
     private var cancellables = Set<AnyCancellable>() // TBU:
-    
+    private lazy var path: String = {
+        return "\(baseURL)/users/"
+    }()
 //    func hasValidAccessToken() -> Bool {
 //        // Check if access token exists in Keychain and is not expired
 //        // Return true if valid, false otherwise
 //    }
 
-    func fetchUserData(completion: @escaping (Result<UserResponse, AuthError>) -> Void) {
+    func fetchUserData(token: String, completion: @escaping (Result<UserResponse, AuthError>) -> Void) {
         print("UserService fethcUserData called!")
         // Fetch user data using access token
         // Call completion with .success(user) or .failure(error)
-        guard let accessToken = mng.retrieveToken(key: mng.accessTokenKey) else {
-            completion(.failure(.missingToken))
-            return
-        }
 //        print("fetch UserData with accessToken=\(accessToken)")
-        let userURL = URL(string: "\(baseURL)/users/me")!
+        let userURL = URL(string: path)!
         var userRequest = URLRequest(url: userURL)
         userRequest.httpMethod = "GET"
-        userRequest.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        userRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         URLSession.shared.dataTaskPublisher(for: userRequest)
             .tryMap { output in
@@ -47,6 +43,7 @@ class UserService {
                 return output.data
             }
             .decode(type: UserResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
             .sink { completionResult in
                 if case .failure(let error) = completionResult {
                     if let authError = error as? AuthError {
@@ -60,151 +57,49 @@ class UserService {
             }
             .store(in: &cancellables)
     }
-
-    func refreshToken(completion: @escaping (Result<Void, AuthError>) -> Void) {
-        // Refresh access token using refresh token
-        // Call completion with .success if successful, .failure if failed
-        guard let refreshToken = mng.retrieveToken(key: mng.refreshTokenKey) else {
-            completion(.failure(.missingToken))
-            return
-        }
-        print("Service's refreshToken called")
-//        print("\(refreshToken)")
-        let payload = RefreshTokenRequest(refreshToken: refreshToken)
-        let refreshTokenURL = URL(string: "\(baseURL)/auth/refresh")!
-        var req = URLRequest(url: refreshTokenURL)
+    
+    func createUser(email: String, username: String, password: String, completion: @escaping (Result<Void, Error>) -> Void){ // The callback receive Result para
+        //
+        print("Service's Signup called")
+        let url = URL(string: path)!
+        let payload = UserCreate(email: email, userName: username, password: password)
+        var req = URLRequest(url: url)
         req.httpMethod = "POST"
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type") // Fix 422 Unprocessable Entity Problem
-//        req.setValue("Bearer \(refreshToken)", forHTTPHeaderField: "Authorization")
-        
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // encode and set payload
         do {
             let bodyData = try JSONEncoder().encode(payload)
             req.httpBody = bodyData
         } catch {
-            completion(.failure(.other(error)))
+            completion(.failure(error))
         }
         
+        // Perform the HTTP request
         URLSession.shared.dataTask(with: req) { data, response, error in
+            // Handle the response
             if let error = error {
-                completion(.failure(.other(error)))
-                return
-            }
-            guard let httpResponse = response as? HTTPURLResponse, let data = data else {
-                completion(.failure(.other(URLError(.badServerResponse))))
+                // If an error occurred, pass it to the completion handler
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
                 return
             }
             
-            if httpResponse.statusCode == 200 {
-                do {
-                    // Decode TokenResponse from server
-                    let tokenResponse = try JSONDecoder().decode(TokenResponse.self, from: data)
-                    
-                    // saveToken
-                    self.mng.storeToken(tokenResponse.accessToken, key: self.mng.accessTokenKey)
-                    self.mng.storeToken(tokenResponse.refreshToken, key: self.mng.refreshTokenKey)
-                    
+            // Check if the response status code is within the 200-299 range (indicating success)
+            if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
+                // Signup was successful, call the completion handler with success
+                DispatchQueue.main.async {
                     completion(.success(()))
-                } catch {
-                    completion(.failure(.other(error)))
                 }
-            } else if httpResponse.statusCode == 401 {
-                completion(.failure(.Unauthorized))
-            } else{
-                completion(.failure(.other(URLError(.badServerResponse))))
-            }
-        }.resume() // TBU
-    }
-
-    /// Request for the tokens
-    /// TBU
-    func login(username: String, password: String, completion: @escaping () -> Void) {
-        // Perform login and save tokens to Keychain
-        // Call completion with true if login successful, false otherwise
-        print("Login called")
-        let tokenURL = URL(string: "\(baseURL)/auth/token")!
-        var tokenRequest = URLRequest(url: tokenURL)
-        tokenRequest.httpMethod = "POST"
-        tokenRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        
-//        let tokenBody: [String: Any] = ["username": username, "password": password]
-//        tokenRequest.httpBody = try? JSONSerialization.data(withJSONObject: tokenBody)
-        let bodyString = "username=\(username)&password=\(password)"
-        tokenRequest.httpBody = bodyString.data(using: .utf8)
-        
-        
-        // Request for tokens then call callback getUserInfo
-        URLSession.shared.dataTaskPublisher(for: tokenRequest) // return a dataTaskPublisher
-            .tryMap { output in // = dataTaskPublisher.Output, which is the result of the request
-                // convert URLResponse -> HTTPURLResponse, as? is a method to convert type
-                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
-                    throw URLError(.badServerResponse)
+            } else {
+                // If the response status code is not successful, create a custom error
+                let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+                let error = NSError(domain: "", code: statusCode, userInfo: [NSLocalizedDescriptionKey: "Signup failed with status code \(statusCode)"])
+                DispatchQueue.main.async {
+                    completion(.failure(error))
                 }
-                return output.data // The return data
             }
-            .decode(type: TokenResponse.self, decoder: JSONDecoder()) // Decode to the specific type
-            .sink { completion in   // create a subscriber to connect data flow(data from publisher)
-                if case .failure(let error) = completion {
-//                    self.errorMessage = error.localizedDescription
-                }
-            } receiveValue: { tokenResponse in  // data from sink's callback?? return (tokenResponse)
-//                print("UserService's login's tokenResponse \(tokenResponse)")
-                TokenManager.shared.storeToken(tokenResponse.accessToken, key: TokenManager.shared.accessTokenKey)
-                TokenManager.shared.storeToken(tokenResponse.refreshToken, key: TokenManager.shared.refreshTokenKey)
-                // Call the completion block after successful login
-                completion()
-            }
-            .store(in: &cancellables) // Retain this subscription
-    }
-    
-    func logout(completion: @escaping () -> Void){
-        // remove token
-        TokenManager.shared.deleteToken(key: TokenManager.shared.accessTokenKey)
-        TokenManager.shared.deleteToken(key: TokenManager.shared.refreshTokenKey)
-        completion()
+        }.resume() // Start the network request
+        
     }
 }
-
-
-//class UserService {
-//    @AppStorage("accessToken") var accessToken: String = ""
-//    @AppStorage("refreshToken") var refreshToken: String = ""
-//
-//    func fetchUserData(completion: @escaping (Result<UserResponse, AuthError>) -> Void) {
-//        guard !accessToken.isEmpty else {
-//            completion(.failure(.noToken))
-//            return
-//        }
-//
-//        // 發送請求至 /user/me 獲取使用者資料
-//        // 模擬網路請求結果
-//        authViewModel.fetchUserData { result in
-//            switch result {
-//            case .success(let user):
-//                completion(.success(user))
-//            case .failure(let error):
-//                if error.isTokenExpired {
-//                    self.refreshAccessToken(completion: completion)
-//                } else {
-//                    completion(.failure(error))
-//                }
-//            }
-//        }
-//    }
-//
-//    func refreshAccessToken(completion: @escaping (Result<UserResponse, AuthError>) -> Void) {
-//        guard !refreshToken.isEmpty else {
-//            completion(.failure(.noRefreshToken))
-//            return
-//        }
-//
-//        authViewModel.refreshToken { result in
-//            switch result {
-//            case .success(let newToken):
-//                self.accessToken = newToken
-//                self.fetchUserData(completion: completion)
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-//}

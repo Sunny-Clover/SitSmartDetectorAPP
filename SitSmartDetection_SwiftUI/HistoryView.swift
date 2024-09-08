@@ -11,11 +11,8 @@ import TipKit
 
 // 主視圖
 struct HistoryView: View {
-    @Query private var records: [DetectionRecord]
-    @Environment (\.modelContext) private var modelContext
-    @StateObject var history: HistoryModel = {
-        return HistoryModel(initLineChartData: lineChartDataDummy, initPieChartData: initNoneFilteredPieChartData, timeUnit: .year)
-    }()
+    @EnvironmentObject private var historyVM: HistoryViewModel
+
     @State private var timePeriods = ["Year", "Month", "Week", "Day"]
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
     @State private var selectedTime = 0
@@ -55,9 +52,9 @@ struct HistoryView: View {
                     .frame(height: 5)
                 displayOptionPicker
                 if selectedDisplayOption == 0 {
-                    HistoryLineChart(lineChart: LineChart(data: history.lineChartData, timeUnit: history.timeUnit))
+                    HistoryLineChart(lineChart: $historyVM.lineChart)
                 } else {
-                    HistoryPieChart(pieChart: PieChart(data: history.pieChartData, timeUnit: history.timeUnit))
+                    HistoryPieChart(pieChart: $historyVM.pieChart)
 //                    if !history.pieChartData.isEmpty {
 //                        HistoryPieChart(pieChart: PieChart(data: history.pieChartData, timeUnit: history.timeUnit))
 //                    } else {
@@ -71,8 +68,8 @@ struct HistoryView: View {
         .background(.bg)
         .ignoresSafeArea()
         .onAppear {
-            history.updateAvgScore()
-            history.fetchData(from: records)
+            historyVM.updateAvgScore()
+            historyVM.fetchData()
         }
     }
     
@@ -94,7 +91,7 @@ struct HistoryView: View {
     }
     
     var timeSelectionView: some View {
-        Picker("Select Time", selection: $history.selectedTime) {
+        Picker("Select Time", selection: $historyVM.selectedTime) {
             ForEach(timePeriods, id: \.self) { period in
                 Text(period).tag(timePeriods.firstIndex(of: period)!)
             }
@@ -102,13 +99,13 @@ struct HistoryView: View {
         .pickerStyle(SegmentedPickerStyle())
         .background(Color(red: 151/255, green: 181/255, blue: 198/255)) // 设置整个Picker的背景色
         .cornerRadius(7)
-        .onChange(of: history.selectedTime) { _, _ in
-            history.updateDisplayDate()
-            history.changeTimeUnit_N_currentTimeTextWidth()
-            history.checkTimeLimit()
-            history.filterDataByCurrentTime()
-            history.updateChartData()
-            history.updateAvgScore()
+        .onChange(of: historyVM.selectedTime) { _, _ in
+            historyVM.updateDisplayDate()
+            historyVM.changeTimeUnit_N_currentTimeTextWidth()
+            historyVM.checkTimeLimit()
+            historyVM.filterDataByCurrentTime()
+            historyVM.updateChartData()
+            historyVM.updateAvgScore()
         }
         .padding()
     }
@@ -118,7 +115,7 @@ struct HistoryView: View {
             Spacer()
             
             Button {
-                history.touchReduce()
+                historyVM.touchReduce()
             } label: {
                 Image(systemName: "chevron.left")
                     .foregroundColor(.white)
@@ -126,45 +123,45 @@ struct HistoryView: View {
             }
 //            .frame(width: maxTextWidth)
             
-            Text("\(history.displayDate)")
+            Text("\(historyVM.displayDate)")
                 .font(.title3)
                 .foregroundStyle(Color.white)
-                .frame(width: history.currentTimeTextWidth)
+                .frame(width: historyVM.currentTimeTextWidth)
             
             Button {
-                history.touchAdd()
+                historyVM.touchAdd()
             } label: {
                 Image(systemName: "chevron.right")
                     .foregroundColor(.white)
                     .imageScale(.large)
-                    .opacity(history.addTime == true ? 1.0 : 0.5)
+                    .opacity(historyVM.addTime == true ? 1.0 : 0.5)
             }
 //            .frame(width: maxTextWidth)
             
             Spacer()
         }
-        .onChange(of: history.currentTime) { _, _ in
-            history.updateDisplayDate()
-            history.checkTimeLimit()
-            history.filterDataByCurrentTime()
-            history.updateChartData()
-            history.updateAvgScore()
+        .onChange(of: historyVM.currentTime) { _, _ in
+            historyVM.updateDisplayDate()
+            historyVM.checkTimeLimit()
+            historyVM.filterDataByCurrentTime()
+            historyVM.updateChartData()
+            historyVM.updateAvgScore()
         }
     }
     
     var scoreDisplay: some View {
-        Text("\(Int(history.averageScore))")
+        Text("\(Int(historyVM.averageScore))")
             .font(.system(size: 100))
             .bold()
             .foregroundStyle(Color.white)
     }
     
     var emojiWithScore: some View {
-        if history.averageScore < 60 {
+        if historyVM.averageScore < 60 {
             return AnyView(Image("bad")
                 .resizable()
                 .frame(width: emojiSize, height: emojiSize))
-        } else if history.averageScore < 80 {
+        } else if historyVM.averageScore < 80 {
             return AnyView(Image("not good")
                 .resizable()
                 .frame(width: emojiSize, height: emojiSize))
@@ -177,7 +174,7 @@ struct HistoryView: View {
 
     var partsSelection: some View {
         VStack(spacing: 13) {
-            Text(history.selectedPartIndex == nil ? "All Body Parts" : parts[history.selectedPartIndex!])
+            Text(historyVM.selectedPartIndex == nil ? "All Body Parts" : parts[historyVM.selectedPartIndex!])
                 .font(.title3)
                 .foregroundStyle(Color.gray)
 //                .bold()
@@ -185,14 +182,14 @@ struct HistoryView: View {
             HStack(spacing: 6) {
                 ForEach(parts.indices, id: \.self) { index in
                     Button(action: {
-                        if(history.selectedPartIndex == index){
-                            history.selectedPartIndex = nil
+                        if(historyVM.selectedPartIndex == index){
+                            historyVM.selectedPartIndex = nil
                         }else{
-                            history.selectedPartIndex = index  // Update selected index on tap
+                            historyVM.selectedPartIndex = index  // Update selected index on tap
                         }
-                        history.filterDataByCurrentTime()
-                        history.updateChartData()
-                        history.updateAvgScore()
+                        historyVM.filterDataByCurrentTime()
+                        historyVM.updateChartData()
+                        historyVM.updateAvgScore()
                         touchLandmarkTip.invalidate(reason: .actionPerformed)
                         TouchToAllLandmarkTip.hasTouchedButton = true
                     }) {
@@ -202,7 +199,7 @@ struct HistoryView: View {
                             .frame(width: 45, height: 45)
                             .padding(7)
                             .background(Circle().fill(Color(red: 178/255, green: 206/255, blue: 222/255)))
-                            .opacity(history.selectedPartIndex == nil ? 1.0 : (history.selectedPartIndex == index ? 1.0 : 0.5))
+                            .opacity(historyVM.selectedPartIndex == nil ? 1.0 : (historyVM.selectedPartIndex == index ? 1.0 : 0.5))
                     }
                 }
             }

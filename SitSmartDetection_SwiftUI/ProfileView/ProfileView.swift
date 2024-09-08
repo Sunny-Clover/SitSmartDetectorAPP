@@ -28,7 +28,6 @@ class ProfileViewModel: ObservableObject {
 
 
 struct ProfileView: View {
-    @AppStorage("uid") var userID: String = ""
     @ObservedObject var viewModel = ProfileViewModel()
     @EnvironmentObject var authVM: AuthViewModel
     

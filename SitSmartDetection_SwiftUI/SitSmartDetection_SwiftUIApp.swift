@@ -14,6 +14,10 @@ import TipKit
 struct SitSmartDetection_SwiftUIApp: App {
 //    let container: ModelContainer
     @StateObject private var authVM = AuthViewModel()
+    @StateObject private var userInfoVM = UserInfoViewModel()
+    @StateObject private var historyVM = HistoryViewModel(timeUnit: .year)
+
+    
     init() {
 //        do {
 //            let models = [DetectionRecord.self]
@@ -22,6 +26,7 @@ struct SitSmartDetection_SwiftUIApp: App {
 //        } catch {
 //            fatalError("Failed to create ModelContainer for DetectionRecord.")
 //        }
+//        _userInfoVM = StateObject(wrappedValue: UserInfoViewModel(authViewModel: AuthViewModel()))
         FirebaseApp.configure()
         ProgressCalculator.run()
     }
@@ -38,6 +43,8 @@ struct SitSmartDetection_SwiftUIApp: App {
                     ])
                 }
                 .environmentObject(authVM)
+                .environmentObject(userInfoVM)
+                .environmentObject(historyVM)
         }.modelContainer(for: [DetectionRecord.self], inMemory: true)
 //        }.modelContainer(container)
     }

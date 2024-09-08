@@ -12,7 +12,7 @@ var StatCard_Width = UIScreen.main.bounds.width * 0.44
 var StatCard_Height = UIScreen.main.bounds.width * 0.4
 
 struct HomeView: View {
-//    private let favoriteLandmarkTip = FavoriteLandmarkTip()
+    //    private let favoriteLandmarkTip = FavoriteLandmarkTip()
     
     var body: some View {
         NavigationStack {
@@ -20,33 +20,36 @@ struct HomeView: View {
                 Color(.bg)
                     .ignoresSafeArea()
                 ScrollView {
-                   VStack(alignment: .center, spacing: 25) {
-                       HeaderView()
-                       StatCardsView()
-                   }
+                    VStack(alignment: .center, spacing: 25) {
+                        HeaderView()
+                        StatCardsView()
+                    }
                 }
                 .ignoresSafeArea()
             }
         }
-   }
+    }
 }
 
+
+
 struct HeaderView: View {
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
         HStack {
             Spacer()
             Image("Sunny")
             VStack(alignment: .leading) {
-                Text("Hi, Sunny!")
+                Text("Hi, \(userInfoVM.userInfo?.userName ?? "Guest")!")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
                 Spacer()
                 HStack {
-                    Text("Lv.2")
+                    Text("Lv.\(userInfoVM.getUserLevel())")
                         .foregroundStyle(.white)
                     .bold()
-                    ProgressView(value: 0.3)
+                    ProgressView(value: userInfoVM.getUserLevelProgress(), total: 1)
                         .tint(.sysYellow)
                 }
             }

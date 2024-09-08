@@ -15,23 +15,23 @@ struct AuthView: View {
         Group {
             if showingState == .signin {
                 SigninView(currentShowingView: $showingState)
-                    .environmentObject(authVM)
+//                    .environmentObject(authVM)
                 // .preferredColorScheme(.light)
             } else if showingState == .signup {
                 SignupView(currentShowingView: $showingState)
-                    .environmentObject(authVM)
+//                    .environmentObject(authVM)
                 // .preferredColorScheme(.dark)
                 //.transition(.move(edge: .bottom))
             } else {
                 EmptyView()
             }
         }
-        .onAppear {
-            if showingState == .done {
-                // back to contentView
-                authVM.isAuthenticated = true
-            }
-        }
+//        .onAppear {
+//            if showingState == .done {
+//                // back to contentView
+//                authVM.hasToken = true
+//            }
+//        }
     }
 }
 enum authState {

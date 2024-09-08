@@ -10,27 +10,29 @@ import FirebaseAuth
 
 struct ContentView: View {
     @EnvironmentObject private var authVM: AuthViewModel
-//    @State private var userInfo: UserResponse?
-//    @State private var selection = 0
-
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
+    @EnvironmentObject private var historyVM: HistoryViewModel
+    
     init(){
         UITabBar.appearance().backgroundColor = UIColor(.bg)
     }
 
     var body: some View {
-        if authVM.isAuthenticated {
+        if authVM.hasToken {
             // 有現存token，且已讀取到用戶資料
-            if let userInfo = authVM.userInfo {
+            if let userInfo = userInfoVM.userInfo {
                 MainView(userInfo: userInfo)
             } else {
                 ProgressView()
                 .task {
-                    authVM.fetchUserData()
+                    userInfoVM.fetchUserData()
+                    historyVM.fetchData()
+                    authVM.checkAuthentication()
                 }
             }
         } else {
             AuthView()
-                .environmentObject(authVM)
+//                .environmentObject(authVM)
                 .task {
                     authVM.checkAuthentication()
                 }

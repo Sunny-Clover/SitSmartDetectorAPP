@@ -42,7 +42,8 @@ struct ReportView: View {
                     .foregroundStyle(Color.gray)
                     .bold()
                     .padding()
-                HistoryPieChart(pieChart: PieChart(data: report.pieChartData, timeUnit: report.timeUnit))
+                // TODO: 這邊要改掉
+//                HistoryPieChart(pieChart: PieChart(data: report.pieChartData, timeUnit: report.timeUnit))
             }
             .padding()
         }
