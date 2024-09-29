@@ -15,6 +15,7 @@ class WarningManager{
     }
     
     func updateResults(results: [ResultData]){
+        // 要所有部位都正確才可以
         let isAllCorrect = results.allSatisfy { $0.result == "correct" }
         
         if isAllCorrect{

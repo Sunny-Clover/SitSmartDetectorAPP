@@ -11,9 +11,19 @@ import Foundation
 class UserInfoViewModel: ObservableObject {
     
     @Published var userInfo: UserResponse?
+//    @Published var
     private let userService = UserService()
     private let tokenService = TokenService()
     private var retryTimes = 0
+    
+    
+    var userAverageScore: Int {
+        return Int(userInfo?.averageScore ?? 0)
+    }
+    var userPR: Int{
+        // TODO: calculate in backend?
+        return 87
+    }
     
     func fetchUserData() {
         print("VM's fetchUserData called!")

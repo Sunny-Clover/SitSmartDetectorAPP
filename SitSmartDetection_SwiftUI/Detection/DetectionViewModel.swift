@@ -16,6 +16,8 @@ class DetectionViewModel: ObservableObject {
     
     private var record: DetectionRecord
     private var warningManager = WarningManager(maxIncorrectCount: 30) // TODO: Init by real user setting
+    private var recordService = RecordService()
+    private let tokenService = TokenService()
     
     init(record: DetectionRecord) {
         self.record = record
@@ -120,7 +122,7 @@ class DetectionViewModel: ObservableObject {
         lineChartData = [headDataSerie, neckDataSerie, shoulderDataSerie, bodyDataSerie, feetDataSerie]
         return lineChartData
     }
-    private func getSingleRecordPieChartData() -> [PieDataSeries]{
+    func getSingleRecordPieChartData() -> [PieDataSeries]{
         let time = record.startDetectTimeStamp
         var pieChartData: [PieDataSeries] = [
             PieDataSeries(title: "Back", ratios: []),
@@ -160,6 +162,19 @@ class DetectionViewModel: ObservableObject {
         pieChartData[4].ratios = [shoulderData]
         
         return pieChartData
+    }
+    
+    func createRecord(){
+        guard let token = self.tokenService.retrieveToken(for: .accessToken) else { return }
+        recordService.createRecord(token: token, record: self.record.toRecordCreate()){ result in
+            // Should make sure cover all .failure cases
+            switch result{
+            case .success():
+                print("Sucessfully createRecord")
+            case .failure(let error):
+                print("CreateRecord failed: \(error)")
+            }
+        }
     }
 }
 

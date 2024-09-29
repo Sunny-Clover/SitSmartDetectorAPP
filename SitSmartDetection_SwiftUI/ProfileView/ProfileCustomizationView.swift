@@ -7,9 +7,9 @@
 
 import SwiftUI
 class CustomizationViewModel: ObservableObject {
+    @Published var InstantPostureAlertEnable: Bool = false
     @Published var postureAlertMinutes: Int = 2
     @Published var postureAlertSeconds: Int = 30
-    @Published var postureAlertType: String = "Instant"
     @Published var idleAlertEnabled: Bool = false
     @Published var idleAlertMinutes: Int = 2
     @Published var idleAlertSeconds: Int = 30
@@ -28,6 +28,7 @@ struct ProfileCustomizationView: View {
     }
     
     var body: some View {
+        
         ScrollView {
             VStack {
                 // Posture alert time setting
@@ -176,6 +177,7 @@ struct ProfileCustomizationView_Previews: PreviewProvider {
 
 struct PostureAlert: View {
     @ObservedObject var viewModel: CustomizationViewModel
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -203,16 +205,16 @@ struct PostureAlert: View {
                 }
             }
             
-            Picker("Select Alert Type", selection: $viewModel.postureAlertType) {
-                Text("Instant").tag("Instant")
-                Text("Delay").tag("Delay")
+            Picker("Select Alert Type", selection: $viewModel.InstantPostureAlertEnable) {
+                Text("Instant").tag(true)
+                Text("Delay").tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
             .background(Color(red: 151/255, green: 181/255, blue: 198/255))
             .cornerRadius(7)
             .padding(.top) // 只在頂部添加間距
             
-            if viewModel.postureAlertType == "Delay" {
+            if !(viewModel.InstantPostureAlertEnable) {
                 HStack {
                     Picker(selection: $viewModel.postureAlertMinutes, label: Text("Minutes")) {
                         ForEach(0..<60) { i in

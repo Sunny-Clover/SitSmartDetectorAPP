@@ -12,7 +12,7 @@ struct Config {
     
     let accumulateTime:[Int] = [0] + (0..<9).map { 60 * Int(pow(2, Double($0))) }
     let baseURL: URL
-    let maxRetryTimes = 3
+    let maxRetryTimes = 5
     
     private init() {
         // 從某個配置文件或環境變量中讀取這些值

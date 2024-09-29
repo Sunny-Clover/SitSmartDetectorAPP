@@ -154,9 +154,9 @@ struct HistoryPieChart: View {
         let result = Array(aggregatedRatiosDict.values).sorted { $0.day < $1.day }
         
         // 打印結果以進行調試
-        print("aggregatedRatios:")
-        print(result)
-        print("~~~~~~~~~~~~~~~~~~~")
+//        print("aggregatedRatios:")
+//        print(result)
+//        print("~~~~~~~~~~~~~~~~~~~")
         
         return result
     }

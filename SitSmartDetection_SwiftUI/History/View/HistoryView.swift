@@ -17,7 +17,7 @@ struct HistoryView: View {
     @State private var parts = ["Head", "Neck", "Shoulder", "Back", "Leg"]
     @State private var selectedTime = 0
     @State private var maxTextWidth: CGFloat = 0
-    @State private var displayOptions = ["Trend Score", "Accuracy Distribution"]
+    @State private var displayOptions = ["Trend Score", "Posture Distribution"]
     @State private var selectedDisplayOption = 0
     private let emojiSize: CGFloat = 45
     

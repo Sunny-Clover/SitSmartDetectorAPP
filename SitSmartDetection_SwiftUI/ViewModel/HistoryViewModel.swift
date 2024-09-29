@@ -297,7 +297,7 @@ class HistoryViewModel: ObservableObject {
 //            print("4, \(Date().formatted(.dateTime.hour().minute().second()))")
             break
         }
-        print("Updated score \(self.averageScore)")
+//        print("Updated score \(self.averageScore)")
     }
     
     func averageScoreForPeriod(data: [DataSeries], year: Int? = nil, month: Int? = nil, weekOfMonth: Int? = nil, day: Int? = nil) -> Double? {

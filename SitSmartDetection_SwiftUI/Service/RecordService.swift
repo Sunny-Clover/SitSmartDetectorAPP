@@ -56,13 +56,48 @@ class RecordService {
     }
     
     /// 新增紀錄
-    func createRecord(record: RecordCreate, completion: @escaping (Result<Void, Error>) -> Void) {
+    func createRecord(token: String, record: RecordCreate, completion: @escaping (Result<Void, Error>) -> Void) {
         print("RecordService's createRecord called")
         guard let url = URL(string: path) else {
             completion(.failure(URLError(.badURL)))
             return
         }
-        NetworkService.sendRequest(to: url, body: record, completion: completion)
+//        NetworkService.sendRequest(to: url, body: record, completion: completion)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        // Encode body
+        do {
+            let bodyData = try JSONEncoder().encode(record)
+            request.httpBody = bodyData
+        } catch {
+            completion(.failure(SSDError.encodingFailed))
+            return
+        }
+        
+        // Execute request
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
+                DispatchQueue.main.async {
+                    completion(.success(()))
+                }
+            } else {
+                let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+                let error = NSError(domain: "", code: statusCode, userInfo: [NSLocalizedDescriptionKey: "Request failed with status code \(statusCode)"])
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
     }
     
     // API: 删除记录

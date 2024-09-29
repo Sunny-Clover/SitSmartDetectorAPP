@@ -45,7 +45,7 @@ struct SitSmartDetection_SwiftUIApp: App {
                 .environmentObject(authVM)
                 .environmentObject(userInfoVM)
                 .environmentObject(historyVM)
-        }.modelContainer(for: [DetectionRecord.self], inMemory: true)
+        }//.modelContainer(for: [DetectionRecord.self], inMemory: true)
 //        }.modelContainer(container)
     }
 }

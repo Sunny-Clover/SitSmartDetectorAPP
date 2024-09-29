@@ -199,37 +199,23 @@
 				634346BB2C71AE5800DAA0C6 /* Config.swift */,
 				1583831C2BE68ED2001FEE73 /* ContentView.swift */,
 				1583831A2BE68ED2001FEE73 /* SitSmartDetection_SwiftUIApp.swift */,
-				1555B6342BFC5A1000BBEF69 /* BadgesView.swift */,
-				6BE22D0E2BFDDE1800FCFF06 /* CalProgressRatio.swift */,
-				1555B6362BFC72F600BBEF69 /* BadgesDetailView.swift */,
-				6B98B3B32BF38B1E00C57B53 /* HomeView_PieChart.swift */,
-				15B537D72BF2822100D2A557 /* HomeView.swift */,
-				1505BCF32BFD0A9A00F53D7B /* SittingStandardView.swift */,
-				6B3D69742BFF26D300227C5A /* FriendsView.swift */,
-				6B3D697A2BFF5A8600227C5A /* MeScoreRow.swift */,
-				6B3D697C2BFF5C1D00227C5A /* FriendsScoreRow.swift */,
-				6B3D69762BFF2A3E00227C5A /* FriendsRow.swift */,
-				6B3D69782BFF4FD700227C5A /* MeRow.swift */,
-				152211622C16027100626530 /* ReportView.swift */,
 				15EBFC022BF0B35C009E76AF /* LineChartData.swift */,
 				15EBFC042BF0B377009E76AF /* PieChartData.swift */,
-				158383282BE69CCA001FEE73 /* HistoryView.swift */,
-				15EBFBFC2BF0B2A9009E76AF /* HistoryClass.swift */,
-				15EBFBFE2BF0B325009E76AF /* HistoryPieChart.swift */,
 				15C1A12F2C1B3A6D0045DD7D /* testPie.swift */,
-				15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */,
+				63644BFD2CA9449B0041185E /* Home */,
+				63644C012CA946580041185E /* History */,
+				635B7DE82C54C26C00AA6C75 /* Detection */,
+				63644BFF2CA945CC0041185E /* Friend */,
+				634112022BFF1B6C00A8FF53 /* ProfileView */,
 				63C29D672C8764C7004A621F /* Extension */,
 				63C29D642C875E5D004A621F /* ViewModel */,
 				63C29D5D2C802664004A621F /* SwiftDataModel */,
 				63C29D582C7F74F3004A621F /* Service */,
-				635B7DE82C54C26C00AA6C75 /* Detection */,
 				63BF42332C16E2D800F841C5 /* Movenet */,
 				63BF42312C15D63900F841C5 /* Auth */,
-				634112022BFF1B6C00A8FF53 /* ProfileView */,
 				635B7DEF2C55056700AA6C75 /* Utilities */,
 				1583831E2BE68ED3001FEE73 /* Assets.xcassets */,
 				158383202BE68ED3001FEE73 /* Preview Content */,
-				63D727B42C8C4F9B00DFE0BD /* RecordModel.swift */,
 			);
 			path = SitSmartDetection_SwiftUI;
 			sourceTree = "<group>";
@@ -291,6 +277,7 @@
 		635B7DE82C54C26C00AA6C75 /* Detection */ = {
 			isa = PBXGroup;
 			children = (
+				152211622C16027100626530 /* ReportView.swift */,
 				632182592BF0D5FD000BCED0 /* DetectionView.swift */,
 				635B7DE92C54C2A000AA6C75 /* DetectionViewModel.swift */,
 				635B7DED2C54C4A300AA6C75 /* DetectionModel.swift */,
@@ -307,6 +294,66 @@
 				635B7DF02C5505B000AA6C75 /* SystemSoundPlayer.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		63644BFD2CA9449B0041185E /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				63644BFE2CA944F80041185E /* View */,
+				6BE22D0E2BFDDE1800FCFF06 /* CalProgressRatio.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		63644BFE2CA944F80041185E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				15B537D72BF2822100D2A557 /* HomeView.swift */,
+				6B98B3B32BF38B1E00C57B53 /* HomeView_PieChart.swift */,
+				1505BCF32BFD0A9A00F53D7B /* SittingStandardView.swift */,
+				1555B6342BFC5A1000BBEF69 /* BadgesView.swift */,
+				1555B6362BFC72F600BBEF69 /* BadgesDetailView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		63644BFF2CA945CC0041185E /* Friend */ = {
+			isa = PBXGroup;
+			children = (
+				63644C002CA945EB0041185E /* View */,
+			);
+			path = Friend;
+			sourceTree = "<group>";
+		};
+		63644C002CA945EB0041185E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				6B3D69742BFF26D300227C5A /* FriendsView.swift */,
+				6B3D697A2BFF5A8600227C5A /* MeScoreRow.swift */,
+				6B3D697C2BFF5C1D00227C5A /* FriendsScoreRow.swift */,
+				6B3D69762BFF2A3E00227C5A /* FriendsRow.swift */,
+				6B3D69782BFF4FD700227C5A /* MeRow.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		63644C012CA946580041185E /* History */ = {
+			isa = PBXGroup;
+			children = (
+				63644C022CA9465F0041185E /* View */,
+				15EBFBFC2BF0B2A9009E76AF /* HistoryClass.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		63644C022CA9465F0041185E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				158383282BE69CCA001FEE73 /* HistoryView.swift */,
+				15EBFBFE2BF0B325009E76AF /* HistoryPieChart.swift */,
+				15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		63BF42312C15D63900F841C5 /* Auth */ = {
@@ -351,6 +398,7 @@
 		63C29D5D2C802664004A621F /* SwiftDataModel */ = {
 			isa = PBXGroup;
 			children = (
+				63D727B42C8C4F9B00DFE0BD /* RecordModel.swift */,
 				63C29D5E2C802686004A621F /* UserData.swift */,
 				63C29D602C802B64004A621F /* FriendListData.swift */,
 			);

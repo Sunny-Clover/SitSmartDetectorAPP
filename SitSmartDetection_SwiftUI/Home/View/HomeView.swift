@@ -91,6 +91,7 @@ struct StatCardsView: View {
 }
 
 struct AverageScore: View {
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
         VStack(alignment: .center) {
             HStack {
@@ -105,12 +106,12 @@ struct AverageScore: View {
                     .bold()
             }
             Spacer()
-            Text("89")
+            Text("\(userInfoVM.userAverageScore)")
                 .font(.system(size: 60))
                 .foregroundColor(.white)
                 .fontWeight(.bold)
             Spacer()
-            Text("Better than 86% of users")
+            Text("Better than \(userInfoVM.userPR)% of users")
                 .font(.system(size: 11))
                 .foregroundColor(.white)
         }

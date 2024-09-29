@@ -7,10 +7,14 @@
 import SwiftUI
 import SwiftData
 
+
+var camera_width = UIScreen.main.bounds.width // 350
+var camera_height = camera_width * 1.33 // 467
+
 struct DetectionView: View {
     @AppStorage("uid") var userID: String = ""
     @ObservedObject var cameraManager = CameraManager()
-    @ObservedObject var viewModel = DetectionViewModel(record: DetectionRecord())
+    @ObservedObject var detectionVM = DetectionViewModel(record: DetectionRecord())
     @Environment(\.modelContext) private var modelContext
     @State private var navigateToRecordList = false
     
@@ -19,7 +23,7 @@ struct DetectionView: View {
             VStack {
 //                Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
                 HStack(spacing:15){
-                    let rst = viewModel.getResults()
+                    let rst = detectionVM.getResults()
                     BodyPartResultView(detectionResult: rst[0])
                     BodyPartResultView(detectionResult: rst[1])
                     BodyPartResultView(detectionResult: rst[2])
@@ -33,11 +37,11 @@ struct DetectionView: View {
                         Image(image, scale: 1.0, orientation: .up, label: Text("Image"))
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 350, height: 467)
+                            .frame(width: camera_width, height: camera_height)
                     } else {
                         Text("No Camera Feed")
                             .foregroundColor(.white)
-                            .frame(width: 350, height: 467)
+                            .frame(width: camera_width, height: camera_height)
                             .onAppear {
                                 print("No Camera Feed")
                             }
@@ -46,15 +50,18 @@ struct DetectionView: View {
                     Button(action: {
                         if cameraManager.isDetecting { // stop detection
                             cameraManager.stopDetection()
-                            viewModel.stopRecord()
-                            viewModel.countScore()
-                            let record = viewModel.getRecord()
-                            modelContext.insert(record)
-                            print("stop detection, isDetecting = \(cameraManager.isDetecting)")
-                            viewModel.resetResults()
+                            detectionVM.stopRecord()
+                            detectionVM.countScore()
+                            // viewModel create new record in db
+                            detectionVM.createRecord()
+                            
+//                            let record = viewModel.getRecord()
+//                            modelContext.insert(record)
+//                            print("stop detection, isDetecting = \(cameraManager.isDetecting)")
+                            detectionVM.resetResults()
                             navigateToRecordList = true
                         } else { // start detection
-                            viewModel.resetRecord()
+                            detectionVM.resetRecord()
                             cameraManager.startDetection()
                         }
                     }, label: {
@@ -63,12 +70,13 @@ struct DetectionView: View {
                             .frame(width: 50)
                     })
                 }
-                .frame(width: 350, height: 467)
+                .frame(width: camera_width, height: camera_height)
             }
             .navigationDestination(isPresented: $navigateToRecordList){
                 // 連結到單次監測結果畫面
-                ReportView(report: viewModel.getSingleRecordHistoryModel()).onAppear {
+                ReportView(report: detectionVM.getSingleRecordHistoryModel()).onAppear {
                     cameraManager.stopSession()
+                    
                 }
             }
             .onAppear {
@@ -82,8 +90,8 @@ struct DetectionView: View {
             .onReceive(cameraManager.$classifiedReslt) { result in
                 if let result = result{
                     if !cameraManager.isDetecting {return}
-                    viewModel.updateCounts(from: result)
-                    viewModel.updateResults(from: result)
+                    detectionVM.updateCounts(from: result)
+                    detectionVM.updateResults(from: result)
                 }
             }
         }
