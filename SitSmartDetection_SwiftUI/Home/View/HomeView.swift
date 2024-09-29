@@ -136,8 +136,9 @@ struct TotalTime: View {
 }
 
 struct Level: View {
-    var touchLandmarkTip = TouchLandmarkTip()
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     @State private var showSheet = false
+    var touchLandmarkTip = TouchLandmarkTip()
     var body: some View {
         VStack(alignment: .center) {
             HStack {
@@ -164,7 +165,7 @@ struct Level: View {
                 }
             }
             Spacer()
-            Text("2")
+            Text("\(userInfoVM.getUserLevel())")
                 .font(.system(size: 70))
                 .foregroundColor(.white)
                 .fontWeight(.bold)

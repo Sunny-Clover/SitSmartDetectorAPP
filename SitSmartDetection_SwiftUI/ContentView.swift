@@ -25,6 +25,7 @@ struct ContentView: View {
             } else {
                 ProgressView()
                 .task {
+                    userInfoVM.refreshToken()
                     userInfoVM.fetchUserData()
                     historyVM.fetchData()
                     authVM.checkAuthentication()
@@ -39,45 +40,6 @@ struct ContentView: View {
         }
     }
     
-//    private func fetchUserData() {
-//        guard !accessToken.isEmpty else {
-//            // 如果沒有 access token，則導航至 AuthView 進行登入
-//            isAuthenticated = false
-//            return
-//        }
-//        
-//        // 發送請求至 /user/me 獲取使用者資料
-//        authViewModel.fetchUserData { result in
-//            switch result {
-//            case .success(let user):
-//                userInfo = user
-//                isAuthenticated = true
-//            case .failure(let error):
-//                // 處理錯誤，如果 access token 失效，則嘗試使用 refresh token 更新
-//                if error.isTokenExpired {
-//                    refreshAccessToken()
-//                } else {
-//                    isAuthenticated = false
-//                }
-//            }
-//        }
-//    }
-//    
-//    private func authenticateUser() {
-//        if userService.accessToken.isEmpty {
-//            isAuthenticated = false
-//        } else {
-//            userService.fetchUserData { result in
-//                switch result {
-//                case .success(let user):
-//                    userInfo = user
-//                    isAuthenticated = true
-//                case .failure:
-//                    isAuthenticated = false
-//                }
-//            }
-//        }
-//    }
 }
 
 struct MainView: View{
