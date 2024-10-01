@@ -30,12 +30,14 @@ class PoseClassifier {
         }
         self.categories = categories
     }
-
-    func classifyPose(landmarkData: [Float]) -> poseClassfiedResult? {
+    
+    /// 輸入Movenet的關鍵點資訊(, 51)
+    /// 輸出為機率分布陣列
+    func classifyPose(landmarkData: [Float]) -> [Float32] {
         // 确保输入数据长度正确
         guard landmarkData.count == 51 else {
             print("Invalid input data length: expected 51, got \(landmarkData.count)")
-            return nil
+            return []
         }
 
         do {
@@ -51,19 +53,20 @@ class PoseClassifier {
 
             // 将输出张量的数据转换为 Float 数组
             let outputData = outputTensor.data
-            let results = outputData.toArray(type: Float32.self)
+            return outputData.toArray(type: Float32.self)
 
-            // 获取最高概率的类别
-            if let maxProbability = results.max(),
-               let maxIndex = results.firstIndex(of: maxProbability) {
-                let category = categories[maxIndex]
-                return poseClassfiedResult(category: category, prob: maxProbability)
-            } else {
-                return nil
-            }
+            
+//            // 回傳最高機率的類別
+//            if let maxProbability = results.max(),
+//               let maxIndex = results.firstIndex(of: maxProbability) {
+//                let category = categories[maxIndex]
+//                return poseClassfiedResult(category: category, prob: maxProbability)
+//            } else {
+//                return nil
+//            }
         } catch {
             print("Error during pose classification: \(error)")
-            return nil
+            return []
         }
     }
 }

@@ -3,10 +3,19 @@ import UIKit
 import SwiftUI
 import os
 
+enum ClassificationBodyPart: String {
+    case Head = "Head"
+    case Neck = "Neck"
+    case Shoulder = "Shoulder"
+    case Body = "Body"
+    case Feet = "Feet"
+}
+
+
 class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     @Published var cgImage: CGImage? // Realtime detection image
     @Published var person: Person? // Movenet Detection results
-    @Published var classifiedReslt:[String:poseClassfiedResult]? // Pose classification results from person
+    @Published var classifiedReslt:[String:[Float32]]? // Pose classification results from person
     
     private let drawTool = DrawTool()
     private let session = AVCaptureSession()
@@ -23,7 +32,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     private let context = CIContext()
     
     var isRunning = false
-    var isDetecting = false
+    var isDetecting = false // determine to run pose classifier or not
     
     // Pose classifier
     private var headClassifier:PoseClassifier?
@@ -34,7 +43,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     
     override init() {
         super.init()
-        updateModel()
+        initModel()
         checkCameraAuthorization()
     }
     
@@ -93,8 +102,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
         print("Camera setup complete")
     }
     
-    private func updateModel() {
-        queue.async {
+    private func initModel() {
+        queue.async { // 將模型初始化放到背景執行，防止堵塞Main thread
             do {
                 // init pose classifier
                 self.headClassifier = try PoseClassifier(modelName: "Head")
@@ -131,17 +140,14 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
             
             do {
                 let (result, times) = try estimator.estimateSinglePose(on: pixelBuffer)
-                var hResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
-                var nResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
-                var sResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
-                var bResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
-                var fResult: poseClassfiedResult = poseClassfiedResult(category: "", prob: 0)
+                var (hResult, nResult, sResult, bResult, fResult) = ([Float32](), [Float32](), [Float32](), [Float32](), [Float32]());
+                
                 if (self.isDetecting){
-                    hResult = hClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                    nResult = nClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                    sResult = sClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                    bResult = bClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
-                    fResult = fClassifier.classifyPose(landmarkData: result.toFlattenedArray()) ?? poseClassfiedResult(category: "", prob: 0)
+                    hResult = hClassifier.classifyPose(landmarkData: result.toFlattenedArray())
+                    nResult = nClassifier.classifyPose(landmarkData: result.toFlattenedArray())
+                    sResult = sClassifier.classifyPose(landmarkData: result.toFlattenedArray())
+                    bResult = bClassifier.classifyPose(landmarkData: result.toFlattenedArray())
+                    fResult = fClassifier.classifyPose(landmarkData: result.toFlattenedArray())
                 }
                 DispatchQueue.main.async { // data for UI
                     self.person = result
@@ -151,9 +157,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
                     }else{
                         self.cgImage = cgImage
                     }
-                    
                     if self.isDetecting {
-                        self.classifiedReslt = ["head": hResult, "neck": nResult, "shoulder": sResult, "body":bResult, "feet":fResult]
+                        self.classifiedReslt = ["Head": hResult, "Neck": nResult, "Shoulder": sResult, "Body":bResult, "Feet":fResult]
                     }
                 }
 //                // Debug: to monitor the latency
@@ -191,6 +196,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     }
     func stopDetection(){
         isDetecting = false
+//        timerSubscription?.cancel()
+//        timerSubscription = nil
     }
     func getCaptureSession() -> AVCaptureSession {
         return session
