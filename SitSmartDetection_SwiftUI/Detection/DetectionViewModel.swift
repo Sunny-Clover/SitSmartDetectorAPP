@@ -38,6 +38,7 @@ class DetectionViewModel: ObservableObject {
     private let tokenService = TokenService()
     
     private var timer: Timer? // a timer trigger event every second
+    private var resetTimer: Timer?
     
     init(record: DetectionRecord) {
         self.record = record
@@ -77,10 +78,17 @@ class DetectionViewModel: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.updateResults()
         }
+        resetTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            DispatchQueue.global().async { // exec in the background
+                SpeechPlayer.shared.speak(speech: .sitTooLong)
+            }
+        }
     }
     func stopTimer(){
         timer?.invalidate()
         timer = nil
+        resetTimer?.invalidate()
+        resetTimer = nil
     }
     
     // Setup Combine bindings for handling publisher(camera)'s emit values
@@ -124,17 +132,14 @@ class DetectionViewModel: ObservableObject {
     /// callback for receiving the new model output
     /// update UI result
     func updateResults() {
-        print(AccClassProbs)
         for (part, probs) in AccClassProbs{
             let (cat, rst) = resultTransfer(part: part, probs: probs)
-            print(cat, rst)
             DispatchQueue.main.async { [self] in
                 switch part{
                 case "Head":
                     headResult.postureType = cat
                     headResult.result = rst
                     record.head.count[cat, default: 0] += 1 // 分類結果計數->存入資料庫
-                    print("headResult updatad")
                 case "Neck":
                     neckResult.postureType = cat
                     neckResult.result = rst
@@ -150,14 +155,12 @@ class DetectionViewModel: ObservableObject {
                 case "Feet":
                     legResult.postureType = cat
                     legResult.result = rst
-                    record.body.count[cat, default: 0] += 1
+                    record.feet.count[cat, default: 0] += 1
                 default:
                     break
                 }
             }
         }
-        
-        print(headResult)
         // 重新累績機率分佈array
         AccClassProbs = ["Head": [Float32](), "Neck": [Float32](), "Shoulder": [Float32](), "Body":[Float32](), "Feet":[Float32]()]
 
@@ -271,24 +274,24 @@ class DetectionViewModel: ObservableObject {
             RatioData(title: "Backward", day: time, ratio: record.body.count["Backward", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
             RatioData(title: "Forward", day: time, ratio: record.body.count["Forward", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
             RatioData(title: "Neutral", day: time, ratio: record.body.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)),
-            RatioData(title: "Ambiguous", day: time, ratio: record.feet.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
+            RatioData(title: "Ambiguous", day: time, ratio: record.body.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
         ]
         let headData = [
             RatioData(title: "Bowed", day: time, ratio: record.head.count["Bowed", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
             RatioData(title: "Neutral", day: time, ratio: record.head.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
             RatioData(title: "Tilt Back", day: time, ratio: record.head.count["Tilt Back", default: 0], uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)),
-            RatioData(title: "Ambiguous", day: time, ratio: record.feet.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
+            RatioData(title: "Ambiguous", day: time, ratio: record.head.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
         ]
         let neckData = [
             RatioData(title: "Forward", day: time, ratio: record.neck.count["Forward", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
             RatioData(title: "Neutral", day: time, ratio: record.neck.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
-            RatioData(title: "Ambiguous", day: time, ratio: record.feet.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
+            RatioData(title: "Ambiguous", day: time, ratio: record.neck.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
         ]
         let shoulderData = [
             RatioData(title: "Hunched", day: time, ratio: record.shoulder.count["Hunched", default: 0], uiColor: #colorLiteral(red: 0.9474967122, green: 0.8637040257, blue: 0.3619352579, alpha: 1)),
             RatioData(title: "Neutral", day: time, ratio: record.shoulder.count["Neutral", default: 0], uiColor: #colorLiteral(red: 0.388066709, green: 0.6697527766, blue: 0.9942032695, alpha: 1)),
             RatioData(title: "Shrug", day: time, ratio: record.shoulder.count["Shrug", default: 0], uiColor: #colorLiteral(red: 0.3899648786, green: 0.3800646067, blue: 0.6288498044, alpha: 1)),
-            RatioData(title: "Ambiguous", day: time, ratio: record.feet.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
+            RatioData(title: "Ambiguous", day: time, ratio: record.shoulder.count["Ambiguous", default: 0], uiColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
         ]
         
         pieChartData[0].ratios = [backData]

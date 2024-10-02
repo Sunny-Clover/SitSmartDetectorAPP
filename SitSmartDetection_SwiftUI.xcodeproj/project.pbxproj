@@ -58,6 +58,7 @@
 		635B7DF12C5505B000AA6C75 /* SystemSoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635B7DF02C5505B000AA6C75 /* SystemSoundPlayer.swift */; };
 		635B7DF52C55436600AA6C75 /* WarningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635B7DF42C55436600AA6C75 /* WarningManager.swift */; };
 		636239602BF700C8007836A7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6362395F2BF700C8007836A7 /* ProfileView.swift */; };
+		63644C062CAC48090041185E /* SpeechPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63644C052CAC48000041185E /* SpeechPlayer.swift */; };
 		63C29D562C7EFCFD004A621F /* TokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C29D552C7EFCFD004A621F /* TokenService.swift */; };
 		63C29D5C2C7F7599004A621F /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C29D5B2C7F7599004A621F /* UserService.swift */; };
 		63C29D5F2C802686004A621F /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C29D5E2C802686004A621F /* UserData.swift */; };
@@ -129,6 +130,7 @@
 		635B7DF02C5505B000AA6C75 /* SystemSoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSoundPlayer.swift; sourceTree = "<group>"; };
 		635B7DF42C55436600AA6C75 /* WarningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningManager.swift; sourceTree = "<group>"; };
 		6362395F2BF700C8007836A7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		63644C052CAC48000041185E /* SpeechPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechPlayer.swift; sourceTree = "<group>"; };
 		63A460FD2BFFA3A3005557E9 /* SitSmartDetection-SwiftUI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SitSmartDetection-SwiftUI-Info.plist"; sourceTree = SOURCE_ROOT; };
 		63C29D552C7EFCFD004A621F /* TokenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenService.swift; sourceTree = "<group>"; };
 		63C29D5B2C7F7599004A621F /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 		635B7DEF2C55056700AA6C75 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				63644C052CAC48000041185E /* SpeechPlayer.swift */,
 				635B7DE62C50DD9B00AA6C75 /* DrawTool.swift */,
 				635B7DF02C5505B000AA6C75 /* SystemSoundPlayer.swift */,
 			);
@@ -572,6 +575,7 @@
 				15EBFC032BF0B35C009E76AF /* LineChartData.swift in Sources */,
 				63C29D612C802B64004A621F /* FriendListData.swift in Sources */,
 				63C29D5C2C7F7599004A621F /* UserService.swift in Sources */,
+				63644C062CAC48090041185E /* SpeechPlayer.swift in Sources */,
 				1505BCF42BFD0A9A00F53D7B /* SittingStandardView.swift in Sources */,
 				158383292BE69CCA001FEE73 /* HistoryView.swift in Sources */,
 				15B537D82BF2822100D2A557 /* HomeView.swift in Sources */,
