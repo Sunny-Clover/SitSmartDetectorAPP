@@ -10,6 +10,9 @@ import SwiftUI
 import Combine
 
 class DetectionViewModel: ObservableObject {
+    // observe data from UserService
+    var user: UserResponse? = nil
+    
     // For the detection results
     @Published var headResult = ResultData(icon: "headIcon", bodyPartName: "Head", result: nil, postureType: nil)
     @Published var neckResult = ResultData(icon: "neckIcon", bodyPartName: "Neck", result: nil, postureType: nil)
@@ -33,7 +36,7 @@ class DetectionViewModel: ObservableObject {
     private var AccClassProbs = ["Head": [Float32](), "Neck": [Float32](), "Shoulder": [Float32](), "Body":[Float32](), "Feet":[Float32]()]
     
     private var record: DetectionRecord // 每個部位的姿勢計數
-    private var warningManager = WarningManager(maxIncorrectCount: 30) // TODO: Init by real user setting
+    private var warningManager = WarningManager() // TODO: Init by real user setting
     private var recordService = RecordService()
     private let tokenService = TokenService()
     
@@ -42,6 +45,16 @@ class DetectionViewModel: ObservableObject {
     
     init(record: DetectionRecord) {
         self.record = record
+        // 監聽 UserService 中的 currentUser 變化
+        // TODO: Urgent1
+//        UserService.shared.$userInfo
+//            .sink { [weak self] user in
+//                self?.user = user
+//                if let time = user?.postureAlertDelayTime {
+//                    self.warningManager.maxIncorrectCount = time
+//                }
+//            }
+//            .store(in: &cancellables)
     }
     
     deinit {

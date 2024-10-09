@@ -12,7 +12,7 @@ class WarningManager{
     private var incorrectCount: Int = 0
     
     
-    init(maxIncorrectCount: Int){
+    init(maxIncorrectCount: Int = 30){
         self.maxIncorrectCount = maxIncorrectCount
     }
     

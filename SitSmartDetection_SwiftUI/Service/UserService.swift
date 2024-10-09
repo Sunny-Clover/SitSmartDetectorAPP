@@ -8,7 +8,13 @@
 import Foundation
 import Combine
 
-class UserService {
+class UserService: ObservableObject {
+    static let shared = UserService()
+    private init() {} // avoid creating second instance
+    // Store the data
+    // 這邊直接拿回傳的資料，但其實可以多一層轉換(dto)，轉換成有用資訊，減少上層需要做的邏輯運算
+    @Published var userInfo: UserResponse? = nil
+    
     // TBU: 了解各個function的細節語法
     
     let baseURL = Config.shared.baseURL
@@ -43,7 +49,7 @@ class UserService {
                 return output.data
             }
             .decode(type: UserResponse.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main) // main thread update user data
             .sink { completionResult in
                 if case .failure(let error) = completionResult {
                     if let authError = error as? AuthError {
@@ -53,6 +59,7 @@ class UserService {
                     }
                 }
             } receiveValue: { user in
+                self.userInfo = user
                 completion(.success(user))
             }
             .store(in: &cancellables)

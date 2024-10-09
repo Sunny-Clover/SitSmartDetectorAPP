@@ -11,6 +11,7 @@ import FirebaseAuth
 struct ContentView: View {
     @EnvironmentObject private var authVM: AuthViewModel
     @EnvironmentObject private var userInfoVM: UserInfoViewModel
+//    @StateObject private var userInfoVM = UserInfoViewModel()
     @EnvironmentObject private var historyVM: HistoryViewModel
     
     init(){
@@ -20,8 +21,8 @@ struct ContentView: View {
     var body: some View {
         if authVM.hasToken {
             // 有現存token，且已讀取到用戶資料
-            if let userInfo = userInfoVM.userInfo {
-                MainView(userInfo: userInfo)
+            if let userInfo = userInfoVM.user {
+                MainView()
             } else {
                 ProgressView()
                 .task {
@@ -44,8 +45,6 @@ struct ContentView: View {
 
 struct MainView: View{
     @State private var selection = 0
-    let userInfo: UserResponse
-
     var body: some View {
         ZStack {
             //.gray.edgesIgnoringSafeArea(.all) // 设置整个视图的背景颜色为白色

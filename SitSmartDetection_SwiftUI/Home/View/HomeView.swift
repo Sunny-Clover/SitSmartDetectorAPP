@@ -40,7 +40,7 @@ struct HeaderView: View {
             Spacer()
             Image("Sunny")
             VStack(alignment: .leading) {
-                Text("Hi, \(userInfoVM.userInfo?.userName ?? "Guest")!")
+                Text("Hi, \(userInfoVM.user?.userName ?? "Guest")!")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
