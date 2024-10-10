@@ -13,7 +13,6 @@ final class AuthViewModel: ObservableObject {
     @Published var hasToken: Bool = false// false(no accessToken in keychain), otherwise yes
 //    @Published var userInfo: UserResponse?
     
-    private let userService = UserService()
     private let tokenService = TokenService()
     
     
@@ -31,7 +30,7 @@ final class AuthViewModel: ObservableObject {
 
 //    // TBU
 //     private func refreshTokenAndFetchUserData() {
-//         userService.refreshToken { [weak self] result in
+//         UserService.shared.refreshToken { [weak self] result in
 //             switch result {
 //             case .success:
 //                 self?.fetchUserData()  // 帶新的token fetch user data
@@ -71,7 +70,7 @@ final class AuthViewModel: ObservableObject {
     
     func signup(email:String, username:String, password:String) {
         print("AuthVM Signup called")
-        userService.createUser(email: email, username: username, password: password) { result in
+        UserService.shared.createUser(email: email, username: username, password: password) { result in
             switch result {
             case .success:
                 print("Signup successful!")

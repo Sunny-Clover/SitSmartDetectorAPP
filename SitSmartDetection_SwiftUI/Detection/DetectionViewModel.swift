@@ -68,8 +68,8 @@ class DetectionViewModel: ObservableObject {
         stopTimer()
         self.stopRecord()
         self.countScore()
-        //self.createRecord()
-
+//        self.createRecord()
+        self.resetResults()
     }
     func startDetection(){
         isDetecting = true
