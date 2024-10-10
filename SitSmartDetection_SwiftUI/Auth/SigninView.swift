@@ -46,10 +46,10 @@ struct SigninView: View {
             // signin form
             VStack(alignment: .leading){
                 // Email textfield
-                Text("Email Address").fontWeight(.bold).foregroundColor(.deepAccent)
+                Text("Username").fontWeight(.bold).foregroundColor(.deepAccent)
                 HStack {
                     Image(systemName: "mail")
-                    TextField("Enter your email", text: $email).frame(minHeight: 25)
+                    TextField("Enter your username", text: $email).frame(minHeight: 25)
                     
                     Spacer()
                 }

@@ -91,7 +91,7 @@ class DetectionViewModel: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.updateResults()
         }
-        resetTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+        resetTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { _ in
             DispatchQueue.global().async { // exec in the background
                 SpeechPlayer.shared.speak(speech: .sitTooLong)
             }
