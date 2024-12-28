@@ -28,8 +28,8 @@ class ProfileViewModel: ObservableObject {
 
 
 struct ProfileView: View {
-    @AppStorage("uid") var userID: String = ""
     @ObservedObject var viewModel = ProfileViewModel()
+    @EnvironmentObject var authVM: AuthViewModel
     
     var body: some View {
         NavigationStack {
@@ -38,15 +38,7 @@ struct ProfileView: View {
                 HStack{
                     Spacer()
                     Button(action: {
-                        let firebaseAuth = Auth.auth()
-                        do {
-                            try firebaseAuth.signOut()
-                            withAnimation {
-                                userID = ""
-                            }
-                        } catch let signOutError as NSError {
-                            print("Error signing out: %@", signOutError)
-                        }
+                        authVM.logout()
                     }) {
                         Image(.faRightFromBracket)
                             .foregroundColor(.accent)
