@@ -30,7 +30,7 @@ struct HistoryLineChart: View {
 //    var data: [DataSeries]
 //    var timeUnit: Calendar.Component
     
-    let lineChart: LineChart
+    @Binding var lineChart: LineChart
     @State private var selectedDate: Date? = nil
     @State private var rawSelectedDate: Date? = nil
 
@@ -136,9 +136,11 @@ extension Array where Element == ScoreData {
 extension LineChart{
     static let demoLineChart = LineChart(data: lineChartDataDummy, timeUnit: .year)
 }
+//
+//struct HistoryLineChart_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HistoryLineChart(lineChart: $demoLineChart)
+//    }
+//}
 
-struct HistoryLineChart_Previews: PreviewProvider {
-    static var previews: some View {
-        HistoryLineChart(lineChart: .demoLineChart)
-    }
-}
+

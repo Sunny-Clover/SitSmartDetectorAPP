@@ -10,7 +10,7 @@ import SwiftUI
 struct ReportView: View {
     @StateObject var report = HistoryModel(initLineChartData: lineChartDataDummy, initPieChartData: allPartPieChartData, timeUnit: .year)
     private let emojiSize: CGFloat = 45
-    
+//    var pieChartSrc:[PieDataSeries]
     var body: some View {
         ScrollView {
             ZStack {
@@ -37,12 +37,14 @@ struct ReportView: View {
                 partsSelection
                 Spacer()
                     .frame(height: 30)
-                Text("Accuracy Distribution")
+                Text("Posture Distribution")
                     .font(.title3)
                     .foregroundStyle(Color.gray)
                     .bold()
                     .padding()
-                HistoryPieChart(pieChart: PieChart(data: report.pieChartData, timeUnit: report.timeUnit))
+                HistoryPieChart(pieChart: .constant(PieChart(data: report.pieChartData, timeUnit: report.timeUnit)))
+//
+//                HistoryPieChart(pieChart: .constant(PieChart(data: pieChartSrc, timeUnit: .year)))
             }
             .padding()
         }
@@ -121,7 +123,7 @@ struct ReportView: View {
     }
 }
 
-#Preview {
-//    ReportView(report: HistoryModel(initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year))
-    ReportView()
-}
+//#Preview {
+////    ReportView(report: HistoryModel(initLineChartData: lineChartData, initPieChartData: allPartPieChartData, timeUnit: .year))
+//    ReportView()
+//}

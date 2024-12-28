@@ -21,6 +21,7 @@ struct PieDataSeries: Identifiable {
     let id = UUID()
     let title: String
     var ratios: [[RatioData]]
+    
 }
 
 struct PieChart: Identifiable {
@@ -30,7 +31,7 @@ struct PieChart: Identifiable {
 }
 
 struct HistoryPieChart: View {
-    let pieChart: PieChart
+    @Binding var pieChart: PieChart
     @State private var angleValue: Int?
     @State private var selectedSector: String?
     @State private var selectedRatioData: RatioData? = nil
@@ -153,9 +154,9 @@ struct HistoryPieChart: View {
         let result = Array(aggregatedRatiosDict.values).sorted { $0.day < $1.day }
         
         // 打印結果以進行調試
-        print("aggregatedRatios:")
-        print(result)
-        print("~~~~~~~~~~~~~~~~~~~")
+//        print("aggregatedRatios:")
+//        print(result)
+//        print("~~~~~~~~~~~~~~~~~~~")
         
         return result
     }
@@ -179,7 +180,7 @@ extension Array where Element == RatioData {
     }
 }
 
-#Preview {
-//    HistoryPieChart(pieChart: PieChart(data: initNoneFilteredPieChartData.filter { $0.title == "Head" }, timeUnit: .year))
-    HistoryPieChart(pieChart: PieChart(data: test, timeUnit: .year))
-}
+//#Preview {
+////    HistoryPieChart(pieChart: PieChart(data: initNoneFilteredPieChartData.filter { $0.title == "Head" }, timeUnit: .year))
+//    HistoryPieChart(pieChart: PieChart(data: test, timeUnit: .year))
+//}

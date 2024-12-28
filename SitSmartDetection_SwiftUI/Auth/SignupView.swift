@@ -9,10 +9,13 @@ import SwiftUI
 import FirebaseAuth
 
 struct SignupView: View {
-    @Binding var currentShowingView: String
+    @Binding var currentShowingView: authState
+    @EnvironmentObject var authVM: AuthViewModel
+    
     @AppStorage("uid") var userID: String = ""
 
     @State private var email: String = ""
+    @State private var username: String = ""
     @State private var password: String = ""
     @State private var password_confirmation: String = ""
     @State private var showPassword: Bool = false
@@ -49,6 +52,20 @@ struct SignupView: View {
                 HStack {
                     Image(systemName: "mail")
                     TextField("Enter your email", text: $email)
+                    
+                    Spacer()
+                }
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 40)
+                        .stroke(lineWidth: 1)
+                        .foregroundColor(.sysYellow)
+                )
+                // Username textfield
+                Text("Username").fontWeight(.bold).foregroundColor(.deepAccent)
+                HStack {
+                    Image(systemName: "person")
+                    TextField("Enter your username", text: $username)
                     
                     Spacer()
                 }
@@ -101,19 +118,20 @@ struct SignupView: View {
                 // SignUp bottom
                 Button {
                     // TODO: action to create account on firebase
-                    Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-                        
-                        if let error = error {
-                            print(error)
-                            return
-                        }
-                        
-                        if let authResult = authResult {
-                            print(authResult.user.uid)
-                            userID = authResult.user.uid
-                            
-                        }
-                    }
+                    authVM.signup(email: email, username: username, password: password)
+//                    Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+//                        
+//                        if let error = error {
+//                            print(error)
+//                            return
+//                        }
+//                        
+//                        if let authResult = authResult {
+//                            print(authResult.user.uid)
+//                            userID = authResult.user.uid
+//                            
+//                        }
+//                    }
                 } label: {
                     Text("Sign Up ")
                         .foregroundColor(.white)
@@ -137,7 +155,7 @@ struct SignupView: View {
                 Button(action: {
                     // TODO: link to sign in view
                     withAnimation{
-                        self.currentShowingView = "signin"
+                        self.currentShowingView = .signin
                     }
                 }){
                     Text("Sign In")

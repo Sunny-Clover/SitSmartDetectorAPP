@@ -7,19 +7,21 @@
 import SwiftUI
 import SwiftData
 
+
+var camera_width = UIScreen.main.bounds.width // 350
+var camera_height = camera_width * 1.33 // 467
+
 struct DetectionView: View {
-    @AppStorage("uid") var userID: String = ""
-    @ObservedObject var cameraManager = CameraManager()
-    @ObservedObject var viewModel = DetectionViewModel(record: DetectionRecord())
-    @Environment(\.modelContext) private var modelContext
+    @ObservedObject var detectionVM = DetectionViewModel(record: DetectionRecord())
+//    @Environment(\.modelContext) private var modelContext
     @State private var navigateToRecordList = false
     
     var body: some View {
         NavigationStack{
             VStack {
-                Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
+//                Text("Posture Detection").font(.title).foregroundColor(.deepAccent)
                 HStack(spacing:15){
-                    let rst = viewModel.getResults()
+                    let rst = detectionVM.getResults()
                     BodyPartResultView(detectionResult: rst[0])
                     BodyPartResultView(detectionResult: rst[1])
                     BodyPartResultView(detectionResult: rst[2])
@@ -29,61 +31,56 @@ struct DetectionView: View {
                 
                 // TODO: 樣式可以再調整
                 ZStack(alignment: .bottom){
-                    if let image = cameraManager.cgImage {
+                    if let image = detectionVM.cameraImage {
                         Image(image, scale: 1.0, orientation: .up, label: Text("Image"))
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 350, height: 467)
+                            .frame(width: camera_width, height: camera_height)
                     } else {
                         Text("No Camera Feed")
                             .foregroundColor(.white)
-                            .frame(width: 350, height: 467)
+                            .frame(width: camera_width, height: camera_height)
                             .onAppear {
                                 print("No Camera Feed")
                             }
                     }
                     
                     Button(action: {
-                        if cameraManager.isDetecting { // stop detection
-                            cameraManager.stopDetection()
-                            viewModel.stopRecord()
-                            viewModel.countScore()
-                            let record = viewModel.getRecord()
-                            modelContext.insert(record)
-                            print("stop detection, isDetecting = \(cameraManager.isDetecting)")
-                            viewModel.resetResults()
+                        if detectionVM.isDetecting { // stop detection
+                            detectionVM.stopDetection()
+//                            let record = viewModel.getRecord()
+//                            modelContext.insert(record)
                             navigateToRecordList = true
                         } else { // start detection
-                            viewModel.resetRecord()
-                            cameraManager.startDetection()
+                            detectionVM.startDetection()
                         }
                     }, label: {
-                        Image(systemName: cameraManager.isDetecting ? "stop.circle.fill" : "play.circle.fill")
+                        Image(systemName: detectionVM.isDetecting ? "stop.circle.fill" : "play.circle.fill")
                             .foregroundColor(.accent)
                             .frame(width: 50)
                     })
                 }
-                .frame(width: 350, height: 467)
+                .frame(width: camera_width, height: camera_height)
             }
             .navigationDestination(isPresented: $navigateToRecordList){
                 // 連結到單次監測結果畫面
-                ReportView(report: viewModel.getSingleRecordHistoryModel()).onAppear {
-                    cameraManager.stopSession()
+                ReportView(report: detectionVM.getSingleRecordHistoryModel()).onAppear {
+                    detectionVM.stopSeesion()
                 }
             }
             .onAppear {
-                cameraManager.startSession()
+                detectionVM.startSession()
+                detectionVM.setupBindings()
                 print("View appeared, camera session started")
             }
             .onDisappear {
-                cameraManager.stopSession()
+                detectionVM.stopSeesion()
                 print("View disappeared, camera session stopped")
             }
-            .onReceive(cameraManager.$classifiedReslt) { result in
+            .onReceive(detectionVM.$classifiedReslt) { result in
                 if let result = result{
-                    if !cameraManager.isDetecting {return}
-                    viewModel.updateCounts(from: result)
-                    viewModel.updateResults(from: result)
+                    if !detectionVM.isDetecting {return} // theorectically don't need this
+                     detectionVM.accumProbs(from: result) // accumulate result
                 }
             }
         }
@@ -119,6 +116,13 @@ struct BodyPartResultView: View{
                         } else if result == "wrong" {
                             Image(systemName: "xmark").resizable().frame(width: 20, height: 20)
                                 .foregroundColor(.red)
+                            Text(postureType).fontWeight(.regular)
+                                .foregroundColor(.red)
+                                .font(.system(size: 12))
+                                .padding(.bottom, 3)
+                        }else if result == "ambiguous"{
+                            Image(systemName: "exclamationmark.triangle").resizable().frame(width: 20, height: 20)
+                                .foregroundColor(.yellow)
                             Text(postureType).fontWeight(.regular)
                                 .foregroundColor(.red)
                                 .font(.system(size: 12))

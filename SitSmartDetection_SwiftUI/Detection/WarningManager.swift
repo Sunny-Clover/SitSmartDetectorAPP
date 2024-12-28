@@ -6,15 +6,18 @@
 //
 
 import Foundation
-class WarningManager{
+class WarningManager{    
+    
     private var maxIncorrectCount: Int // Warming if exceed
     private var incorrectCount: Int = 0
     
-    init(maxIncorrectCount: Int){
+    
+    init(maxIncorrectCount: Int = 5){
         self.maxIncorrectCount = maxIncorrectCount
     }
     
     func updateResults(results: [ResultData]){
+        // 要所有部位都正確才可以
         let isAllCorrect = results.allSatisfy { $0.result == "correct" }
         
         if isAllCorrect{
@@ -25,7 +28,10 @@ class WarningManager{
         
         // Exceed the max acceptable incorrect times
         if (incorrectCount > maxIncorrectCount){
-            playWarningSound()
+//            playWarningSound()
+            DispatchQueue.global().async { // call at background
+                SpeechPlayer.shared.speak(speech: .badPosture)
+            }
             resetCount()
         }
     }

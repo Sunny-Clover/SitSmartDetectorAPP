@@ -9,10 +9,12 @@ import SwiftUI
 import FirebaseAuth
 
 struct SigninView: View {
-    @Binding var currentShowingView: String
-    @AppStorage("uid") var userID: String = ""
+    @Binding var currentShowingView: authState
+    @EnvironmentObject var authVM: AuthViewModel
     
-    @State private var email: String = ""
+    
+    @AppStorage("uid") var userID: String = ""
+    @State private var email: String = ""  //
     @State private var password: String = ""
     @State private var showPassword: Bool = false
     
@@ -44,10 +46,10 @@ struct SigninView: View {
             // signin form
             VStack(alignment: .leading){
                 // Email textfield
-                Text("Email Address").fontWeight(.bold).foregroundColor(.deepAccent)
+                Text("Username").fontWeight(.bold).foregroundColor(.deepAccent)
                 HStack {
                     Image(systemName: "mail")
-                    TextField("Enter your email", text: $email).frame(minHeight: 25)
+                    TextField("Enter your username", text: $email).frame(minHeight: 25)
                     
                     Spacer()
                 }
@@ -82,21 +84,24 @@ struct SigninView: View {
                 )
                 // SignIn bottom
                 Button {
+                    print("SignIn buttom clicked!")
+                    authVM.login(username: email, password: password)
+                    
                     // TODO: action to sign in account on firebase
-                    Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-                         if let error = error {
-                             // print(error)
-                             print(error.localizedDescription)
-                             return
-                         }
-                         
-                         if let authResult = authResult {
-                             print(authResult.user.uid)
-                             withAnimation {
-                                 userID = authResult.user.uid
-                             }
-                         }
-                     }
+//                    Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+//                         if let error = error {
+//                             // print(error)
+//                             print(error.localizedDescription)
+//                             return
+//                         }
+//                         
+//                         if let authResult = authResult {
+//                             print(authResult.user.uid)
+//                             withAnimation {
+//                                 userID = authResult.user.uid
+//                             }
+//                         }
+//                     }
 
                 } label: {
                     Text("Sign In")
@@ -124,7 +129,7 @@ struct SigninView: View {
                     Button(action: {
                         // TODO: link to sign up view
                         withAnimation{
-                            self.currentShowingView = "signup"
+                            self.currentShowingView = .signup
                         }
                     }, label: {
                         Text("Sign Up")

@@ -12,7 +12,7 @@ var StatCard_Width = UIScreen.main.bounds.width * 0.44
 var StatCard_Height = UIScreen.main.bounds.width * 0.4
 
 struct HomeView: View {
-//    private let favoriteLandmarkTip = FavoriteLandmarkTip()
+    //    private let favoriteLandmarkTip = FavoriteLandmarkTip()
     
     var body: some View {
         NavigationStack {
@@ -20,33 +20,36 @@ struct HomeView: View {
                 Color(.bg)
                     .ignoresSafeArea()
                 ScrollView {
-                   VStack(alignment: .center, spacing: 25) {
-                       HeaderView()
-                       StatCardsView()
-                   }
+                    VStack(alignment: .center, spacing: 25) {
+                        HeaderView()
+                        StatCardsView()
+                    }
                 }
                 .ignoresSafeArea()
             }
         }
-   }
+    }
 }
 
+
+
 struct HeaderView: View {
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
         HStack {
             Spacer()
             Image("Sunny")
             VStack(alignment: .leading) {
-                Text("Hi, Sunny!")
+                Text("Hi, \(userInfoVM.user?.userName ?? "Guest")!")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
                 Spacer()
                 HStack {
-                    Text("Lv.2")
+                    Text("Lv.\(userInfoVM.getUserLevel())")
                         .foregroundStyle(.white)
                     .bold()
-                    ProgressView(value: 0.3)
+                    ProgressView(value: userInfoVM.getUserLevelProgress(), total: 1)
                         .tint(.sysYellow)
                 }
             }
@@ -88,6 +91,7 @@ struct StatCardsView: View {
 }
 
 struct AverageScore: View {
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
         VStack(alignment: .center) {
             HStack {
@@ -102,12 +106,12 @@ struct AverageScore: View {
                     .bold()
             }
             Spacer()
-            Text("89")
+            Text("\(userInfoVM.userAverageScore)")
                 .font(.system(size: 60))
                 .foregroundColor(.white)
                 .fontWeight(.bold)
             Spacer()
-            Text("Better than 86% of users")
+            Text("Better than \(userInfoVM.userPR)% of users")
                 .font(.system(size: 11))
                 .foregroundColor(.white)
         }
@@ -132,8 +136,9 @@ struct TotalTime: View {
 }
 
 struct Level: View {
-    var touchLandmarkTip = TouchLandmarkTip()
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     @State private var showSheet = false
+    var touchLandmarkTip = TouchLandmarkTip()
     var body: some View {
         VStack(alignment: .center) {
             HStack {
@@ -160,7 +165,7 @@ struct Level: View {
                 }
             }
             Spacer()
-            Text("2")
+            Text("\(userInfoVM.getUserLevel())")
                 .font(.system(size: 70))
                 .foregroundColor(.white)
                 .fontWeight(.bold)
