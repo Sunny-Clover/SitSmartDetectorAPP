@@ -11,6 +11,8 @@ import Security
 
 
 class TokenService {
+    
+    static let shared = TokenService()
     enum TokenKey: String {
         case accessToken = "accessToken"
         case refreshToken = "refreshToken"
