@@ -71,7 +71,7 @@ class TokenService {
         var dataTypeRef: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
         if status == errSecSuccess, let data = dataTypeRef as? Data {
-            print(String(data: data, encoding: .utf8))
+//            print(String(data: data, encoding: .utf8))
             return String(data: data, encoding: .utf8)
         }
         return nil

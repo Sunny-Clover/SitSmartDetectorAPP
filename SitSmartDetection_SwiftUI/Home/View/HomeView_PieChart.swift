@@ -9,6 +9,7 @@ import SwiftUI
 import Charts
 
 struct HomeView_PieChart: View {
+    @EnvironmentObject var userInfoVM: UserInfoViewModel
     var data: [PieDataSeries]
     var StatCard_Width = UIScreen.main.bounds.width * 0.44
     
@@ -46,7 +47,7 @@ struct HomeView_PieChart: View {
     private var legend: some View {
         let uniqueRatios = data.flatMap { $0.ratios.flatMap { $0 } }.uniqued(by: \.title)
         return VStack(alignment: .leading) {
-            Text("662.5 hr")
+            Text("\(userInfoVM.userTotalTime)")
                 .foregroundStyle(.white)
                 .font(.system(size: 20))
             ForEach(uniqueRatios, id: \.id) { ratioData in

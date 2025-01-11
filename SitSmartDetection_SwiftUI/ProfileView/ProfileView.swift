@@ -17,19 +17,14 @@ struct profileStatics{
 class ProfileViewModel: ObservableObject {
 //    @Published var users: [User] = []
     @Published var statics: profileStatics = profileStatics(level: 2, Score: 89, ReachedGaol: 6)
-    
-    func getUserAvatar(){
-        
-    }
-    func getUserName() -> String{
-        return "Sunny"
-    }
+
 }
 
 
 struct ProfileView: View {
     @ObservedObject var viewModel = ProfileViewModel()
-    @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject var authVM: AuthManager
+    @EnvironmentObject var userVM: UserInfoViewModel
     
     var body: some View {
         NavigationStack {
@@ -51,30 +46,31 @@ struct ProfileView: View {
                     .overlay(
                         Circle().stroke(.accent, lineWidth: 3) // 使用 `overlay` 添加圓形邊框
                     )
-                Text(viewModel.getUserName())
+                Text(userVM.user?.userName ?? "Error")
                     .foregroundColor(.profileAccent) // 設置文字顏色
                     .font(.system(size: 32, weight: .medium, design: .default))
                     .padding() // 添加內邊距
                 // Statics
                 HStack (spacing:3){
                     VStack{
-                        Text("\(viewModel.statics.level)")
+                        Text("\(userVM.user?.level ?? 1)")
                             .font(.system(size: 20, weight: .medium, design: .default))
                         Text("Level")
                             .font(.system(size: 14, weight: .medium, design: .default))
                     }.frame(width: 90)
                     VStack{
-                        Text("\(viewModel.statics.Score)")
+                        Text("\(userVM.getAllTimeScore())")
                             .font(.system(size: 20, weight: .medium, design: .default))
                         Text("Score")
                             .font(.system(size: 14, weight: .medium, design: .default))
                     }.frame(width: 90)
-                    VStack{
-                        Text("\(viewModel.statics.ReachedGaol)")
-                            .font(.system(size: 20, weight: .medium, design: .default))
-                        Text("ReachedGoal")
-                            .font(.system(size: 14, weight: .medium, design: .default))
-                    }.frame(width: 90)
+                    // TODO: Reached Goal暫時不要
+//                    VStack{
+//                        Text("\(viewModel.statics.ReachedGaol)")
+//                            .font(.system(size: 20, weight: .medium, design: .default))
+//                        Text("ReachedGoal")
+//                            .font(.system(size: 14, weight: .medium, design: .default))
+//                    }.frame(width: 90)
                 }.foregroundColor(.profileAccent).padding(20)
                 // Profile setting button
                 NavigationLink(destination: ProfileSettingView()) {

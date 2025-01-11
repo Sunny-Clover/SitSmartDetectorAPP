@@ -23,37 +23,6 @@ struct UserCreate: Codable {
     }
 }
 
-struct UserResponse: Codable {
-    let userID: Int
-    let userName: String
-    let email: String
-    let firstName: String?
-    let lastName: String?
-    let gender: String?
-    let photoUrl: String?
-    let instantPostureAlertEnable: Bool
-    let postureAlertDelayTime: String?
-    let idleAlertEnable: Bool
-    let idleAlertDelayTime: String?
-    let averageScore: Float?
-    let totalTime: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case userID = "UserID"
-        case userName = "UserName"
-        case email = "Email"
-        case firstName = "FirstName"
-        case lastName = "LastName"
-        case gender = "Gender"
-        case photoUrl = "PhotoUrl"
-        case instantPostureAlertEnable = "InstantPostureAlertEnable"
-        case postureAlertDelayTime = "PostureAlertDelayTime"
-        case idleAlertEnable = "IdleAlertEnable"
-        case idleAlertDelayTime = "IdleAlertDelayTime"
-        case averageScore = "AverageScore"
-        case totalTime = "TotalTime"
-    }
-}
 
 struct FriendRequestCreate: Codable {
     let receiverID: Int

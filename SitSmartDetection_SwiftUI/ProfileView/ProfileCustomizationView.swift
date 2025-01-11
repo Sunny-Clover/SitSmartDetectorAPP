@@ -6,19 +6,77 @@
 //
 
 import SwiftUI
+import Combine
+
 class CustomizationViewModel: ObservableObject {
-    @Published var InstantPostureAlertEnable: Bool = false
+    private var cancellables = Set<AnyCancellable>()
+    @Published var postureAlertEnable: Bool = false
     @Published var postureAlertMinutes: Int = 2
     @Published var postureAlertSeconds: Int = 30
-    @Published var idleAlertEnabled: Bool = false
+    @Published var idleAlertEnable: Bool = false
     @Published var idleAlertMinutes: Int = 2
     @Published var idleAlertSeconds: Int = 30
     
-    @Published var goalPoints: Int = 85
+    //@Published var goalPoints: Int = 85
+    
+    func loadUserData() {
+        guard let loadedUser = UserService.shared.userInfo else { return }
+        postureAlertEnable = loadedUser.postureAlertEnable ?? false
+        idleAlertEnable = loadedUser.idleAlertEnable ?? false
+        (idleAlertMinutes, idleAlertSeconds) = extractMinutesAndSeconds(from: loadedUser.idleAlertTime ?? "00:00:00") ?? (0, 0)
+        (postureAlertMinutes, postureAlertSeconds) = extractMinutesAndSeconds(from: loadedUser.postureAlertTime ?? "00:00:00") ?? (0, 0)
+    }
+
+    func saveUserData(completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        let idleAlertTimeString = formatToTimeString(minutes: idleAlertMinutes, seconds: idleAlertSeconds)
+        let postureAlertTimeString = formatToTimeString(minutes: postureAlertMinutes, seconds: postureAlertSeconds)
+        
+        let userUpdate = UserUpdate(
+            firstName: nil,
+            lastName: nil,
+            gender: nil,
+            photoUrl: nil,
+            postureAlertEnable: postureAlertEnable,
+            postureAlertTime: postureAlertEnable ? postureAlertTimeString : nil,
+            idleAlertEnable: idleAlertEnable,
+            idleAlertTime: idleAlertEnable ? idleAlertTimeString : nil
+        )
+        
+        guard let bodyData = try? JSONEncoder().encode(userUpdate) else {
+            completion(.failure(SSDError.encodingFailed))
+            return
+        }
+        
+        let endpoint = "\(Config.shared.baseURL)/users/me"
+        
+        // 發送 PATCH 請求
+        APIManager.shared.performRequest(endpoint: endpoint, method: .PATCH, body: bodyData)
+            .receive(on: DispatchQueue.main)
+            .sink { completionStatus in
+                switch completionStatus {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("saveCustomization failed: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            } receiveValue: { (updatedUser: UserResponse) in
+                DispatchQueue.main.async {
+                    UserService.shared.userInfo = updatedUser
+                    self.loadUserData()
+                    completion(.success(()))
+                }
+            }
+            .store(in: &self.cancellables)
+    }
 }
 
 struct ProfileCustomizationView: View {
     @ObservedObject var viewModel = CustomizationViewModel()
+    @Environment(\.dismiss) private var dismiss
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     // Init UISegmentedControl's appearance
     init() {
@@ -62,7 +120,7 @@ struct ProfileCustomizationView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
-                    Picker("Select Idle Alert Type", selection: $viewModel.idleAlertEnabled) {
+                    Picker("Select Idle Alert Type", selection: $viewModel.idleAlertEnable) {
                         Text("Off").tag(false)
                         Text("On").tag(true)
                     }
@@ -71,7 +129,7 @@ struct ProfileCustomizationView: View {
                     .cornerRadius(7)
                     .padding(.top)
 
-                    if viewModel.idleAlertEnabled {
+                    if viewModel.idleAlertEnable {
                         HStack {
                             Picker(selection: $viewModel.idleAlertMinutes, label: Text("Minutes")) {
                                 ForEach(0..<60) { i in
@@ -148,19 +206,36 @@ struct ProfileCustomizationView: View {
                 */
                 Spacer()
             }
+            .onAppear {
+                viewModel.loadUserData()
+            }
             .navigationTitle("Customization")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // Button action
+                        viewModel.saveUserData { result in
+                            switch result {
+                            case .success:
+                                dismiss()
+                            case .failure(let error):
+                                alertMessage = "Failed to save data: \(error.localizedDescription)"
+                                showAlert = true
+                            }
+                        }
                     }) {
                         Text("Done")
                             .foregroundColor(.deepAccent)
                             .bold()
+                    }.alert(isPresented: $showAlert) {
+                        Alert(
+                            title: Text("Error"),
+                            message: Text(alertMessage),
+                            dismissButton: .default(Text("OK"))
+                        )
                     }
                 }
             }
-        .padding()
+            .padding()
         }
     }
 }
@@ -205,16 +280,16 @@ struct PostureAlert: View {
                 }
             }
             
-            Picker("Select Alert Type", selection: $viewModel.InstantPostureAlertEnable) {
-                Text("Instant").tag(true)
-                Text("Delay").tag(false)
+            Picker("Select Alert Type", selection: $viewModel.postureAlertEnable) {
+                Text("off").tag(false)
+                Text("On").tag(true)
             }
             .pickerStyle(SegmentedPickerStyle())
             .background(Color(red: 151/255, green: 181/255, blue: 198/255))
             .cornerRadius(7)
             .padding(.top) // 只在頂部添加間距
             
-            if !(viewModel.InstantPostureAlertEnable) {
+            if viewModel.postureAlertEnable {
                 HStack {
                     Picker(selection: $viewModel.postureAlertMinutes, label: Text("Minutes")) {
                         ForEach(0..<60) { i in

@@ -43,7 +43,6 @@ class HistoryViewModel: ObservableObject {
     
     private var records:[RecordResponse] = []
     private var requestFailedCount = 0
-    private let maxRetryTimes = 3
     private var recordService = RecordService()
     private let tokenService = TokenService()
     
@@ -54,7 +53,7 @@ class HistoryViewModel: ObservableObject {
 //        self.pieChartData = initPieChartData
         self.timeUnit = timeUnit
         self.currentTime = Date()
-        self.selectedTime = 0 // 默认值
+        self.selectedTime = 0 // 預設
         
         // 初始化 pieChartData
         var allCorrectRatios: [RatioData] = []
@@ -113,9 +112,8 @@ class HistoryViewModel: ObservableObject {
     func fetchData(/*from records: [DetectionRecord]*/){
 //        self.initLineChartData = createLineChartData(from: records)
 //        self.initPieChartData = createPieChartData(from: records)
-//        
-        guard let token = self.tokenService.retrieveToken(for: .accessToken) else { return }
-        self.recordService.fetchRecords(token: token){ [weak self] result in
+
+        self.recordService.fetchRecords(){ [weak self] result in
             switch result {
             case .success(let records):
                 DispatchQueue.main.async {
@@ -126,33 +124,12 @@ class HistoryViewModel: ObservableObject {
                     self?.updateAvgScore()
                 }
             case .failure(let error):
-                // TODO: 還未完成
-                // token expire(?
-                guard var count = self?.requestFailedCount else { return }
-                guard let maxRetryTimes = self?.maxRetryTimes else { return }
-                count += 1
-                self?.requestFailedCount = count
-
-                if(count < maxRetryTimes){
-                    self?.refreshToken()
-                    self?.fetchData()
-                }
+                // TODO:
+                break
             }
         }
 //        print(self.initPieChartData.filter { $0.title == "Head" })
         
-    }
-    
-    func refreshToken(){
-        self.tokenService.refreshToken { result in
-            // Should make sure cover all .failure cases
-            switch result{
-            case .success():
-                print("Sucessfully auto refresh token")
-            case .failure(let error):
-                print("Refresh token failed: \(error)")
-            }
-        }
     }
     
     func changeTimeUnit_N_currentTimeTextWidth() {
@@ -346,8 +323,8 @@ class HistoryViewModel: ObservableObject {
                 }
             }
         }
-        print("allCorrectRatios:", allCorrectRatios)
-        print("partiallyCorrectRatios", partiallyCorrectRatios)
+//        print("allCorrectRatios:", allCorrectRatios)
+//        print("partiallyCorrectRatios", partiallyCorrectRatios)
         let allCorrectRatio = allCorrectRatios.count
         let partiallyCorrectRatio = partiallyCorrectRatios.count
 
@@ -475,10 +452,12 @@ class HistoryViewModel: ObservableObject {
 extension Array where Element == RecordResponse {
     func convertToDate(_ dateString: String) -> Date? {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss" // 注意 'T'
+        dateFormatter.timeZone = TimeZone(identifier: "UTC") // 時區設定
         return dateFormatter.date(from: dateString)
     }
+
+
 
     func toLineChartData() -> [DataSeries] {
         var headScores: [ScoreData] = []
@@ -493,18 +472,18 @@ extension Array where Element == RecordResponse {
                 continue
             }
 
-            let headScore = Double(record.head.neutralCount) / Double(record.totalPredictions)
-            let neckScore = Double(record.neck.neutralCount) / Double(record.totalPredictions)
-            let shoulderScore = Double(record.shoulder.neutralCount) / Double(record.totalPredictions)
-            let bodyScore = Double(record.body.neutralCount) / Double(record.totalPredictions)
-            let feetScore = Double(record.feet.flatCount) / Double(record.totalPredictions)
+            let headScore = record.head.partialScore
+            let neckScore = record.neck.partialScore
+            let shoulderScore = record.shoulder.partialScore
+            let bodyScore = record.body.partialScore
+            let feetScore = record.feet.partialScore
 
             // *100: 0.xx -> xx %
-            headScores.append(ScoreData(day: time, score: headScore*100))
-            neckScores.append(ScoreData(day: time, score: neckScore*100))
-            shoulderScores.append(ScoreData(day: time, score: shoulderScore*100))
-            bodyScores.append(ScoreData(day: time, score: bodyScore*100))
-            feetScores.append(ScoreData(day: time, score: feetScore*100))
+            headScores.append(ScoreData(day: time, score: Double(headScore)*100))
+            neckScores.append(ScoreData(day: time, score: Double(neckScore)*100))
+            shoulderScores.append(ScoreData(day: time, score: Double(shoulderScore)*100))
+            bodyScores.append(ScoreData(day: time, score: Double(bodyScore)*100))
+            feetScores.append(ScoreData(day: time, score: Double(feetScore)*100))
         }
 
         return [

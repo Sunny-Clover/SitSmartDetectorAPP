@@ -13,7 +13,7 @@ var StatCard_Height = UIScreen.main.bounds.width * 0.4
 
 struct HomeView: View {
     //    private let favoriteLandmarkTip = FavoriteLandmarkTip()
-    
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
         NavigationStack {
             ZStack {
@@ -27,6 +27,8 @@ struct HomeView: View {
                 }
                 .ignoresSafeArea()
             }
+        }.onAppear {
+            userInfoVM.fetchUserData()
         }
     }
 }
@@ -46,10 +48,10 @@ struct HeaderView: View {
                     .foregroundStyle(.white)
                 Spacer()
                 HStack {
-                    Text("Lv.\(userInfoVM.getUserLevel())")
+                    Text("Lv.\(userInfoVM.user?.level ?? 1)")
                         .foregroundStyle(.white)
                     .bold()
-                    ProgressView(value: userInfoVM.getUserLevelProgress(), total: 1)
+                    ProgressView(value: userInfoVM.user?.levelProgress, total: 1)
                         .tint(.sysYellow)
                 }
             }
@@ -106,12 +108,12 @@ struct AverageScore: View {
                     .bold()
             }
             Spacer()
-            Text("\(userInfoVM.userAverageScore)")
+            Text("\(userInfoVM.getAllTimeScore())")
                 .font(.system(size: 60))
                 .foregroundColor(.white)
                 .fontWeight(.bold)
             Spacer()
-            Text("Better than \(userInfoVM.userPR)% of users")
+            Text("Better than \(Int(userInfoVM.user?.pr ?? -1))% of users")
                 .font(.system(size: 11))
                 .foregroundColor(.white)
         }
@@ -125,8 +127,9 @@ struct AverageScore: View {
 }
 
 struct TotalTime: View {
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
-        HomeView_PieChart(data: home_allPartPieChartData, StatCard_Width: StatCard_Width)
+        HomeView_PieChart(data: userInfoVM.userTotalTimePieDataSource, StatCard_Width: StatCard_Width)
             .padding()
             .frame(width: StatCard_Width, height: StatCard_Height)
             .background(.accent)
@@ -165,7 +168,7 @@ struct Level: View {
                 }
             }
             Spacer()
-            Text("\(userInfoVM.getUserLevel())")
+            Text("\(userInfoVM.user?.level ?? 1)")
                 .font(.system(size: 70))
                 .foregroundColor(.white)
                 .fontWeight(.bold)

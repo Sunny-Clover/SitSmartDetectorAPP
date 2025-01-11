@@ -5,10 +5,12 @@
 //  Created by 林君曆 on 2024/8/28.
 //
 
+import SwiftUI
 import Foundation
 import Combine
 
 class UserService: ObservableObject {
+//    @EnvironmentObject var authManager: AuthManager
     static let shared = UserService()
     private init() {} // avoid creating second instance
     // Store the data
@@ -16,59 +18,33 @@ class UserService: ObservableObject {
     @Published var userInfo: UserResponse? = nil
     
     // TBU: 了解各個function的細節語法
-    
-    let baseURL = Config.shared.baseURL
-    private var cancellables = Set<AnyCancellable>() // TBU:
-    private lazy var path: String = {
-        return "\(baseURL)/users/"
-    }()
-//    func hasValidAccessToken() -> Bool {
-//        // Check if access token exists in Keychain and is not expired
-//        // Return true if valid, false otherwise
-//    }
+    let router = "\(Config.shared.baseURL)/users"
+    private var cancellables = Set<AnyCancellable>()
 
-    func fetchUserData(token: String, completion: @escaping (Result<UserResponse, AuthError>) -> Void) {
+    func fetchUserData(completion: @escaping (Result<UserResponse, AuthError>) -> Void) {
         print("UserService fethcUserData called!")
         // Fetch user data using access token
         // Call completion with .success(user) or .failure(error)
-//        print("fetch UserData with accessToken=\(accessToken)")
-        let userURL = URL(string: path)!
-        var userRequest = URLRequest(url: userURL)
-        userRequest.httpMethod = "GET"
-        userRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        
-        URLSession.shared.dataTaskPublisher(for: userRequest)
-            .tryMap { output in
-                guard let response = output.response as? HTTPURLResponse else {
-                    throw URLError(.badServerResponse)
+        let endpoint = "\(self.router)/me"
+        APIManager.shared.performRequest(endpoint: endpoint, method: .GET)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("fetchUserData failed", error.localizedDescription)
                 }
-                // 檢查 token 是否過期
-                if response.statusCode == 401 {
-                    completion(.failure(.Unauthorized))
-                }
-                return output.data
-            }
-            .decode(type: UserResponse.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main) // main thread update user data
-            .sink { completionResult in
-                if case .failure(let error) = completionResult {
-                    if let authError = error as? AuthError {
-                        completion(.failure(authError))
-                    } else {
-                        completion(.failure(.other(error)))
-                    }
-                }
-            } receiveValue: { user in
+            } receiveValue: { (user: UserResponse) in
                 self.userInfo = user
-                completion(.success(user))
             }
             .store(in: &cancellables)
     }
-    
-    func createUser(email: String, username: String, password: String, completion: @escaping (Result<Void, Error>) -> Void){ // The callback receive Result para
-        //
+
+    func createUser(email: String, username: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
         print("Service's Signup called")
-        let url = URL(string: path)!
+        let endpoint = "\(router)/"
+        let url = URL(string: endpoint)!
         let payload = UserCreate(email: email, userName: username, password: password)
         var req = URLRequest(url: url)
         req.httpMethod = "POST"

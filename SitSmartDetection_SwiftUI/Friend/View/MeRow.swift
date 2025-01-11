@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MeRow: View {
-    let friend: Friend
+    let friend: LeaderboardData
     var body: some View {
         HStack{
             ZStack {
@@ -22,6 +22,7 @@ struct MeRow: View {
             }
             Spacer()
                 .frame(width: 20)
+            // TODO: 圖片還沒處理
             Image(friend.name)
                 .resizable()
                 .scaledToFill()
@@ -37,11 +38,12 @@ struct MeRow: View {
                         .font(.title)
                         .bold()
                     Spacer()
-                    Image(systemName: "medal.fill")
-                        .foregroundStyle(.white)
-                    Text(String(friend.badge))
-                        .font(.largeTitle)
-                        .foregroundStyle(.white)
+                    // TODO: Bagdes先不實作
+//                    Image(systemName: "medal.fill")
+//                        .foregroundStyle(.white)
+//                    Text(String(friend.badge))
+//                        .font(.largeTitle)
+//                        .foregroundStyle(.white)
                 }
                 HStack {
                     Text("Lv.\(friend.level)")
@@ -61,10 +63,10 @@ struct MeRow: View {
     }
 }
 
-extension Friend{
-    static let demoMe = Friend(rank: 7, name: "Sunny", badge: 2, level: 2, progress: 0.5, score: 86)
+extension FriendDTO{
+    static let demoMe = FriendDTO(rank: 7, name: "Sunny", badge: 2, level: 2, progress: 0.5, score: 86)
 }
 
-#Preview {
-    MeRow(friend: .demoMe)
-}
+//#Preview {
+//    MeRow(friend: .demoMe)
+//}

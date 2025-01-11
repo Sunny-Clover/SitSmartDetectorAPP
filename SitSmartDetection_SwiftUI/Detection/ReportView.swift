@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReportView: View {
-    @StateObject var report = HistoryModel(initLineChartData: lineChartDataDummy, initPieChartData: allPartPieChartData, timeUnit: .year)
+    @StateObject var report = HistoryModel(initLineChartData: lineChartDataDummy, initPieChartData: allPartPieChartData, timeUnit: .year) // TODO: 這邊之前是直接用現成的可以用就好，現在要把它替換掉，特別是allPartPieChartData這個怪怪的資料
     private let emojiSize: CGFloat = 45
 //    var pieChartSrc:[PieDataSeries]
     var body: some View {

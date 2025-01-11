@@ -8,11 +8,13 @@
 import Foundation
 class WarningManager{    
     
-    private var maxIncorrectCount: Int // Warming if exceed
+    var maxIncorrectCount: Int // Warming if exceed\
+    var enable: Bool
     private var incorrectCount: Int = 0
     
     
-    init(maxIncorrectCount: Int = 5){
+    init(maxIncorrectCount: Int = 5, enable: Bool = false){
+        self.enable = enable
         self.maxIncorrectCount = maxIncorrectCount
     }
     
@@ -28,9 +30,10 @@ class WarningManager{
         
         // Exceed the max acceptable incorrect times
         if (incorrectCount > maxIncorrectCount){
-//            playWarningSound()
-            DispatchQueue.global().async { // call at background
-                SpeechPlayer.shared.speak(speech: .badPosture)
+            if self.enable{
+                DispatchQueue.global().async { // call at background
+                    SpeechPlayer.shared.speak(speech: .badPosture)
+                }
             }
             resetCount()
         }

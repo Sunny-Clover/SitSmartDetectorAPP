@@ -68,7 +68,7 @@ class DetectionViewModel: ObservableObject {
         stopTimer()
         self.stopRecord()
         self.countScore()
-//        self.createRecord()
+        self.createRecord()
         self.resetResults()
     }
     func startDetection(){
@@ -88,14 +88,35 @@ class DetectionViewModel: ObservableObject {
     
     // 開始定時器
     func startTimer() {
+        print("timer start")
+        // setup posture alert
+        self.warningManager.enable = UserService.shared.userInfo?.postureAlertEnable ?? false
+        if let secs = extractSeconds(from: UserService.shared.userInfo?.postureAlertTime ?? "00:00:00"){
+            self.warningManager.maxIncorrectCount = secs
+        }
+        
+        // setup detection mechanism
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.updateResults()
+            self?.updateResults() // 每秒統計一次姿勢，同時會記錄到WarningManager中
         }
-        resetTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { _ in
-            DispatchQueue.global().async { // exec in the background
-                SpeechPlayer.shared.speak(speech: .sitTooLong)
+        
+        // setup idle alert
+        if let userInfo = UserService.shared.userInfo,
+           let idleAlertEnable = userInfo.idleAlertEnable,
+           let idleAlertTime = userInfo.idleAlertTime,
+           let alertSecs = extractSeconds(from: idleAlertTime) {
+            // 在背景中執行
+            print("idle timer start")
+            if idleAlertEnable{
+                resetTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(alertSecs), repeats: true) { _ in
+                    DispatchQueue.global().async { // exec in the background
+                        SpeechPlayer.shared.speak(speech: .sitTooLong)
+                    }
+                }
             }
+
         }
+
     }
     func stopTimer(){
         timer?.invalidate()
@@ -178,7 +199,7 @@ class DetectionViewModel: ObservableObject {
         AccClassProbs = ["Head": [Float32](), "Neck": [Float32](), "Shoulder": [Float32](), "Body":[Float32](), "Feet":[Float32]()]
 
         // 更新WarmingManager裡面的紀錄
-         warningManager.updateResults(results: [headResult, neckResult, shoulderResult, backResult, legResult])
+        warningManager.updateResults(results: [headResult, neckResult, shoulderResult, backResult, legResult])
         
     }
     /// (postureType, postureCorrectOrNot)
@@ -316,12 +337,11 @@ class DetectionViewModel: ObservableObject {
         return pieChartData
     }
     
-    func createRecord(){
-        guard let token = self.tokenService.retrieveToken(for: .accessToken) else { return }
-        recordService.createRecord(token: token, record: self.record.toRecordCreate()){ result in
+    func createRecord() {
+        recordService.createRecord(record: self.record.toRecordCreate()){ result in
             // Should make sure cover all .failure cases
             switch result{
-            case .success():
+            case .success(let recordResponse):
                 print("Sucessfully createRecord")
             case .failure(let error):
                 print("CreateRecord failed: \(error)")

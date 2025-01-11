@@ -13,7 +13,7 @@ import TipKit
 @main
 struct SitSmartDetection_SwiftUIApp: App {
 //    let container: ModelContainer
-    @StateObject private var authVM = AuthViewModel()
+    @StateObject private var authVM = AuthManager()
     @StateObject private var userInfoVM = UserInfoViewModel()
     @StateObject private var historyVM = HistoryViewModel(timeUnit: .year)
 
