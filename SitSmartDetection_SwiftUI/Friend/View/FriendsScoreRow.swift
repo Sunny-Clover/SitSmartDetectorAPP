@@ -32,8 +32,7 @@ struct FriendsScoreRow: View {
             }
             Spacer()
                 .frame(width: 20)
-            Image(friend.name)
-                .resizable()
+            AvatarView(userID: friend.userID)
                 .scaledToFill()
                 .frame(width: 70, height: 70)
                 .clipped()

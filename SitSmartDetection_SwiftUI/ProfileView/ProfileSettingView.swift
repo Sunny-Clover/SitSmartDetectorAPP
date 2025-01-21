@@ -103,24 +103,17 @@ struct ProfileSettingView: View {
     
     var body: some View {
         VStack {
-            if let photoUrl = viewModel.user.photoUrl {
-                // TODO: should concat with the config.baseURL
-                AsyncImage(url: URL(string: photoUrl)) { image in
-                    image.resizable()
-                } placeholder: {
-                    Image("Sunny")
-                        .resizable()
-                }
+            // TODO: 第一次加載後端的資料，之後如果有上傳新的照片，就要顯示上傳的，直到發出Done成功儲存到後端後，下次打開就會加載最新的大頭照出來了
+            AvatarView(userID: viewModel.user.userID)
                 .frame(width: 65, height: 65)
                 .clipShape(Circle())
                 .overlay(
                     Circle().stroke(Color.accent, lineWidth: 3)
                 )
-            }
             
             Button(action: {
                 // Button action
-                // TODO: Edit Picture function
+                // TODO: Edit Picture function，Upload pic from phone, and should be save to backend when done button pressed
             }) {
                 Text("Edit Picture").foregroundColor(Color(red: 149/255, green: 208/255, blue: 248/255))
             }

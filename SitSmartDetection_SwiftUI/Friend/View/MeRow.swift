@@ -22,9 +22,7 @@ struct MeRow: View {
             }
             Spacer()
                 .frame(width: 20)
-            // TODO: 圖片還沒處理
-            Image(friend.name)
-                .resizable()
+            AvatarView(userID: friend.userID)
                 .scaledToFill()
                 .frame(width: 70, height: 70)
                 .clipped()

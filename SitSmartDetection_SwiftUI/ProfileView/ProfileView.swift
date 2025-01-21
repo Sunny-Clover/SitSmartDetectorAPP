@@ -39,13 +39,17 @@ struct ProfileView: View {
                             .foregroundColor(.accent)
                     }.padding()
                 }
-                Image("Sunny") // TODO: refactor
-                    .resizable()
-                    .frame(width: 65, height: 65)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle().stroke(.accent, lineWidth: 3) // 使用 `overlay` 添加圓形邊框
-                    )
+                Group {
+                    if let userID = userVM.user?.userID {
+                        AvatarView(userID: userID)
+                    } else {
+                        Image("Sunny")
+                    }
+                }.frame(width: 65, height: 65)
+                 .clipShape(Circle())
+                 .overlay(
+                    Circle().stroke(.accent, lineWidth: 3) // 使用 `overlay` 添加圓形邊框
+                 )
                 Text(userVM.user?.userName ?? "Error")
                     .foregroundColor(.profileAccent) // 設置文字顏色
                     .font(.system(size: 32, weight: .medium, design: .default))

@@ -40,7 +40,18 @@ struct HeaderView: View {
     var body: some View {
         HStack {
             Spacer()
-            Image("Sunny")
+            Group {
+                if let userID = userInfoVM.user?.userID {
+                    AvatarView(userID: userID)
+                } else {
+                    Image("Sunny")
+                }
+            }
+            .scaledToFill()
+            .frame(width: 100, height: 100) // 固定圖片框的大小
+            .clipped() // 裁剪超出框架的內容
+
+            
             VStack(alignment: .leading) {
                 Text("Hi, \(userInfoVM.user?.userName ?? "Guest")!")
                     .font(.largeTitle)
