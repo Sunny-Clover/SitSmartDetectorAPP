@@ -42,7 +42,7 @@ struct HeaderView: View {
             Spacer()
             Group {
                 if let userID = userInfoVM.user?.userID {
-                    AvatarView(userID: userID)
+                    AvatarView(userID: userID, photoUrl: userInfoVM.user?.photoUrl)
                 } else {
                     Image("Sunny")
                 }

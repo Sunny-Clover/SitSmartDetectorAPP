@@ -41,7 +41,7 @@ struct ProfileView: View {
                 }
                 Group {
                     if let userID = userVM.user?.userID {
-                        AvatarView(userID: userID)
+                        AvatarView(userID: userID, photoUrl: userVM.user?.photoUrl)
                     } else {
                         Image("Sunny")
                     }

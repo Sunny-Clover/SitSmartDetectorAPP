@@ -71,3 +71,8 @@ struct UserUpdate : Codable{
         case idleAlertTime = "IdleAlertTime"
     }
 }
+
+struct UploadPhotoResponse: Decodable {
+    let message: String
+    let filename: String
+}

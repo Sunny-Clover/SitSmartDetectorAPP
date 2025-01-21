@@ -26,7 +26,12 @@ class APIManager {
     }
     
     // Token must be stored first
-    func performRequest<T: Decodable>(endpoint: String, method: HTTPMethod, body: Data? = nil) -> AnyPublisher<T, Error> {
+    func performRequest<T: Decodable>(
+        endpoint: String,
+        method: HTTPMethod,
+        body: Data? = nil,
+        additionalHeaders: [String: String]? = nil
+    ) -> AnyPublisher<T, Error> {
         guard let url = URL(string: endpoint) else {
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
@@ -36,17 +41,23 @@ class APIManager {
         request.httpMethod = method.rawValue
         request.httpBody = body
         
+        // 添加默認的 Authorization Header
         guard let token = accessToken else {
             logout()
             return Fail(error: URLError(.userAuthenticationRequired))
                 .eraseToAnyPublisher()
         }
-        
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        // 添加其他 Headers
+        additionalHeaders?.forEach { key, value in
+            request.setValue(value, forHTTPHeaderField: key)
+        }
         
         if method == .POST || method == .PUT || method == .PATCH {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
+        
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { output -> Data in
                 if let response = output.response as? HTTPURLResponse {
@@ -62,6 +73,60 @@ class APIManager {
             }
             .decode(type: T.self, decoder: JSONDecoder())
             .catch { [weak self] error -> AnyPublisher<T, Error> in
+                if (error as? URLError)?.code == .userAuthenticationRequired {
+                    return self?.handleAuthenticationError(request: request) ?? Fail(error: error).eraseToAnyPublisher()
+                }
+                return Fail(error: error).eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func uploadPhotoWithAuthorization(
+        endpoint: String,
+        imageData: Data,
+        parameterName: String,
+        fileName: String,
+        mimeType: String
+    ) -> AnyPublisher<UploadPhotoResponse, Error> {
+        guard let token = accessToken else {
+            return Fail(error: URLError(.userAuthenticationRequired)).eraseToAnyPublisher()
+        }
+
+        let boundary = UUID().uuidString
+        var body = Data()
+        
+        // Construct multipart/form-data body
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"\(parameterName)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
+        body.append(imageData)
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        // Create URLRequest
+        guard let url = URL(string: endpoint) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = body
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap { output -> Data in
+                guard let response = output.response as? HTTPURLResponse else {
+                    throw URLError(.badServerResponse)
+                }
+                if response.statusCode == 401 {
+                    throw URLError(.userAuthenticationRequired) // Trigger token refresh
+                }
+                if !(200...299).contains(response.statusCode) {
+                    throw URLError(.badServerResponse)
+                }
+                return output.data
+            }
+            .decode(type: UploadPhotoResponse.self, decoder: JSONDecoder())
+            .catch { [weak self] error -> AnyPublisher<UploadPhotoResponse, Error> in
                 if (error as? URLError)?.code == .userAuthenticationRequired {
                     return self?.handleAuthenticationError(request: request) ?? Fail(error: error).eraseToAnyPublisher()
                 }
