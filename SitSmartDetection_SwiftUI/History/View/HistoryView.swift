@@ -262,5 +262,6 @@ struct HistoryView_Previews: PreviewProvider {
                     .datastoreLocation(.applicationDefault)
                 ])
             }
+            .environmentObject(HistoryViewModel(timeUnit: .year))
     }
 }
