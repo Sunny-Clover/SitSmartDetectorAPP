@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct FriendsView: View {
-    @State private var displayOptions = ["Badge & Level", "Score"]
+    @State private var displayOptions = ["Level", "Score"]
     @State private var selectedDisplayOption = 0
-    let me = Friend(rank: 4, name: "Sunny", badge: 2, level: 2, progress: 0.3, score: 86)
-    let friends = [Friend(rank: 1, name: "Bryan", badge: 10, level: 3, progress: 0.6, score: 86),
-                   Friend(rank: 2, name: "Karry", badge: 8, level: 2, progress: 0.6, score: 86),
-                   Friend(rank: 3, name: "Roy", badge: 4, level: 1, progress: 0.9, score: 86),
-                   Friend(rank: 5, name: "Jackson", badge: 1, level: 1, progress: 0.3, score: 86),
-                   Friend(rank: 6, name: "Amy", badge: 1, level: 1, progress: 0.1, score: 86)
+    let me = FriendDTO(rank: 4, name: "Sunny", badge: 2, level: 2, progress: 0.3, score: 86)
+    let friends = [FriendDTO(rank: 1, name: "Bryan", badge: 10, level: 3, progress: 0.6, score: 86),
+                   FriendDTO(rank: 2, name: "Karry", badge: 8, level: 2, progress: 0.6, score: 86),
+                   FriendDTO(rank: 3, name: "Roy", badge: 4, level: 1, progress: 0.9, score: 86),
+                   FriendDTO(rank: 5, name: "Jackson", badge: 1, level: 1, progress: 0.3, score: 86),
+                   FriendDTO(rank: 6, name: "Amy", badge: 1, level: 1, progress: 0.1, score: 86)
                     ]
+    @StateObject private var viewModel = FriendViewModel()
     
     init() {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
@@ -45,7 +46,13 @@ struct FriendsView: View {
                 BadgeAndLevelView
             } else {
                 ScoreView
+
             }
+        }.onAppear {
+            viewModel.fetchLeaderboard(for: selectedDisplayOption)
+        }
+        .onChange(of: selectedDisplayOption) {
+            viewModel.fetchLeaderboard(for: selectedDisplayOption)
         }
     }
     
@@ -63,8 +70,8 @@ struct FriendsView: View {
     
     var BadgeAndLevelView: some View {
         List {
-            MeRow(friend: me)
-            ForEach(friends) { friend in
+            MeRow(friend: viewModel.myData ?? LeaderboardData(userID: -1, userName: "Error", photoUrl: "default.png", rank: -1, level: -1, progress: 0, allTimeScore: 0))
+            ForEach(viewModel.friendsData) { friend in
                 FriendsRow(friend: friend)
             }
         }
@@ -73,8 +80,8 @@ struct FriendsView: View {
     
     var ScoreView: some View {
         List {
-            MeScoreRow(friend: me)
-            ForEach(friends) { friend in
+            MeScoreRow(friend: viewModel.myData ?? LeaderboardData(userID: -1, userName: "Error", photoUrl: "default.png", rank: -1, level: -1, progress: 0, allTimeScore: 0))
+            ForEach(viewModel.friendsData) { friend in
                 FriendsScoreRow(friend: friend)
             }
         }

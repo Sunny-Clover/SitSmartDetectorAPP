@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FriendsScoreRow: View {
-    let friend: Friend
+    let friend: LeaderboardData
     var body: some View {
         HStack{
             ZStack {
@@ -32,19 +32,18 @@ struct FriendsScoreRow: View {
             }
             Spacer()
                 .frame(width: 20)
-            Image(friend.name)
-                .resizable()
+            AvatarView(photoUrl: friend.photoUrl)
                 .scaledToFill()
                 .frame(width: 70, height: 70)
                 .clipped()
             Spacer()
                 .frame(width: 10)
-            Text(friend.name)
+            Text(friend.userName)
                 .foregroundStyle(.textGray)
                 .font(.title)
                 .bold()
             Spacer()
-            Text(String(friend.score))
+            Text(String(Int(friend.allTimeScore*100)))
                 .foregroundStyle(.textGray)
                 .font(.largeTitle)
                 .bold()
@@ -58,10 +57,10 @@ struct FriendsScoreRow: View {
     }
 }
 
-extension Friend{
-    static let demoFriendsScore = Friend(rank: 7, name: "Sunny", badge: 2, level: 2, progress: 0.5, score: 86)
+extension FriendDTO{
+    static let demoFriendsScore = FriendDTO(rank: 7, name: "Sunny", badge: 2, level: 2, progress: 0.5, score: 86)
 }
-
-#Preview {
-    FriendsScoreRow(friend: .demoFriendsScore)
-}
+//
+//#Preview {
+//    FriendsScoreRow(friend: .demoFriendsScore)
+//}

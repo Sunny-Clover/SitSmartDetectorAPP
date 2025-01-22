@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AuthView: View {
-    @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject var authVM: AuthManager
     @State private var showingState:authState = .signin
     
     var body: some View {

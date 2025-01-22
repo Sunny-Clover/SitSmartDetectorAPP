@@ -105,7 +105,7 @@ struct HistoryLineChart: View {
         for series in lineChart.data {
             for scoreData in series.scores {
                 if calendar.isDate(scoreData.day, equalTo: startDate, toGranularity: lineChart.timeUnit) {
-                    print("score", scoreData.day)
+//                    print("score", scoreData.day)
                     return scoreData.score
                 }
 //                print("selectedDate", selectedDate)
