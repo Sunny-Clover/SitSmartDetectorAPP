@@ -70,7 +70,7 @@ struct FriendsView: View {
     
     var BadgeAndLevelView: some View {
         List {
-            MeRow(friend: viewModel.myData ?? LeaderboardData(userID: -1, name: "Error", rank: -1, level: -1, progress: 0, allTimeScore: 0))
+            MeRow(friend: viewModel.myData ?? LeaderboardData(userID: -1, userName: "Error", photoUrl: "default.png", rank: -1, level: -1, progress: 0, allTimeScore: 0))
             ForEach(viewModel.friendsData) { friend in
                 FriendsRow(friend: friend)
             }
@@ -80,7 +80,7 @@ struct FriendsView: View {
     
     var ScoreView: some View {
         List {
-            MeScoreRow(friend: viewModel.myData ?? LeaderboardData(userID: -1, name: "Error", rank: -1, level: -1, progress: 0, allTimeScore: 0))
+            MeScoreRow(friend: viewModel.myData ?? LeaderboardData(userID: -1, userName: "Error", photoUrl: "default.png", rank: -1, level: -1, progress: 0, allTimeScore: 0))
             ForEach(viewModel.friendsData) { friend in
                 FriendsScoreRow(friend: friend)
             }

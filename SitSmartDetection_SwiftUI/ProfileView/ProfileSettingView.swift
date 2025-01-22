@@ -139,7 +139,7 @@ struct ProfileSettingView: View {
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.accent, lineWidth: 3))
             } else {
-                AvatarView(userID: viewModel.user.userID, photoUrl: viewModel.user.photoUrl)
+                AvatarView(photoUrl: viewModel.user.photoUrl ?? "default.png")
                     .frame(width: 65, height: 65)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.accent, lineWidth: 3))

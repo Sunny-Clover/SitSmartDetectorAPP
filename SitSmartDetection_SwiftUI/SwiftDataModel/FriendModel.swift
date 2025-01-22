@@ -12,7 +12,8 @@ struct FriendResponse: Codable {
 
 struct LeaderboardData: Codable, Identifiable {
     var userID: Int
-    var name: String
+    var userName: String
+    var photoUrl: String
     var rank: Int
     var level: Int
     var progress: Float
@@ -22,7 +23,8 @@ struct LeaderboardData: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case userID = "UserID"
-        case name = "Name"
+        case userName = "UserName"
+        case photoUrl = "PhotoUrl"
         case rank = "Rank"
         case level = "Level"
         case progress = "Progress"

@@ -22,7 +22,7 @@ struct MeRow: View {
             }
             Spacer()
                 .frame(width: 20)
-            AvatarView(userID: friend.userID)
+            AvatarView(photoUrl: friend.photoUrl)
                 .scaledToFill()
                 .frame(width: 70, height: 70)
                 .clipped()
@@ -31,7 +31,7 @@ struct MeRow: View {
             VStack(alignment: .leading){
                 Spacer()
                 HStack {
-                    Text(friend.name)
+                    Text(friend.userName)
                         .foregroundStyle(.white)
                         .font(.title)
                         .bold()

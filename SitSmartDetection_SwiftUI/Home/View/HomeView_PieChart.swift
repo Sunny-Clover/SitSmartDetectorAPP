@@ -61,6 +61,5 @@ struct HomeView_PieChart: View {
                 }
             }
         }
-//        .padding(.horizontal)
     }
 }

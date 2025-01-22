@@ -8,12 +8,11 @@ import SwiftUI
 
 
 struct AvatarView: View {
-    var userID: Int
-    var photoUrl: String? // 更新的圖片地址，觸發View的刷新
+    var photoUrl: String // 更新的圖片地址，觸發View的刷新
     
     var body: some View {
         // 加上時間戳記，確保AvatarView更新時，AsyncImage也會跟著刷新
-        let url = "\(Config.shared.baseURL)/users/avatar/\(userID)?t=\(Date().timeIntervalSince1970)"
+        let url = "\(Config.shared.baseURL)/users/avatar/\(photoUrl)"
         AsyncImage(url: URL(string: url)) { phase in
             switch phase {
             case .empty:

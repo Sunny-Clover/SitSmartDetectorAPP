@@ -24,13 +24,16 @@ class UserInfoViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    var userTotalTime: String{
-        var minutes =  TimeStr2Min(timeStr: user?.totalDetectionTime ?? "00:00:00")
-        let hour = minutes/60
-        minutes = minutes%60
-        
+    var userTotalTime: String {
+        guard let user = user else {
+            return "0 h 0 m" // 預設值
+        }
+        var minutes = TimeStr2Min(timeStr: user.totalDetectionTime)
+        let hour = minutes / 60
+        minutes = minutes % 60
         return String(format: "%d h %d m", hour, minutes)
     }
+
     var userTotalTimePieDataSource: [PieDataSeries]{
         // TODO: 這邊先照Sunny寫的格式吧，有空再重構
         return [
