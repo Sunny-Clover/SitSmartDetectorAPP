@@ -78,5 +78,8 @@ struct MainView: View{
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(AuthManager())
+            .environmentObject(UserInfoViewModel())
+            .environmentObject(HistoryViewModel(timeUnit: .year))
     }
 }

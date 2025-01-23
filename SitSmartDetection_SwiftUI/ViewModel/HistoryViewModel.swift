@@ -17,7 +17,6 @@ class HistoryViewModel: ObservableObject {
     @Published var displayDate: String = ""
     @Published var addTime: Bool = false
     @Published var averageScore: Double = 0
-    @Published var currentTimeTextWidth: CGFloat = 60
     
     lazy var calendar: Calendar = {
         var cal = Calendar.current
@@ -136,16 +135,12 @@ class HistoryViewModel: ObservableObject {
         switch selectedTime {
         case 0:
             timeUnit = .year
-            currentTimeTextWidth = 50
         case 1:
             timeUnit = .month
-            currentTimeTextWidth = 150
         case 2:
             timeUnit = .weekOfMonth
-            currentTimeTextWidth = 210
         case 3:
             timeUnit = .day
-            currentTimeTextWidth = 180
         default:
             break
         }
