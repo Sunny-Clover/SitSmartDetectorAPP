@@ -41,7 +41,7 @@ struct HeaderView: View {
         HStack {
             Spacer()
             Group {
-                if let userID = userInfoVM.user?.userID {
+                if let _ = userInfoVM.user?.userID {
                     AvatarView(photoUrl: userInfoVM.user?.photoUrl ?? "default.png")
                 } else {
                     Image("Sunny")

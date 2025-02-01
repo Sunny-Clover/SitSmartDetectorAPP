@@ -28,8 +28,8 @@ class TokenService {
     private var cancellables = Set<AnyCancellable>()
     
     func hasToken() -> Bool{
-        guard let token = self.retrieveToken(for: .accessToken),
-              let refreshToken = self.retrieveToken(for: .refreshToken) else{
+        guard let _ = self.retrieveToken(for: .accessToken),
+              let _ = self.retrieveToken(for: .refreshToken) else{
             return false
         }
         return true
