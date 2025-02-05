@@ -66,6 +66,8 @@
 		636239602BF700C8007836A7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6362395F2BF700C8007836A7 /* ProfileView.swift */; };
 		63644C062CAC48090041185E /* SpeechPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63644C052CAC48000041185E /* SpeechPlayer.swift */; };
 		6365DBCD2D2041DB00C2DAD3 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6365DBCC2D2041D400C2DAD3 /* APIManager.swift */; };
+		63B0D8D12D432FCB0084A3C0 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 63B0D8D02D432FCB0084A3C0 /* WebRTC */; };
+		63B0D8D42D43429C0084A3C0 /* CocoaAsyncSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 63B0D8D32D43429C0084A3C0 /* CocoaAsyncSocket */; };
 		63C29D562C7EFCFD004A621F /* TokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C29D552C7EFCFD004A621F /* TokenService.swift */; };
 		63C29D5C2C7F7599004A621F /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C29D5B2C7F7599004A621F /* UserService.swift */; };
 		63C29D5F2C802686004A621F /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C29D5E2C802686004A621F /* UserModel.swift */; };
@@ -170,7 +172,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63B0D8D12D432FCB0084A3C0 /* WebRTC in Frameworks */,
 				634111D82BFB355A00A8FF53 /* FirebaseAuth in Frameworks */,
+				63B0D8D42D43429C0084A3C0 /* CocoaAsyncSocket in Frameworks */,
 				634111DA2BFB355A00A8FF53 /* FirebaseFirestoreSwift in Frameworks */,
 				634111DC2BFB355A00A8FF53 /* FirebaseStorage in Frameworks */,
 				C000E62CC787D0A27193177A /* Pods_SitSmartDetection_SwiftUI.framework in Frameworks */,
@@ -460,6 +464,8 @@
 				634111D72BFB355A00A8FF53 /* FirebaseAuth */,
 				634111D92BFB355A00A8FF53 /* FirebaseFirestoreSwift */,
 				634111DB2BFB355A00A8FF53 /* FirebaseStorage */,
+				63B0D8D02D432FCB0084A3C0 /* WebRTC */,
+				63B0D8D32D43429C0084A3C0 /* CocoaAsyncSocket */,
 			);
 			productName = SitSmartDetection_SwiftUI;
 			productReference = 158383172BE68ED2001FEE73 /* SitSmartDetection_SwiftUI.app */;
@@ -491,6 +497,8 @@
 			mainGroup = 1583830E2BE68ED2001FEE73;
 			packageReferences = (
 				632182612BF12AFB000BCED0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				63B0D8CF2D432FCB0084A3C0 /* XCRemoteSwiftPackageReference "WebRTC" */,
+				63B0D8D22D43429C0084A3C0 /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */,
 			);
 			productRefGroup = 158383182BE68ED2001FEE73 /* Products */;
 			projectDirPath = "";
@@ -841,6 +849,22 @@
 				minimumVersion = 10.25.0;
 			};
 		};
+		63B0D8CF2D432FCB0084A3C0 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stasel/WebRTC.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 130.0.0;
+			};
+		};
+		63B0D8D22D43429C0084A3C0 /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/robbiehanson/CocoaAsyncSocket";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.6.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -858,6 +882,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 632182612BF12AFB000BCED0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		63B0D8D02D432FCB0084A3C0 /* WebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63B0D8CF2D432FCB0084A3C0 /* XCRemoteSwiftPackageReference "WebRTC" */;
+			productName = WebRTC;
+		};
+		63B0D8D32D43429C0084A3C0 /* CocoaAsyncSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63B0D8D22D43429C0084A3C0 /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */;
+			productName = CocoaAsyncSocket;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

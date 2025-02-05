@@ -27,7 +27,7 @@ class DetectionViewModel: ObservableObject {
     @Published var cameraImage: CGImage? // Realtime detection image
     // @Published var person: Person? // Movenet Detection results 目前View還不需要這個變數
     @Published var classifiedReslt:[String:[Float32]]? // Pose classification results from
-    @Published var isDetecting = false // for UIButton
+    @Published var isDetecting = false // for UIButton & accumulate detected results
 
     // Cancellable storage for Combine subscribers.
     private var cancellables = Set<AnyCancellable>()
@@ -64,7 +64,7 @@ class DetectionViewModel: ObservableObject {
     // function to control the camera
     func stopDetection(){
         isDetecting = false
-        self.cameraManager.isDetecting = false
+        self.cameraManager.stopDetection()
         stopTimer()
         self.stopRecord()
         self.countScore()
@@ -73,7 +73,7 @@ class DetectionViewModel: ObservableObject {
     }
     func startDetection(){
         isDetecting = true
-        self.cameraManager.isDetecting = true
+        self.cameraManager.startDetection()
         self.resetResults()
         record = DetectionRecord()
 
