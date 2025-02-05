@@ -8,11 +8,18 @@
 import SwiftUI
 import Combine
 
+enum RequestAction: String, Codable {
+    case Accept
+    case Decline
+}
+
 class FriendService: ObservableObject {
     static let shared = FriendService()
     private init() {}
     
     @Published var friends: [FriendResponse] = []
+    
+    private var cancellables = Set<AnyCancellable>()
     
     let router = "\(Config.shared.baseURL)/friends"
     
@@ -21,5 +28,48 @@ class FriendService: ObservableObject {
 
         let endpoint = "\(self.router)/leaderboard?sortBy=\(sortedBy)"
         return APIManager.shared.performRequest(endpoint: endpoint, method: .GET)
+    }
+    
+    func fetchFriendRequests() -> AnyPublisher<[FriendRequestResponse], Error> {
+        print("FriendService fetchFriendRequests called!")
+
+        let endpoint = "\(self.router)/requests/received"
+        return APIManager.shared.performRequest(endpoint: endpoint, method: .GET)
+    }
+    
+    /// 處理好友請求（接收或拒絕）
+    /// - Parameters:
+    ///   - request: 待處理的好友請求
+    ///   - action: 動作，接收或拒絕
+    ///   - completion: 異步完成結果
+    func handleFriendRequest(request: FriendRequestResponse,
+                             action: RequestAction,
+                             completion: @escaping (Result<Void, Error>) -> Void) {
+        // 假設後端的 API endpoint 為 /friends/requests/{requestID}
+        let endpoint = "\(self.router)/requests/\(request.requestID)"
+        
+        // 傳送的資料，這裡會 encode 動作字串，請依照 API 要求來設計資料格式
+        let parameters = ["Action": action.rawValue]
+        
+        guard let bodyData = try? JSONEncoder().encode(parameters) else {
+            completion(.failure(SSDError.encodingFailed))
+            return
+        }
+        
+        APIManager.shared.performRequest(endpoint: endpoint, method: .PATCH, body: bodyData)
+            .receive(on: DispatchQueue.main)
+            .sink { completionStatus in
+                switch completionStatus {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Handle Friend Request failed: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            } receiveValue: { (response: SuccessMessage) in
+                print("Success: \(response.message)")
+                completion(.success(()))
+            }
+            .store(in: &cancellables)
     }
 }

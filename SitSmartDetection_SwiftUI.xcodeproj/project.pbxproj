@@ -23,6 +23,7 @@
 		15EBFC012BF0B342009E76AF /* HistoryLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFC002BF0B342009E76AF /* HistoryLineChart.swift */; };
 		15EBFC032BF0B35C009E76AF /* LineChartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFC022BF0B35C009E76AF /* LineChartData.swift */; };
 		15EBFC052BF0B377009E76AF /* PieChartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFC042BF0B377009E76AF /* PieChartData.swift */; };
+		6308C94D2D5361A000CCAFCA /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6308C94C2D5361A000CCAFCA /* FriendRequestView.swift */; };
 		63121E612C1718A5005C1974 /* movenet_thunder.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 63121E542C1718A5005C1974 /* movenet_thunder.tflite */; };
 		63121E692C171B1A005C1974 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63121E682C171B1A005C1974 /* CameraManager.swift */; };
 		631A645B2D33FCCD00D8C366 /* FriendViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631A645A2D33FCC700D8C366 /* FriendViewModel.swift */; };
@@ -107,6 +108,7 @@
 		15EBFC042BF0B377009E76AF /* PieChartData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartData.swift; sourceTree = "<group>"; };
 		16C0D7A944C31B1E1DD9A919 /* Pods-SitSmartDetection_SwiftUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitSmartDetection_SwiftUI.debug.xcconfig"; path = "Target Support Files/Pods-SitSmartDetection_SwiftUI/Pods-SitSmartDetection_SwiftUI.debug.xcconfig"; sourceTree = "<group>"; };
 		18E858A85CF65548885AE7A4 /* Pods-SitSmartDetection_SwiftUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitSmartDetection_SwiftUI.release.xcconfig"; path = "Target Support Files/Pods-SitSmartDetection_SwiftUI/Pods-SitSmartDetection_SwiftUI.release.xcconfig"; sourceTree = "<group>"; };
+		6308C94C2D5361A000CCAFCA /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
 		63121E542C1718A5005C1974 /* movenet_thunder.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; path = movenet_thunder.tflite; sourceTree = "<group>"; };
 		63121E682C171B1A005C1974 /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
 		631A645A2D33FCC700D8C366 /* FriendViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendViewModel.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 		63644C002CA945EB0041185E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				6308C94C2D5361A000CCAFCA /* FriendRequestView.swift */,
 				6B3D69742BFF26D300227C5A /* FriendsView.swift */,
 				6B3D697A2BFF5A8600227C5A /* MeScoreRow.swift */,
 				6B3D697C2BFF5C1D00227C5A /* FriendsScoreRow.swift */,
@@ -618,6 +621,7 @@
 				15EBFBFF2BF0B325009E76AF /* HistoryPieChart.swift in Sources */,
 				635B7DF12C5505B000AA6C75 /* SystemSoundPlayer.swift in Sources */,
 				6330E6662C1874F10052FA7D /* PoseEstimator.swift in Sources */,
+				6308C94D2D5361A000CCAFCA /* FriendRequestView.swift in Sources */,
 				635B7DEE2C54C4A300AA6C75 /* DetectionModel.swift in Sources */,
 				634112062BFF246700A8FF53 /* ProfileCustomizationView.swift in Sources */,
 				6B3D69772BFF2A3E00227C5A /* FriendsRow.swift in Sources */,
