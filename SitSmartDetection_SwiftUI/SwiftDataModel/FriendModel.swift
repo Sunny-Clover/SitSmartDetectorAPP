@@ -49,14 +49,12 @@ struct FriendRequestAction: Codable {
     }
 }
 
-struct FriendRequestResponse: Codable, Identifiable{
+struct FriendRequestResponse: Codable{
     var requestID: Int
     var senderID: Int
     var senderUserName: String
     var photoUrl: String
     var requestDate: String
-    
-    var id: Int { requestID }
     
     enum CodingKeys: String, CodingKey {
         case requestID = "RequestID"

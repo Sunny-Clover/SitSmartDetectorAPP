@@ -45,16 +45,15 @@ class FriendService: ObservableObject {
     func handleFriendRequest(request: FriendRequestResponse,
                              action: RequestAction,
                              completion: @escaping (Result<Void, Error>) -> Void) {
-        // 假設後端的 API endpoint 為 /friends/requests/{requestID}
         let endpoint = "\(self.router)/requests/\(request.requestID)"
-        
-        // 傳送的資料，這裡會 encode 動作字串，請依照 API 要求來設計資料格式
         let parameters = ["Action": action.rawValue]
         
         guard let bodyData = try? JSONEncoder().encode(parameters) else {
             completion(.failure(SSDError.encodingFailed))
             return
         }
+        
+        print("Sending request to \(endpoint) with action \(action.rawValue)")
         
         APIManager.shared.performRequest(endpoint: endpoint, method: .PATCH, body: bodyData)
             .receive(on: DispatchQueue.main)

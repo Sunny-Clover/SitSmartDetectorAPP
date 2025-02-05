@@ -47,7 +47,7 @@ struct FriendRequestView: View {
     @StateObject private var viewModel = FriendRequestViewModel()
     var body: some View{
         List {
-            ForEach(viewModel.friendRequests) { request in
+            ForEach(viewModel.friendRequests, id: \.requestID) { request in
                 FriendRequestRow(request: request, viewModel: viewModel)
             }
         }
@@ -70,64 +70,63 @@ struct FriendRequestRow: View {
     let viewModel: FriendRequestViewModel
     
     var body: some View {
-        HStack{
+        HStack {
             AvatarView(photoUrl: request.photoUrl)
                 .scaledToFill()
                 .frame(width: 70, height: 70)
                 .clipped()
-            Spacer()
-                .frame(width: 20)
-            VStack(alignment: .leading){
+            
+            Spacer().frame(width: 20)
+            
+            VStack(alignment: .leading) {
                 Text(request.senderUserName)
                     .foregroundStyle(.textGray)
                     .font(.title)
                     .bold()
+                
                 HStack {
-                    if (handleState == .pending){
-                        Button(action: {
-                            viewModel.acceptRequest(request){ result in
-                                switch result {
-                                case .success:
-                                    self.handleState = .accepted
-                                case .failure(let error):
-                                    break
+                    if handleState == .pending {
+                        Text("Accept")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.accentColor)
+                            .cornerRadius(10)
+                            .frame(minWidth: 0, maxWidth: 200)
+                            .onTapGesture {
+                                viewModel.acceptRequest(request) { result in
+                                    switch result {
+                                    case .success:
+                                        self.handleState = .accepted
+                                    case .failure(let error):
+                                        print("Accept error: \(error)")
+                                    }
                                 }
                             }
-                        }) {
-                           Text("Accept")
-                               .padding()
-                               //.frame()
-                               .foregroundColor(.white)
-                               .background(.accent)
-                               .cornerRadius(10)
-                               .shadow(radius: 3)
-                        }
                         Spacer()
-                        Button(action: {
-                            viewModel.acceptRequest(request){ result in
-                                switch result {
-                                case .success:
-                                    self.handleState = .declined
-                                case .failure(let error):
-                                    break
+                        Text("Decline")
+                            .padding()
+                            .foregroundColor(.black)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(10)
+                            .frame(minWidth: 0, maxWidth: 200)
+                            .onTapGesture {
+                                viewModel.declineRequest(request) { result in
+                                    switch result {
+                                    case .success:
+                                        self.handleState = .declined
+                                    case .failure(let error):
+                                        print("Decline error: \(error)")
+                                    }
                                 }
                             }
-                        }) {
-                            Text("Decline")
-                                .padding()
-                                //.frame()
-                                .background()
-                                .cornerRadius(10)
-                                .shadow(radius: 3)
-                        }
-                    }
-                    else if (handleState == .accepted){
+                    } else if handleState == .accepted {
                         Text("Request is accepted!")
-                    }else{
+                    } else {
                         Text("Request is declined!")
                     }
                 }
             }
+            
             Spacer()
         }
     }
