@@ -54,6 +54,12 @@ struct FriendRequestView: View {
         .navigationTitle("Friend Requests")
         .onAppear {
             viewModel.fetchFriendRequests()
+        }.toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: SearchView()) {
+                    Image(systemName: "magnifyingglass")
+                }
+            }
         }
     }
 }
@@ -125,9 +131,16 @@ struct FriendRequestRow: View {
                         Text("Request is declined!")
                     }
                 }
+                Spacer()
             }
             
             Spacer()
         }
+    }
+}
+
+#Preview{
+    NavigationStack{
+        FriendRequestView()
     }
 }

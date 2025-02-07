@@ -71,4 +71,41 @@ class FriendService: ObservableObject {
             }
             .store(in: &cancellables)
     }
+    
+    func searchUser(query: String) -> AnyPublisher<[UserSearchResponse], Error> {
+        let endpoint = "\(Config.shared.baseURL)/users/search?q=\(query)"
+        
+        return APIManager.shared.performRequest(endpoint: endpoint, method: .GET)
+    }
+    
+    func sendFriendRequest(userID: Int, completion: @escaping (Result<Void, Error>) -> Void){
+        
+        let endpoint = "\(self.router)/requests"
+        
+        let body = ["ReceiverID" : userID]
+        guard let bodyData = try? JSONEncoder().encode(body) else {
+            completion(.failure(SSDError.encodingFailed))
+            return
+        }
+        
+        APIManager.shared.performRequest(endpoint: endpoint, method: .POST, body: bodyData)
+            .receive(on: DispatchQueue.main)
+            .sink { completionStatus in
+                switch completionStatus {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Send Friend Request failed", error.localizedDescription)
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                    return
+                }
+            } receiveValue: { (msg : SuccessMessage ) in
+                DispatchQueue.main.async {
+                    completion(.success(Void()))
+                }
+            }
+            .store(in: &cancellables)
+    }
 }

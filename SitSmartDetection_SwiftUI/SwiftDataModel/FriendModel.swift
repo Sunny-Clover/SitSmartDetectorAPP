@@ -65,4 +65,18 @@ struct FriendRequestResponse: Codable{
     }
 }
 
-
+struct UserSearchResponse: Codable{
+    var userID: Int
+    var userName: String
+    var photoUrl: String
+    var requestState: String?
+    var isFriend: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case userID = "UserID"
+        case userName = "UserName"
+        case photoUrl = "PhotoUrl"
+        case requestState = "RequestState"
+        case isFriend = "IsFriend"
+    }
+}
