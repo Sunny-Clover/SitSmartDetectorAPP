@@ -15,7 +15,7 @@ class RecordService {
     
     let router = "\(Config.shared.baseURL)/detections"
 
-    private var cancellables = Set<AnyCancellable>() // 存储所有的取消对象
+    private var cancellables = Set<AnyCancellable>()
     
     // API: 获取所有记录
     func fetchRecords(completion: @escaping (Result<[RecordResponse], Error>) -> Void) {
@@ -51,7 +51,7 @@ class RecordService {
             completion(.failure(SSDError.encodingFailed))
             return
         }
-        let jsonString = String(data: bodyData, encoding: .utf8)
+        
         APIManager.shared.performRequest(endpoint: endpoint, method: .POST, body: bodyData)
             .receive(on: DispatchQueue.main)
             .sink { completionStatus in

@@ -32,4 +32,51 @@ struct LeaderboardData: Codable, Identifiable {
     }
 }
 
+struct FriendRequestCreate: Codable {
+    let receiverID: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case receiverID = "ReceiverID"
+    }
+}
 
+
+struct FriendRequestAction: Codable {
+    let action: String
+    
+    enum CodingKeys: String, CodingKey {
+        case action = "Action"
+    }
+}
+
+struct FriendRequestResponse: Codable{
+    var requestID: Int
+    var senderID: Int
+    var senderUserName: String
+    var photoUrl: String
+    var requestDate: String
+    
+    enum CodingKeys: String, CodingKey {
+        case requestID = "RequestID"
+        case senderID = "SenderID"
+        case senderUserName = "SenderUserName"
+        case photoUrl = "PhotoUrl"
+        case requestDate = "RequestDate"
+    }
+}
+
+struct UserSearchResponse: Codable{
+    var userID: Int
+    var userName: String
+    var photoUrl: String
+    var requestState: String?
+    var isFriend: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case userID = "UserID"
+        case userName = "UserName"
+        case photoUrl = "PhotoUrl"
+        case requestState = "RequestState"
+        case isFriend = "IsFriend"
+    }
+}

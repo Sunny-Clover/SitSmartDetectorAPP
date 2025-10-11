@@ -309,7 +309,7 @@ class CameraManager: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     /// 連線到 signaling server
     private func connectToSignalingServer() {
         let jwtToken = TokenService.shared.retrieveToken(for: .accessToken)
-        var urlComponents = URLComponents(string: "ws://192.168.8.121:8000/ws/phone")!
+        var urlComponents = URLComponents(string: "\(Config.shared.wsBaseURL)/ws/phone")!
         urlComponents.queryItems = [ URLQueryItem(name: "token", value: jwtToken) ]
         
         guard let url = urlComponents.url else { return }

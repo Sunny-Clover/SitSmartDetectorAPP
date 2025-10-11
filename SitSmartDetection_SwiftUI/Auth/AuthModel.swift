@@ -24,42 +24,6 @@ struct UserCreate: Codable {
 }
 
 
-struct FriendRequestCreate: Codable {
-    let receiverID: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case receiverID = "ReceiverID"
-    }
-}
-
-struct FriendRequestResponse: Codable {
-    let requestID: Int
-    let senderID: Int
-    let senderUserName: String
-    let receiverID: Int
-    let receiverUserName: String
-    let status: String
-    let requestDate: String
-    
-    enum CodingKeys: String, CodingKey {
-        case requestID = "RequestID"
-        case senderID = "SenderID"
-        case senderUserName = "SenderUserName"
-        case receiverID = "ReceiverID"
-        case receiverUserName = "ReceiverUserName"
-        case status = "Status"
-        case requestDate = "RequestDate"
-    }
-}
-
-struct FriendRequestAction: Codable {
-    let action: String
-    
-    enum CodingKeys: String, CodingKey {
-        case action = "Action"
-    }
-}
-
 struct TokenResponse: Codable {
     let accessToken: String
     let refreshToken: String

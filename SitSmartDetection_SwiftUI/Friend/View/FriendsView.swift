@@ -26,33 +26,39 @@ struct FriendsView: View {
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                Spacer()
-                    .frame(width: 20)
-                Text("LeaderBoard")
-                    .foregroundStyle(.deepAccent)
-                    .bold()
-                .font(.title)
-                Spacer()
-                Image(systemName: "person.fill.badge.plus")
-                    .foregroundStyle(.accent)
-                    .font(.largeTitle)
-                Spacer()
-                    .frame(width: 20)
+        NavigationStack {
+            VStack {
+                HStack {
+                    Spacer()
+                        .frame(width: 20)
+                    Text("LeaderBoard")
+                        .foregroundStyle(.deepAccent)
+                        .bold()
+                        .font(.title)
+                    Spacer()
+                    NavigationLink {
+                        FriendRequestView()
+                    } label: {
+                        Image(systemName: "person.fill.badge.plus")
+                            .foregroundStyle(.accent)
+                            .font(.largeTitle)
+                    }
+                    Spacer()
+                        .frame(width: 20)
+                }
+                displayOptionPicker
+                if selectedDisplayOption == 0 {
+                    BadgeAndLevelView
+                } else {
+                    ScoreView
+                    
+                }
+            }.onAppear {
+                viewModel.fetchLeaderboard(for: selectedDisplayOption)
             }
-            displayOptionPicker
-            if selectedDisplayOption == 0 {
-                BadgeAndLevelView
-            } else {
-                ScoreView
-
+            .onChange(of: selectedDisplayOption) {
+                viewModel.fetchLeaderboard(for: selectedDisplayOption)
             }
-        }.onAppear {
-            viewModel.fetchLeaderboard(for: selectedDisplayOption)
-        }
-        .onChange(of: selectedDisplayOption) {
-            viewModel.fetchLeaderboard(for: selectedDisplayOption)
         }
     }
     
