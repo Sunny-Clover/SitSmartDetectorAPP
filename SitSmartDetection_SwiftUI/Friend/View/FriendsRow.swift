@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FriendsRow: View {
-    let friend: Friend
+    let friend: LeaderboardData
     var body: some View {
         HStack{
             ZStack {
@@ -32,8 +32,7 @@ struct FriendsRow: View {
             }
             Spacer()
                 .frame(width: 20)
-            Image(friend.name)
-                .resizable()
+            AvatarView(photoUrl: friend.photoUrl)
                 .scaledToFill()
                 .frame(width: 70, height: 70)
                 .clipped()
@@ -41,16 +40,17 @@ struct FriendsRow: View {
                 .frame(width: 20)
             VStack(alignment: .leading){
                 HStack {
-                    Text(friend.name)
+                    Text(friend.userName)
                         .foregroundStyle(.textGray)
                         .font(.title)
                         .bold()
                     Spacer()
-                    Image(systemName: "medal.fill")
-                        .foregroundStyle(.textGray)
-                    Text(String(friend.badge))
-                        .font(.largeTitle)
-                        .foregroundStyle(.textGray)
+                    // TODO: Badge功能暫不處理
+//                    Image(systemName: "medal.fill")
+//                        .foregroundStyle(.textGray)
+//                    Text(String(friend.badge))
+//                        .font(.largeTitle)
+//                        .foregroundStyle(.textGray)
                 }
                 HStack {
                     Text("Lv.\(friend.level)")
@@ -64,7 +64,7 @@ struct FriendsRow: View {
     }
 }
 
-struct Friend: Identifiable{
+struct FriendDTO: Identifiable{
     let id = UUID()
     let rank: Int
     let name: String
@@ -74,10 +74,10 @@ struct Friend: Identifiable{
     let score: Int
 }
 
-extension Friend{
-    static let demoFriend = Friend(rank: 2, name: "Sunny", badge: 2, level: 2, progress: 0.5, score: 86)
+extension FriendDTO{
+    static let demoFriend = FriendDTO(rank: 2, name: "Sunny", badge: 2, level: 2, progress: 0.5, score: 86)
 }
-
-#Preview {
-    FriendsRow(friend: .demoFriend)
-}
+//
+//#Preview {
+//    FriendsRow(friend: .demoFriend)
+//}

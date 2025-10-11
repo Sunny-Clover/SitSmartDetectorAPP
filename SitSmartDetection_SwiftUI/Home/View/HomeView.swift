@@ -13,7 +13,7 @@ var StatCard_Height = UIScreen.main.bounds.width * 0.4
 
 struct HomeView: View {
     //    private let favoriteLandmarkTip = FavoriteLandmarkTip()
-    
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
         NavigationStack {
             ZStack {
@@ -27,6 +27,8 @@ struct HomeView: View {
                 }
                 .ignoresSafeArea()
             }
+        }.onAppear {
+            userInfoVM.fetchUserData()
         }
     }
 }
@@ -38,7 +40,18 @@ struct HeaderView: View {
     var body: some View {
         HStack {
             Spacer()
-            Image("Sunny")
+            Group {
+                if let _ = userInfoVM.user?.userID {
+                    AvatarView(photoUrl: userInfoVM.user?.photoUrl ?? "default.png")
+                } else {
+                    Image("Sunny")
+                }
+            }
+            .scaledToFill()
+            .frame(width: 100, height: 100) // 固定圖片框的大小
+            .clipped() // 裁剪超出框架的內容
+
+            
             VStack(alignment: .leading) {
                 Text("Hi, \(userInfoVM.user?.userName ?? "Guest")!")
                     .font(.largeTitle)
@@ -46,10 +59,10 @@ struct HeaderView: View {
                     .foregroundStyle(.white)
                 Spacer()
                 HStack {
-                    Text("Lv.\(userInfoVM.getUserLevel())")
+                    Text("Lv.\(userInfoVM.user?.level ?? 1)")
                         .foregroundStyle(.white)
                     .bold()
-                    ProgressView(value: userInfoVM.getUserLevelProgress(), total: 1)
+                    ProgressView(value: userInfoVM.user?.levelProgress, total: 1)
                         .tint(.sysYellow)
                 }
             }
@@ -106,12 +119,12 @@ struct AverageScore: View {
                     .bold()
             }
             Spacer()
-            Text("\(userInfoVM.userAverageScore)")
+            Text("\(userInfoVM.getAllTimeScore())")
                 .font(.system(size: 60))
                 .foregroundColor(.white)
                 .fontWeight(.bold)
             Spacer()
-            Text("Better than \(userInfoVM.userPR)% of users")
+            Text("Better than \(Int(userInfoVM.user?.pr ?? -1))% of users")
                 .font(.system(size: 11))
                 .foregroundColor(.white)
         }
@@ -125,8 +138,9 @@ struct AverageScore: View {
 }
 
 struct TotalTime: View {
+    @EnvironmentObject private var userInfoVM: UserInfoViewModel
     var body: some View {
-        HomeView_PieChart(data: home_allPartPieChartData, StatCard_Width: StatCard_Width)
+        HomeView_PieChart(data: userInfoVM.userTotalTimePieDataSource, StatCard_Width: StatCard_Width)
             .padding()
             .frame(width: StatCard_Width, height: StatCard_Height)
             .background(.accent)
@@ -165,7 +179,7 @@ struct Level: View {
                 }
             }
             Spacer()
-            Text("\(userInfoVM.getUserLevel())")
+            Text("\(userInfoVM.user?.level ?? 1)")
                 .font(.system(size: 70))
                 .foregroundColor(.white)
                 .fontWeight(.bold)

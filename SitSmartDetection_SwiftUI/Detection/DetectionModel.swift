@@ -76,29 +76,34 @@ extension DetectionRecord {
         let bodyCreate = BodyCreate(
             backwardCount: body.count["Backward"] ?? 0,
             forwardCount: body.count["Forward"] ?? 0,
-            neutralCount: body.count["Neutral"] ?? 0
+            neutralCount: body.count["Neutral"] ?? 0,
+            ambiguousCount: body.count["Ambiguous"] ?? 0
         )
         
         let feetCreate = FeetCreate(
             ankleOnKneeCount: feet.count["Ankle-on-knee"] ?? 0,
-            flatCount: feet.count["Flat"] ?? 0
+            flatCount: feet.count["Flat"] ?? 0,
+            ambiguousCount: body.count["Ambiguous"] ?? 0
         )
         
         let headCreate = HeadCreate(
             bowedCount: head.count["Bowed"] ?? 0,
             neutralCount: head.count["Neutral"] ?? 0,
-            tiltBackCount: head.count["Tilt Back"] ?? 0
+            tiltBackCount: head.count["Tilt Back"] ?? 0,
+            ambiguousCount: body.count["Ambiguous"] ?? 0
         )
         
         let shoulderCreate = ShoulderCreate(
             hunchedCount: shoulder.count["Hunched"] ?? 0,
             neutralCount: shoulder.count["Neutral"] ?? 0,
-            shrugCount: shoulder.count["Shrug"] ?? 0
+            shrugCount: shoulder.count["Shrug"] ?? 0,
+            ambiguousCount: body.count["Ambiguous"] ?? 0
         )
         
         let neckCreate = NeckCreate(
             forwardCount: neck.count["Forward"] ?? 0,
-            neutralCount: neck.count["Neutral"] ?? 0
+            neutralCount: neck.count["Neutral"] ?? 0,
+            ambiguousCount: body.count["Ambiguous"] ?? 0
         )
         
         // 建立 RecordCreate 物件
@@ -120,7 +125,7 @@ extension DetectionRecord {
         let hours = Int(interval) / 3600
         let minutes = (Int(interval) % 3600) / 60
         let seconds = Int(interval) % 60
-        return String(format: "%d:%02d:%02d", hours, minutes, seconds)
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
 }
 

@@ -80,7 +80,7 @@ struct HistoryView: View {
                 let height = geometry.size.height
                 Path { path in
                     path.move(to: CGPoint(x: 0, y: height * 0.9))  // 定义半圆的底部起点
-                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: 275), control2: CGPoint(x: 2 * width / 3, y: 275))
+                    path.addCurve(to: CGPoint(x: width, y: height * 0.9), control1: CGPoint(x: width / 3, y: height * 0.75), control2: CGPoint(x: 2 * width / 3, y: height * 0.75))
                     path.addLine(to: CGPoint(x: width, y: height))
                     path.addLine(to: CGPoint(x: 0, y: height))
                 }
@@ -126,7 +126,6 @@ struct HistoryView: View {
             Text("\(historyVM.displayDate)")
                 .font(.title3)
                 .foregroundStyle(Color.white)
-                .frame(width: historyVM.currentTimeTextWidth)
             
             Button {
                 historyVM.touchAdd()
@@ -262,5 +261,6 @@ struct HistoryView_Previews: PreviewProvider {
                     .datastoreLocation(.applicationDefault)
                 ])
             }
+            .environmentObject(HistoryViewModel(timeUnit: .year))
     }
 }

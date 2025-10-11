@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct ContentView: View {
-    @EnvironmentObject private var authVM: AuthViewModel
+    @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var userInfoVM: UserInfoViewModel
 //    @StateObject private var userInfoVM = UserInfoViewModel()
     @EnvironmentObject private var historyVM: HistoryViewModel
@@ -19,25 +19,14 @@ struct ContentView: View {
     }
 
     var body: some View {
-        if authVM.hasToken {
-            // 有現存token，且已讀取到用戶資料
-            if let userInfo = userInfoVM.user {
-                MainView()
-            } else {
-                ProgressView()
+        if authManager.isAuthenticated {
+            MainView()
                 .task {
-                    userInfoVM.refreshToken()
                     userInfoVM.fetchUserData()
                     historyVM.fetchData()
-                    authVM.checkAuthentication()
                 }
-            }
         } else {
             AuthView()
-//                .environmentObject(authVM)
-                .task {
-                    authVM.checkAuthentication()
-                }
         }
     }
     
@@ -89,5 +78,8 @@ struct MainView: View{
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(AuthManager())
+            .environmentObject(UserInfoViewModel())
+            .environmentObject(HistoryViewModel(timeUnit: .year))
     }
 }

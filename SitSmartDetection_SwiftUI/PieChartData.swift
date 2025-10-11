@@ -1,23 +1,24 @@
 import SwiftUI
 
-var home_allPartPieChartData: [PieDataSeries] = [
-    PieDataSeries(title: "init", ratios: [
-        [
-            RatioData(
-                title: "All Correct",
-                day: Date(timeIntervalSince1970: 1711309674.574878),
-                ratio: 60,
-                uiColor: UIColor(Color(red: 0.966, green: 0.887, blue: 0.496))
-            ),
-            RatioData(
-                title: "Partially Correct",
-                day: Date(timeIntervalSince1970: 1711396074.574878),
-                ratio: 40,
-                uiColor: UIColor(Color(red: 1.0, green: 0.792, blue: 0.831))
-            )
-        ]
-    ])
-]
+// 改從UserInfoViewModel推演過來
+//var home_allPartPieChartData: [PieDataSeries] = [
+//    PieDataSeries(title: "init", ratios: [
+//        [
+//            RatioData(
+//                title: "All Correct",
+//                day: Date(timeIntervalSince1970: 1711309674.574878),
+//                ratio: 60,
+//                uiColor: UIColor(Color(red: 0.966, green: 0.887, blue: 0.496))
+//            ),
+//            RatioData(
+//                title: "Partially Correct",
+//                day: Date(timeIntervalSince1970: 1711396074.574878),
+//                ratio: 40,
+//                uiColor: UIColor(Color(red: 1.0, green: 0.792, blue: 0.831))
+//            )
+//        ]
+//    ])
+//]
 
 var allPartPieChartData: [PieDataSeries] = [
     PieDataSeries(title: "init", ratios: [

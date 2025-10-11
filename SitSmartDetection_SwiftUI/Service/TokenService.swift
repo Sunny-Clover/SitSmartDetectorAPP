@@ -11,6 +11,8 @@ import Security
 
 
 class TokenService {
+    
+    static let shared = TokenService()
     enum TokenKey: String {
         case accessToken = "accessToken"
         case refreshToken = "refreshToken"
@@ -26,8 +28,8 @@ class TokenService {
     private var cancellables = Set<AnyCancellable>()
     
     func hasToken() -> Bool{
-        guard let token = self.retrieveToken(for: .accessToken),
-              let refreshToken = self.retrieveToken(for: .refreshToken) else{
+        guard let _ = self.retrieveToken(for: .accessToken),
+              let _ = self.retrieveToken(for: .refreshToken) else{
             return false
         }
         return true
@@ -69,7 +71,7 @@ class TokenService {
         var dataTypeRef: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
         if status == errSecSuccess, let data = dataTypeRef as? Data {
-            print(String(data: data, encoding: .utf8))
+//            print(String(data: data, encoding: .utf8))
             return String(data: data, encoding: .utf8)
         }
         return nil

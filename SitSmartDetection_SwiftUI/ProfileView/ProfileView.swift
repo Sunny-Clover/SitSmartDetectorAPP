@@ -17,19 +17,14 @@ struct profileStatics{
 class ProfileViewModel: ObservableObject {
 //    @Published var users: [User] = []
     @Published var statics: profileStatics = profileStatics(level: 2, Score: 89, ReachedGaol: 6)
-    
-    func getUserAvatar(){
-        
-    }
-    func getUserName() -> String{
-        return "Sunny"
-    }
+
 }
 
 
 struct ProfileView: View {
     @ObservedObject var viewModel = ProfileViewModel()
-    @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject var authVM: AuthManager
+    @EnvironmentObject var userVM: UserInfoViewModel
     
     var body: some View {
         NavigationStack {
@@ -44,37 +39,42 @@ struct ProfileView: View {
                             .foregroundColor(.accent)
                     }.padding()
                 }
-                Image("Sunny") // TODO: refactor
-                    .resizable()
-                    .frame(width: 65, height: 65)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle().stroke(.accent, lineWidth: 3) // 使用 `overlay` 添加圓形邊框
-                    )
-                Text(viewModel.getUserName())
+                Group {
+                    if let photoUrl = userVM.user?.photoUrl {
+                        AvatarView(photoUrl: photoUrl)
+                    } else {
+                        Image("Sunny")
+                    }
+                }.frame(width: 65, height: 65)
+                 .clipShape(Circle())
+                 .overlay(
+                    Circle().stroke(.accent, lineWidth: 3) // 使用 `overlay` 添加圓形邊框
+                 )
+                Text(userVM.user?.userName ?? "Error")
                     .foregroundColor(.profileAccent) // 設置文字顏色
                     .font(.system(size: 32, weight: .medium, design: .default))
                     .padding() // 添加內邊距
                 // Statics
                 HStack (spacing:3){
                     VStack{
-                        Text("\(viewModel.statics.level)")
+                        Text("\(userVM.user?.level ?? 1)")
                             .font(.system(size: 20, weight: .medium, design: .default))
                         Text("Level")
                             .font(.system(size: 14, weight: .medium, design: .default))
                     }.frame(width: 90)
                     VStack{
-                        Text("\(viewModel.statics.Score)")
+                        Text("\(userVM.getAllTimeScore())")
                             .font(.system(size: 20, weight: .medium, design: .default))
                         Text("Score")
                             .font(.system(size: 14, weight: .medium, design: .default))
                     }.frame(width: 90)
-                    VStack{
-                        Text("\(viewModel.statics.ReachedGaol)")
-                            .font(.system(size: 20, weight: .medium, design: .default))
-                        Text("ReachedGoal")
-                            .font(.system(size: 14, weight: .medium, design: .default))
-                    }.frame(width: 90)
+                    // TODO: Reached Goal暫時不要
+//                    VStack{
+//                        Text("\(viewModel.statics.ReachedGaol)")
+//                            .font(.system(size: 20, weight: .medium, design: .default))
+//                        Text("ReachedGoal")
+//                            .font(.system(size: 14, weight: .medium, design: .default))
+//                    }.frame(width: 90)
                 }.foregroundColor(.profileAccent).padding(20)
                 // Profile setting button
                 NavigationLink(destination: ProfileSettingView()) {
@@ -113,79 +113,12 @@ struct ProfileView: View {
                 }
                 Spacer()
             }
+            .onAppear{
+                userVM.fetchUserData()
+            }
         }
     }
 }
-
-
-
-
-// sample Button to test the urlSession
-//            Button(action: {
-//                guard let image = UIImage(named: "sample_img") else {
-//                    print("Image not found")
-//                    return
-//                }
-//                sendRequest(image: image)
-//            }, label: {
-//                Text("Button").padding()
-//            })
-
-//func sendRequest(image: UIImage) {
-//    guard let url = URL(string: "http://192.168.1.109:8000/predict_movenet") else {
-//        print("Invalid URL")
-//        return
-//    }
-//    
-//    var request = URLRequest(url: url)
-//    request.httpMethod = "POST"
-//    
-//    // 將圖片轉換為 JPEG Data
-//    guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-//        print("Failed to convert image to data")
-//        return
-//    }
-//    
-//    // 設置請求頭
-//    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//    
-//    // 建立multipart/form-data的請求body
-//    let boundary = UUID().uuidString
-//    let contentType = "multipart/form-data; boundary=\(boundary)"
-//    request.setValue(contentType, forHTTPHeaderField: "Content-Type")
-//    
-//    var body = Data()
-//    let boundaryPrefix = "--\(boundary)\r\n"
-//    
-//    body.append(Data(boundaryPrefix.utf8))
-//    body.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg\"\r\n".utf8))
-//    body.append(Data("Content-Type: image/jpeg\r\n\r\n".utf8))
-//    body.append(imageData)
-//    body.append(Data("\r\n".utf8))
-//    body.append(Data("--\(boundary)--\r\n".utf8))
-//    
-//    request.httpBody = body
-//    
-//    let task = URLSession.shared.dataTask(with: request) { data, response, error in
-//        if let error = error {
-//            print("Error: \(error.localizedDescription)")
-//            return
-//        }
-//        
-//        guard let data = data else {
-//            print("No data received")
-//            return
-//        }
-//        
-//        if let predictionResult = String(data: data, encoding: .utf8) {
-//            print("Prediction result: \(predictionResult)")
-//        } else {
-//            print("Failed to decode response")
-//        }
-//    }
-//    
-//    task.resume()
-//}
 
 
 #Preview {

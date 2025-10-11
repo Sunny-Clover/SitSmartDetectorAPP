@@ -10,7 +10,7 @@ import FirebaseAuth
 
 struct SignupView: View {
     @Binding var currentShowingView: authState
-    @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject var authVM: AuthManager
     
     @AppStorage("uid") var userID: String = ""
 
